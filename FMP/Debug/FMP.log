@@ -1,2 +1,2 @@
-﻿Renderer.obj : error LNK2005: "long __stdcall WndProc(struct HWND__ *,unsigned int,unsigned int,long)" (?WndProc@@YGJPAUHWND__@@IIJ@Z) already defined in Main.obj
-C:\Users\2sketj33\Desktop\FMP\FMP\Debug\FMP.exe : fatal error LNK1169: one or more multiply defined symbols found
+﻿  FMP.vcxproj -> D:\Documents\Uni\Dissertation\FMP\FMP\Debug\FMP.exe
+  FMP.vcxproj -> D:\Documents\Uni\Dissertation\FMP\FMP\Debug\FMP.pdb (Partial PDB)
