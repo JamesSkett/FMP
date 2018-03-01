@@ -8,6 +8,8 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 ID3D11Device*           Renderer::m_pD3DDevice;
 ID3D11DeviceContext*    Renderer::m_pImmediateContext;
 
+Time Renderer::time;
+
 
 Renderer::Renderer()
 {
@@ -21,7 +23,7 @@ Renderer::~Renderer()
 HRESULT Renderer::InitialiseWindow(HINSTANCE hInstance, int nCmdShow)
 {
 	// Give your app window your own name
-	char Name[100] = "FMP\0";
+	char Name[100] = "Hello World\0";
 
 	// Register class
 	WNDCLASSEX wcex = { 0 };
@@ -48,7 +50,6 @@ HRESULT Renderer::InitialiseWindow(HINSTANCE hInstance, int nCmdShow)
 	ShowWindow(m_hWnd, nCmdShow);
 
 	return S_OK;
-
 }
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -77,7 +78,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 
 	return 0;
-
 }
 
 HRESULT Renderer::InitialiseD3D()
@@ -153,77 +153,41 @@ HRESULT Renderer::InitialiseD3D()
 
 	if (FAILED(hr)) return hr;
 
-	// Create the z buffer texture
-	D3D11_TEXTURE2D_DESC tex2dDesc;
-	ZeroMemory(&tex2dDesc, sizeof(tex2dDesc));
-
-	tex2dDesc.Width = width;
-	tex2dDesc.Height = height;
-	tex2dDesc.ArraySize = 1;
-	tex2dDesc.MipLevels = 1;
-	tex2dDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	tex2dDesc.SampleDesc.Count = sd.SampleDesc.Count;
-	tex2dDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	tex2dDesc.Usage = D3D11_USAGE_DEFAULT;
-
-	ID3D11Texture2D* pZBufferTexture;
-	hr = m_pD3DDevice->CreateTexture2D(&tex2dDesc, NULL, &pZBufferTexture);
-
-	if (FAILED(hr)) return hr;
-
-	D3D11_BLEND_DESC b;
-	b.RenderTarget[0].BlendEnable = TRUE;
-	b.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-	b.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
-	b.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-	b.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	b.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-	b.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
-	b.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-	b.IndependentBlendEnable = FALSE;
-	b.AlphaToCoverageEnable = FALSE;
-
-
-	//Create the z buffer
-	D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc;
-	ZeroMemory(&dsvDesc, sizeof(dsvDesc));
-
-	dsvDesc.Format = tex2dDesc.Format;
-	dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-
-	m_pD3DDevice->CreateDepthStencilView(pZBufferTexture, &dsvDesc, &m_pzBuffer);
-	pZBufferTexture->Release();
-
 	// Set the render target view
-	m_pImmediateContext->OMSetRenderTargets(1, &m_pBackBufferRTView, m_pzBuffer);
-
-
-
-
+	m_pImmediateContext->OMSetRenderTargets(1, &m_pBackBufferRTView, NULL);
 
 	// Set the viewport
 	D3D11_VIEWPORT viewport;
 
 	viewport.TopLeftX = 0;
 	viewport.TopLeftY = 0;
-	viewport.Width = (float)width;
-	viewport.Height = (float)height;
+	viewport.Width = width;
+	viewport.Height = height;
 	viewport.MinDepth = 0.0f;
 	viewport.MaxDepth = 1.0f;
 
 	m_pImmediateContext->RSSetViewports(1, &viewport);
 
-
 	return S_OK;
 }
 
-HRESULT Renderer::InitialiseGraphics(void)
-{
-	return E_NOTIMPL;
-}
-
+//release all the object when done
 void Renderer::ShutdownD3D()
 {
+	if (m_FPSCount)
+	{
+		delete m_FPSCount;
+		m_FPSCount = nullptr;
+	}
+
+	if (m_keyboard_device)
+	{
+		m_keyboard_device->Unacquire();
+		m_keyboard_device->Release();
+	}
+
+	if (m_direct_input) m_direct_input->Release();
+
 	if (m_pVertexBuffer) m_pVertexBuffer->Release();
 	if (m_pInputLayout)  m_pInputLayout->Release();
 	if (m_pVertexShader) m_pVertexShader->Release();
@@ -233,11 +197,102 @@ void Renderer::ShutdownD3D()
 	if (m_pConstantBuffer0)  m_pConstantBuffer0->Release();
 	if (m_pImmediateContext) m_pImmediateContext->Release();
 	if (m_pD3DDevice)        m_pD3DDevice->Release();
+	if (m_pAlphaBlendEnable) m_pAlphaBlendEnable->Release();
+	if (m_pAlphaBlendDisable) m_pAlphaBlendDisable->Release();
 }
 
 void Renderer::RenderFrame()
 {
 	// Clear the back buffer - choose a colour you like
-	float rgba_clear_colour[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	float rgba_clear_colour[4] = { 0.1f, 0.2f, 0.6f, 1.0f };
 	m_pImmediateContext->ClearRenderTargetView(m_pBackBufferRTView, rgba_clear_colour);
+
+	// RENDER HERE
+	entity1->Draw();
+
+
+	// Display what has just been rendered
+	m_pSwapChain->Present(0, 0);
 }
+
+
+//sets up the camera skybox and frame counter
+HRESULT Renderer::InitialiseGraphics(void)
+{
+	entity1 = new Entity;
+
+	return S_OK;
+
+}
+
+//Set up the keyboard and mouse input
+HRESULT Renderer::InitialiseInput()
+{
+	HRESULT hr;
+	ZeroMemory(m_keyboard_keys_state, sizeof(m_keyboard_keys_state));
+
+	hr = DirectInput8Create(m_hInst, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&m_direct_input, NULL);
+	if (FAILED(hr)) return hr;
+
+	hr = m_direct_input->CreateDevice(GUID_SysKeyboard, &m_keyboard_device, NULL);
+	if (FAILED(hr)) return hr;
+
+	hr = m_keyboard_device->SetDataFormat(&c_dfDIKeyboard);
+	if (FAILED(hr)) return hr;
+
+	hr = m_keyboard_device->SetCooperativeLevel(m_hWnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
+	if (FAILED(hr)) return hr;
+
+	hr = m_keyboard_device->Acquire();
+	if (FAILED(hr)) return hr;
+
+	//create mouse
+	hr = m_direct_input->CreateDevice(GUID_SysMouse, &m_mouse_device, NULL);
+	if (FAILED(hr)) return hr;
+
+	hr = m_mouse_device->SetCooperativeLevel(m_hWnd, DISCL_BACKGROUND | DISCL_NONEXCLUSIVE);
+	if (FAILED(hr)) return hr;
+
+	hr = m_mouse_device->SetDataFormat(&c_dfDIMouse);
+	if (FAILED(hr)) return hr;
+
+	hr = m_mouse_device->Acquire();
+	if (FAILED(hr)) return hr;
+
+
+	return S_OK;
+}
+
+//read the keyboard and mouse input
+void Renderer::ReadInputState()
+{
+	HRESULT hr;
+
+
+	hr = m_keyboard_device->GetDeviceState(sizeof(m_keyboard_keys_state), (LPVOID)&m_keyboard_keys_state);
+
+	hr = m_mouse_device->GetDeviceState(sizeof(DIMOUSESTATE), &mouseCurrState);
+
+	if (FAILED(hr))
+	{
+		if ((hr == DIERR_INPUTLOST) || (hr == DIERR_NOTACQUIRED))
+		{
+			m_keyboard_device->Acquire();
+			m_mouse_device->Acquire();
+		}
+	}
+}
+
+//checks to see if a key has been pressed
+bool Renderer::IsKeyPressed(unsigned char DI_keycode)
+{
+	return m_keyboard_keys_state[DI_keycode] & 0x80;
+}
+
+//destroys the game window exiting the game
+void Renderer::DestroyWin()
+{
+	DestroyWindow(m_hWnd);
+}
+
+

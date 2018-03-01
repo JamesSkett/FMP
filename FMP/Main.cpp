@@ -4,7 +4,7 @@
 #include <d3dx11.h>
 #include <dxerr.h>
 
-#include "System.h"
+#include "GameSystem.h"
 
 //////////////////////////////////////////////////////////////////////////////////////
 // Entry point to the program. Initializes everything and goes into a message processing 
@@ -12,15 +12,15 @@
 //////////////////////////////////////////////////////////////////////////////////////
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-	System* system = new System;
+	GameSystem* gameSystem = new GameSystem;
 	MSG msg = { 0 };
 
-	system->Run(msg, hInstance, hPrevInstance, lpCmdLine, nCmdShow);
+	gameSystem->playGame(msg, hInstance, hPrevInstance, lpCmdLine, nCmdShow);
 
-	if (system)
+	if (gameSystem)
 	{
-		delete system;
-		system = nullptr;
+		delete gameSystem;
+		gameSystem = nullptr;
 	}
 
 	return (int)msg.wParam;
