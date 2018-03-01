@@ -19,18 +19,33 @@ Entity::~Entity()
 	if (m_pPixelShader)  m_pPixelShader->Release();
 }
 
-void Entity::Draw()
+void Entity::Draw(XMMATRIX *view, XMMATRIX *projection)
 {
+
+	XMMATRIX world, WVP;
+
+	world = XMMatrixTranslation(0, 0, 0);
+
+	WVP = world * (*view) * (*projection);
+
+	ENTITY_CONSTANT_BUFFER entity_cb_values;
+
+	entity_cb_values.WorldViewProjection = XMMatrixTranspose(WVP);
+
+	Renderer::pImmediateContext->VSSetShader(m_pVertexShader, 0, 0);
+	Renderer::pImmediateContext->PSSetShader(m_pPixelShader, 0, 0);
+	Renderer::pImmediateContext->IASetInputLayout(m_pInputLayout);
+
 	//Set the vertex buffer //03-01
 	UINT stride = sizeof(POS_COL_VERTEX);
 	UINT offset = 0;
-	Renderer::m_pImmediateContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &stride, &offset);
+	Renderer::pImmediateContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &stride, &offset);
 
 	// Select which primitive type to use //03-01
-	Renderer::m_pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	Renderer::pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	// Draw the vertex buffer to the back buffer
-	Renderer::m_pImmediateContext->Draw(6, 0);
+	Renderer::pImmediateContext->Draw(6, 0);
 }
 
 HRESULT Entity::CreateVertices()
@@ -41,41 +56,52 @@ HRESULT Entity::CreateVertices()
 	POS_COL_VERTEX vertices[] =
 	{
 
-		{ XMFLOAT3(0.9f,   0.9f, 0.0f), (Blue, 1.0f) },
-		{ XMFLOAT3(0.9f,  -0.9f, 0.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },
-		{ XMFLOAT3(-0.9f,  -0.9f, 0.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) },
-
-		{ XMFLOAT3(-0.9f, -0.9f, 0.0f),  XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) },
-		{ XMFLOAT3(-0.9f,  0.9f, 0.0f),  XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },
-		{ XMFLOAT3(0.9f,  0.9f, 0.0f),  XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) },
+		{ XMFLOAT3( 0.9f,  0.9f, 1.0f), Red },
+		{ XMFLOAT3( 0.9f, -0.9f, 1.0f), Red },
+		{ XMFLOAT3(-0.9f, -0.9f, 1.0f), Red },
+								 
+		{ XMFLOAT3(-0.9f, -0.9f, 1.0f), Red },
+		{ XMFLOAT3(-0.9f,  0.9f, 1.0f), Red },
+		{ XMFLOAT3( 0.9f,  0.9f, 1.0f), Red },
 
 	};
 
-	//Set up and create the vertext buffer
+	//Set up and create the vertex buffer
 	D3D11_BUFFER_DESC bufferDesc;
 	ZeroMemory(&bufferDesc, sizeof(bufferDesc));
 	bufferDesc.Usage = D3D11_USAGE_DYNAMIC; //Used by the CPU and GPU
 	bufferDesc.ByteWidth = sizeof(POS_COL_VERTEX) * 6; //Total size of buffer, 3 vertices
 	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER; //Use as vertex buffer
 	bufferDesc.CPUAccessFlags = D3D10_CPU_ACCESS_WRITE; //Allow CPU access
-	hr = Renderer::m_pD3DDevice->CreateBuffer(&bufferDesc, NULL, &m_pVertexBuffer); //Create the buffer
+	hr = Renderer::pD3DDevice->CreateBuffer(&bufferDesc, NULL, &m_pVertexBuffer); //Create the buffer
 
 	if (FAILED(hr))
 	{
 		return hr;
 	}
 
+	//Create the constant buffer
+	D3D11_BUFFER_DESC constant_buffer_desc;
+	ZeroMemory(&constant_buffer_desc, sizeof(constant_buffer_desc));
+
+	constant_buffer_desc.Usage = D3D11_USAGE_DEFAULT; //Can use UpdateSubresource() to update
+	constant_buffer_desc.ByteWidth = sizeof(ENTITY_CONSTANT_BUFFER);
+	constant_buffer_desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+
+	hr = Renderer::pD3DDevice->CreateBuffer(&constant_buffer_desc, NULL, &m_pConstantBuffer0);
+	if (FAILED(hr)) return hr;
+
 	//Copy the vertices into the buffer
 	D3D11_MAPPED_SUBRESOURCE ms;
 
 	// Lock the buffer to allow writing
-	Renderer::m_pImmediateContext->Map(m_pVertexBuffer, NULL, D3D11_MAP_WRITE_DISCARD, NULL, &ms);
+	Renderer::pImmediateContext->Map(m_pVertexBuffer, NULL, D3D11_MAP_WRITE_DISCARD, NULL, &ms);
 
 	//Copy the data
 	memcpy(ms.pData, vertices, sizeof(vertices));
 
 	//unlock the data
-	Renderer::m_pImmediateContext->Unmap(m_pVertexBuffer, NULL);
+	Renderer::pImmediateContext->Unmap(m_pVertexBuffer, NULL);
 
 	//Load and compile pixel and vertex shaders - use vs_5_0 to target DX11 hardware only
 	ID3DBlob *VS, *PS, *error;
@@ -104,14 +130,14 @@ HRESULT Entity::CreateVertices()
 	}
 
 	//Create shader objects
-	hr = Renderer::m_pD3DDevice->CreateVertexShader(VS->GetBufferPointer(), VS->GetBufferSize(), NULL, &m_pVertexShader);
+	hr = Renderer::pD3DDevice->CreateVertexShader(VS->GetBufferPointer(), VS->GetBufferSize(), NULL, &m_pVertexShader);
 
 	if (FAILED(hr))
 	{
 		return hr;
 	}
 
-	hr = Renderer::m_pD3DDevice->CreatePixelShader(PS->GetBufferPointer(), PS->GetBufferSize(), NULL, &m_pPixelShader);
+	hr = Renderer::pD3DDevice->CreatePixelShader(PS->GetBufferPointer(), PS->GetBufferSize(), NULL, &m_pPixelShader);
 
 	if (FAILED(hr))
 	{
@@ -119,8 +145,8 @@ HRESULT Entity::CreateVertices()
 	}
 
 	// Set the shader objects as active
-	Renderer::m_pImmediateContext->VSSetShader(m_pVertexShader, 0, 0);
-	Renderer::m_pImmediateContext->PSSetShader(m_pPixelShader, 0, 0);
+	Renderer::pImmediateContext->VSSetShader(m_pVertexShader, 0, 0);
+	Renderer::pImmediateContext->PSSetShader(m_pPixelShader, 0, 0);
 
 	// Create and set the input layout object
 	D3D11_INPUT_ELEMENT_DESC iedesc[] =
@@ -129,14 +155,14 @@ HRESULT Entity::CreateVertices()
 		{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 
-	hr = Renderer::m_pD3DDevice->CreateInputLayout(iedesc, 2, VS->GetBufferPointer(), VS->GetBufferSize(), &m_pInputLayout);
+	hr = Renderer::pD3DDevice->CreateInputLayout(iedesc, 2, VS->GetBufferPointer(), VS->GetBufferSize(), &m_pInputLayout);
 
 	if (FAILED(hr))
 	{
 		return hr;
 	}
 
-	Renderer::m_pImmediateContext->IASetInputLayout(m_pInputLayout);
+	Renderer::pImmediateContext->IASetInputLayout(m_pInputLayout);
 
 	return S_OK;
 }

@@ -5,8 +5,8 @@ HWND		m_hWnd = NULL;
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
-ID3D11Device*           Renderer::m_pD3DDevice;
-ID3D11DeviceContext*    Renderer::m_pImmediateContext;
+ID3D11Device*           Renderer::pD3DDevice;
+ID3D11DeviceContext*    Renderer::pImmediateContext;
 
 Time Renderer::time;
 
@@ -131,7 +131,7 @@ HRESULT Renderer::InitialiseD3D()
 		hr = D3D11CreateDeviceAndSwapChain(NULL, m_driverType, NULL,
 			createDeviceFlags, featureLevels, numFeatureLevels,
 			D3D11_SDK_VERSION, &sd, &m_pSwapChain,
-			&m_pD3DDevice, &m_featureLevel, &m_pImmediateContext);
+			&pD3DDevice, &m_featureLevel, &pImmediateContext);
 		if (SUCCEEDED(hr))
 			break;
 	}
@@ -147,14 +147,14 @@ HRESULT Renderer::InitialiseD3D()
 	if (FAILED(hr)) return hr;
 
 	// Use the back buffer texture pointer to create the render target view
-	hr = m_pD3DDevice->CreateRenderTargetView(pBackBufferTexture, NULL,
+	hr = pD3DDevice->CreateRenderTargetView(pBackBufferTexture, NULL,
 		&m_pBackBufferRTView);
 	pBackBufferTexture->Release();
 
 	if (FAILED(hr)) return hr;
 
 	// Set the render target view
-	m_pImmediateContext->OMSetRenderTargets(1, &m_pBackBufferRTView, NULL);
+	pImmediateContext->OMSetRenderTargets(1, &m_pBackBufferRTView, NULL);
 
 	// Set the viewport
 	D3D11_VIEWPORT viewport;
@@ -166,7 +166,7 @@ HRESULT Renderer::InitialiseD3D()
 	viewport.MinDepth = 0.0f;
 	viewport.MaxDepth = 1.0f;
 
-	m_pImmediateContext->RSSetViewports(1, &viewport);
+	pImmediateContext->RSSetViewports(1, &viewport);
 
 	return S_OK;
 }
@@ -195,8 +195,8 @@ void Renderer::ShutdownD3D()
 
 	if (m_pSwapChain)        m_pSwapChain->Release();
 	if (m_pConstantBuffer0)  m_pConstantBuffer0->Release();
-	if (m_pImmediateContext) m_pImmediateContext->Release();
-	if (m_pD3DDevice)        m_pD3DDevice->Release();
+	if (pImmediateContext) pImmediateContext->Release();
+	if (pD3DDevice)        pD3DDevice->Release();
 	if (m_pAlphaBlendEnable) m_pAlphaBlendEnable->Release();
 	if (m_pAlphaBlendDisable) m_pAlphaBlendDisable->Release();
 }
@@ -205,10 +205,15 @@ void Renderer::RenderFrame()
 {
 	// Clear the back buffer - choose a colour you like
 	float rgba_clear_colour[4] = { 0.1f, 0.2f, 0.6f, 1.0f };
-	m_pImmediateContext->ClearRenderTargetView(m_pBackBufferRTView, rgba_clear_colour);
+	pImmediateContext->ClearRenderTargetView(m_pBackBufferRTView, rgba_clear_colour);
+
+	XMMATRIX view, projection;
+
+	projection = XMMatrixOrthographicLH(800.0f, 600.0f, 0.1f, 1500.0f);
+	view = XMMatrixIdentity();
 
 	// RENDER HERE
-	entity1->Draw();
+	entity1->Draw(&view, &projection);
 
 
 	// Display what has just been rendered

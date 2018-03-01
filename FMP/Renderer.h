@@ -15,19 +15,7 @@ using namespace DirectX;
 #include "Entity.h"
 
 
-struct POS_COL_VERTEX
-{
-	XMFLOAT3 Pos;
-	XMFLOAT4 Col;
-};
 
-struct CONSTANT_BUFFER0
-{
-	XMMATRIX WorldViewProjection;
-	float RedAmount;  //4 bytes
-					  //float scale;
-	XMFLOAT3 packing_bytes; // 3x4 bytes = 12 bytes
-};
 
 __declspec(align(16)) class Renderer
 {
@@ -67,8 +55,8 @@ public:
 
 	//These can be used in any class
 	static Time time;
-	static ID3D11Device*           m_pD3DDevice;
-	static ID3D11DeviceContext*    m_pImmediateContext;
+	static ID3D11Device*           pD3DDevice;
+	static ID3D11DeviceContext*    pImmediateContext;
 
 	//matrices for object transforms
 	XMMATRIX identity, projection, view;
@@ -76,6 +64,19 @@ public:
 	//Destroys the program window
 	void DestroyWin();
 
+	struct POS_COL_VERTEX
+	{
+		XMFLOAT3 Pos;
+		XMFLOAT4 Col;
+	};
+
+	struct CONSTANT_BUFFER0
+	{
+		XMMATRIX WorldViewProjection;
+		float RedAmount;  //4 bytes
+						  //float scale;
+		XMFLOAT3 packing_bytes; // 3x4 bytes = 12 bytes
+	};
 
 private:
 	

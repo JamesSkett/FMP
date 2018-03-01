@@ -18,12 +18,8 @@ public:
 	Entity();
 	~Entity();
 
-	void Draw();
-	struct POS_COL_VERTEX
-	{
-		XMFLOAT3 Pos;
-		XMFLOAT4 Col;
-	};
+	void Draw(XMMATRIX *view, XMMATRIX *projection);
+	
 private:
 	HRESULT CreateVertices();
 
@@ -34,3 +30,13 @@ private:
 	ID3D11Buffer*			m_pConstantBuffer0;
 };
 
+struct POS_COL_VERTEX
+{
+	XMFLOAT3 Pos;
+	XMFLOAT4 Col;
+};
+
+struct ENTITY_CONSTANT_BUFFER
+{
+	XMMATRIX WorldViewProjection;
+};
