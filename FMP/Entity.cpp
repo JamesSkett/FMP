@@ -1,6 +1,6 @@
 #include "Entity.h"
 #include "Renderer.h"
-
+#include "Colours.h"
 
 Entity::Entity()
 {
@@ -41,7 +41,7 @@ HRESULT Entity::CreateVertices()
 	POS_COL_VERTEX vertices[] =
 	{
 
-		{ XMFLOAT3(0.9f,   0.9f, 0.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) },
+		{ XMFLOAT3(0.9f,   0.9f, 0.0f), (Blue, 1.0f) },
 		{ XMFLOAT3(0.9f,  -0.9f, 0.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },
 		{ XMFLOAT3(-0.9f,  -0.9f, 0.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) },
 

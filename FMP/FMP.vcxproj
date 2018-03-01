@@ -144,6 +144,7 @@
     <ClCompile Include="Time.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Colours.h" />
     <ClInclude Include="CXBOXController.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="GameSystem.h" />
