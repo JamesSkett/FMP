@@ -81,8 +81,11 @@ public:
 private:
 	
 	//screen properties
-	const float m_screenWidth = 640.0f;
-	const float m_screenHeight = 480.0f;
+	const float m_screenWidth = 800.0f;
+	const float m_screenHeight = 600.0f;
+	const float m_cNearClip = 0.1f;
+	const float m_cFarClip = 100.0f;
+	const float m_cOrthographicSize = 100.0f;
 
 	//Name of the Game
 	char		m_GameName[100] = "Space Game\0";

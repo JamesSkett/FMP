@@ -18,7 +18,7 @@ public:
 	Entity();
 	~Entity();
 
-	void Draw(XMMATRIX *view, XMMATRIX *projection);
+	void Draw(XMMATRIX view, XMMATRIX projection);
 	
 private:
 	HRESULT CreateVertices();

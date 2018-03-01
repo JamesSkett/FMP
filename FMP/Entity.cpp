@@ -19,19 +19,22 @@ Entity::~Entity()
 	if (m_pPixelShader)  m_pPixelShader->Release();
 }
 
-void Entity::Draw(XMMATRIX *view, XMMATRIX *projection)
+void Entity::Draw(XMMATRIX view, XMMATRIX projection)
 {
 
 	XMMATRIX world, WVP;
 
-	world = XMMatrixTranslation(0, 0, 0);
+	world = XMMatrixRotationZ(XMConvertToRadians(45.0f));
 
-	WVP = world * (*view) * (*projection);
+	WVP = world * view * projection;
 
 	ENTITY_CONSTANT_BUFFER entity_cb_values;
 
 	entity_cb_values.WorldViewProjection = XMMatrixTranspose(WVP);
 
+	Renderer::pImmediateContext->UpdateSubresource(m_pConstantBuffer0, 0, 0, &entity_cb_values, 0, 0);
+
+	Renderer::pImmediateContext->VSSetConstantBuffers(0, 1, &m_pConstantBuffer0);
 	Renderer::pImmediateContext->VSSetShader(m_pVertexShader, 0, 0);
 	Renderer::pImmediateContext->PSSetShader(m_pPixelShader, 0, 0);
 	Renderer::pImmediateContext->IASetInputLayout(m_pInputLayout);
@@ -40,6 +43,8 @@ void Entity::Draw(XMMATRIX *view, XMMATRIX *projection)
 	UINT stride = sizeof(POS_COL_VERTEX);
 	UINT offset = 0;
 	Renderer::pImmediateContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &stride, &offset);
+
+
 
 	// Select which primitive type to use //03-01
 	Renderer::pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -85,7 +90,7 @@ HRESULT Entity::CreateVertices()
 	ZeroMemory(&constant_buffer_desc, sizeof(constant_buffer_desc));
 
 	constant_buffer_desc.Usage = D3D11_USAGE_DEFAULT; //Can use UpdateSubresource() to update
-	constant_buffer_desc.ByteWidth = sizeof(ENTITY_CONSTANT_BUFFER);
+	constant_buffer_desc.ByteWidth = 64;
 	constant_buffer_desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 
 	hr = Renderer::pD3DDevice->CreateBuffer(&constant_buffer_desc, NULL, &m_pConstantBuffer0);

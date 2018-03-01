@@ -209,11 +209,14 @@ void Renderer::RenderFrame()
 
 	XMMATRIX view, projection;
 
-	projection = XMMatrixOrthographicLH(800.0f, 600.0f, 0.1f, 1500.0f);
+	float w = m_screenWidth / m_cOrthographicSize;
+	float h = m_screenHeight / m_cOrthographicSize;
+
+	projection = XMMatrixOrthographicLH(w, h, m_cNearClip, m_cFarClip);
 	view = XMMatrixIdentity();
 
 	// RENDER HERE
-	entity1->Draw(&view, &projection);
+	entity1->Draw(view, projection);
 
 
 	// Display what has just been rendered
