@@ -27,6 +27,8 @@
     <ClCompile Include="Entity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Level.cpp" />
+    <ClCompile Include="Tile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Time.h">
@@ -50,6 +52,8 @@
     <ClInclude Include="Colours.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Level.h" />
+    <ClInclude Include="Tile.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">

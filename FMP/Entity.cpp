@@ -2,9 +2,14 @@
 #include "Renderer.h"
 #include "Colours.h"
 
-Entity::Entity()
+Entity::Entity(XMFLOAT4 colour, float x, float y, float z, float scale)
 {
-	if (FAILED(CreateVertices()))
+	m_xPos = x;
+	m_yPos = y;
+	m_zPos = z;
+	m_scale = scale;
+
+	if (FAILED(CreateVertices(colour)))
 	{
 		DXTRACE_MSG("Failed to Initialise Graphics");
 	}
@@ -13,6 +18,7 @@ Entity::Entity()
 
 Entity::~Entity()
 {
+	if (m_pConstantBuffer0) m_pConstantBuffer0->Release();
 	if (m_pVertexBuffer) m_pVertexBuffer->Release();
 	if (m_pInputLayout)  m_pInputLayout->Release();
 	if (m_pVertexShader) m_pVertexShader->Release();
@@ -53,7 +59,7 @@ void Entity::Draw(XMMATRIX view, XMMATRIX projection)
 	Renderer::pImmediateContext->Draw(6, 0);
 }
 
-HRESULT Entity::CreateVertices()
+HRESULT Entity::CreateVertices(XMFLOAT4 colour)
 {
 	HRESULT hr = S_OK;
 
