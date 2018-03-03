@@ -30,7 +30,7 @@ void Entity::Draw(XMMATRIX view, XMMATRIX projection)
 
 	ENTITY_CONSTANT_BUFFER entity_cb_values;
 
-	entity_cb_values.WorldViewProjection = XMMatrixTranspose(WVP);
+	entity_cb_values.WorldViewProjection = WVP;
 
 	Renderer::pImmediateContext->UpdateSubresource(m_pConstantBuffer0, 0, 0, &entity_cb_values, 0, 0);
 
