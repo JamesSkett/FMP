@@ -81,8 +81,8 @@ public:
 private:
 	
 	//screen properties
-	const float m_screenWidth = 800.0f;
-	const float m_screenHeight = 600.0f;
+	const float m_screenWidth = 1280.0f;
+	const float m_screenHeight = 720.0f;
 	const float m_cNearClip = 0.1f;
 	const float m_cFarClip = 100.0f;
 	const float m_cOrthographicSize = 100.0f;
