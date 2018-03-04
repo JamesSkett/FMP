@@ -39,3 +39,29 @@ void Level::LoadLevelData(string filePath)
 	file.close();
 
 }
+
+void Level::SetUpLevelLayout()
+{
+	char tile;
+	//loops through the _levelData vector and processes each tile
+	for (int i = 0; i < m_vlevelData.size(); i++)
+	{
+		for (int j = 0; j < m_vlevelData[i].size(); j++)
+		{
+			tile = m_vlevelData[i][j];
+
+			switch (tile)
+			{
+			case '#': 
+			case '.':
+				//Doesnt need to do anthing, just break.
+				break;
+			default: //If it gets here, tile hasnt been registered the, so print out a warning
+				printf("WARNING: Unknown tile %c at %d,%d", tile, j, i);
+				system("Pause");
+				break;
+			}
+		}
+	}
+
+}
