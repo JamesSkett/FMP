@@ -13,6 +13,8 @@ Time Renderer::time;
 
 Renderer::Renderer()
 {
+	m_plevel = new Level;
+
 }
 
 
@@ -204,7 +206,7 @@ void Renderer::ShutdownD3D()
 void Renderer::RenderFrame()
 {
 	// Clear the back buffer - choose a colour you like
-	float rgba_clear_colour[4] = { 0.1f, 0.2f, 0.6f, 1.0f };
+	float rgba_clear_colour[4] = { 0.1f, 0.1f, 0.1f, 1.0f };
 	pImmediateContext->ClearRenderTargetView(m_pBackBufferRTView, rgba_clear_colour);
 
 	XMMATRIX view, projection;
@@ -216,8 +218,9 @@ void Renderer::RenderFrame()
 	view = XMMatrixIdentity();
 
 	// RENDER HERE
-	entity1->Draw(view, projection);
+	//entity1->Draw(view, projection);
 
+	m_plevel->Draw(view, projection);
 
 	// Display what has just been rendered
 	m_pSwapChain->Present(0, 0);
@@ -227,7 +230,10 @@ void Renderer::RenderFrame()
 //sets up the camera skybox and frame counter
 HRESULT Renderer::InitialiseGraphics(void)
 {
-	entity1 = new Entity;
+	//entity1 = new Entity;
+
+	m_plevel->LoadLevelData("scripts/Level_Data.txt");
+	m_plevel->SetUpLevelLayout();
 
 	return S_OK;
 
