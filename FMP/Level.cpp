@@ -2,7 +2,6 @@
 
 #include <fstream>
 
-
 Level::Level()
 {
 }
@@ -44,24 +43,43 @@ void Level::SetUpLevelLayout()
 {
 	char tile;
 	//loops through the _levelData vector and processes each tile
-	for (int i = 0; i < m_vlevelData.size(); i++)
+	for (int x = 0; x < m_vlevelData.size(); x++)
 	{
-		for (int j = 0; j < m_vlevelData[i].size(); j++)
+		for (int y = 0; y < m_vlevelData[x].size(); y++)
 		{
-			tile = m_vlevelData[i][j];
+			tile = m_vlevelData[x][y];
+
+			float xPos = x - 4;
+			float yPos = y - 8;
 
 			switch (tile)
 			{
 			case '#': 
+				m_vWalls.push_back(new Tile(colour.Red, yPos / 0.56f, -xPos / 0.56f, 5, 0.5f, true));
+				break;
 			case '.':
-				//Doesnt need to do anthing, just break.
+				m_vFloor.push_back(new Tile(colour.Blue, yPos / 0.56f, -xPos / 0.56f, 5, 0.5f, false));
 				break;
 			default: //If it gets here, tile hasnt been registered the, so print out a warning
-				printf("WARNING: Unknown tile %c at %d,%d", tile, j, i);
+				printf("WARNING: Unknown tile %c at %d,%d", tile, x, y);
 				system("Pause");
 				break;
 			}
 		}
+	}
+
+}
+
+void Level::Draw(XMMATRIX view, XMMATRIX projection)
+{
+	for (int i = 0; i < m_vFloor.size(); i++)
+	{
+		m_vFloor[i]->Draw(view, projection);
+	}
+
+	for (int i = 0; i < m_vWalls.size(); i++)
+	{
+		m_vWalls[i]->Draw(view, projection);
 	}
 
 }
