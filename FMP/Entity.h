@@ -6,10 +6,8 @@
 #include <dinput.h>
 #include <sstream>
 
-
 #include <DirectXMath.h>
 using namespace DirectX;
-
 
 
 class Entity

@@ -7,6 +7,7 @@
 GameSystem::GameSystem()
 {
 	renderer = new Renderer;
+	//m_plevel = new Level;
 }
 
 //clean up before exiting
@@ -56,6 +57,8 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 	//set up the main game when menu is done
 	//SetupLevel();
 
+	//m_plevel->LoadLevelData("scripts/Level_Data.txt");
+	//m_plevel->SetUpLevelLayout();
 
 
 	//Main game loop

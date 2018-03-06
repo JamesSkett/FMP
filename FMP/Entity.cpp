@@ -1,6 +1,5 @@
 #include "Entity.h"
 #include "Renderer.h"
-#include "Colours.h"
 
 Entity::Entity(XMFLOAT4 colour, float x, float y, float z, float scale)
 {
@@ -30,7 +29,11 @@ void Entity::Draw(XMMATRIX view, XMMATRIX projection)
 
 	XMMATRIX world, WVP;
 
-	world = XMMatrixRotationZ(XMConvertToRadians(45.0f));
+	world = XMMatrixTranslation(m_xPos, m_yPos, m_zPos);
+	world *= XMMatrixScaling(m_scale, m_scale, m_scale);
+	world *= XMMatrixRotationX(XMConvertToRadians(m_xAngle));
+	world *= XMMatrixRotationX(XMConvertToRadians(m_xAngle));
+	world *= XMMatrixRotationX(XMConvertToRadians(m_xAngle));
 
 	WVP = world * view * projection;
 
@@ -67,13 +70,13 @@ HRESULT Entity::CreateVertices(XMFLOAT4 colour)
 	POS_COL_VERTEX vertices[] =
 	{
 
-		{ XMFLOAT3( 0.9f,  0.9f, 1.0f), Red },
-		{ XMFLOAT3( 0.9f, -0.9f, 1.0f), Red },
-		{ XMFLOAT3(-0.9f, -0.9f, 1.0f), Red },
+		{ XMFLOAT3( 0.9f,  0.9f, 1.0f), colour },
+		{ XMFLOAT3( 0.9f, -0.9f, 1.0f), colour },
+		{ XMFLOAT3(-0.9f, -0.9f, 1.0f), colour },
 								 
-		{ XMFLOAT3(-0.9f, -0.9f, 1.0f), Red },
-		{ XMFLOAT3(-0.9f,  0.9f, 1.0f), Red },
-		{ XMFLOAT3( 0.9f,  0.9f, 1.0f), Red },
+		{ XMFLOAT3(-0.9f, -0.9f, 1.0f), colour },
+		{ XMFLOAT3(-0.9f,  0.9f, 1.0f), colour },
+		{ XMFLOAT3( 0.9f,  0.9f, 1.0f), colour },
 
 	};
 

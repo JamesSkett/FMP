@@ -12,7 +12,7 @@ using namespace DirectX;
 #include "Renderer.h"
 #include "text2D.h"
 #include "Entity.h"
-
+#include "Level.h"
 
 class GameSystem
 {
@@ -34,5 +34,5 @@ public:
 
 private:
 	Renderer* renderer;
-
+	//Level* m_plevel;
 };
