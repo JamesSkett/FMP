@@ -49,16 +49,16 @@ void Level::SetUpLevelLayout()
 		{
 			tile = m_vlevelData[x][y];
 
-			float xPos = x - 4;
-			float yPos = y - 8;
+			float xPos = x - 10;
+			float yPos = y - 20;
 
 			switch (tile)
 			{
 			case '#': 
-				m_vWalls.push_back(new Tile(colour.Red, yPos / 0.56f, -xPos / 0.56f, 5, 0.5f, true));
+				m_vWalls.push_back(new Tile(colour.DarkSlateGray, yPos / 0.56f, -xPos / 0.56f, 5, 0.25f, true));
 				break;
 			case '.':
-				m_vFloor.push_back(new Tile(colour.Blue, yPos / 0.56f, -xPos / 0.56f, 5, 0.5f, false));
+				m_vFloor.push_back(new Tile(colour.WhiteSmoke, yPos / 0.56f, -xPos / 0.56f, 5, 0.25f, false));
 				break;
 			default: //If it gets here, tile hasnt been registered the, so print out a warning
 				printf("WARNING: Unknown tile %c at %d,%d", tile, x, y);
