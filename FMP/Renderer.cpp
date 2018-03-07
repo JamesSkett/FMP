@@ -41,7 +41,7 @@ HRESULT Renderer::InitialiseWindow(HINSTANCE hInstance, int nCmdShow)
 
 	// Create window
 	m_hInst = hInstance;
-	RECT rc = { 0, 0, m_screenWidth, m_screenHeight };
+	RECT rc = { 0, 0, (LONG)m_screenWidth, (LONG)m_screenHeight };
 	AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
 	m_hWnd = CreateWindow(Name, m_GameName, WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left,
@@ -163,8 +163,8 @@ HRESULT Renderer::InitialiseD3D()
 
 	viewport.TopLeftX = 0;
 	viewport.TopLeftY = 0;
-	viewport.Width = width;
-	viewport.Height = height;
+	viewport.Width = (float)width;
+	viewport.Height = (float)height;
 	viewport.MinDepth = 0.0f;
 	viewport.MaxDepth = 1.0f;
 

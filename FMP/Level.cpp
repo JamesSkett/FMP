@@ -43,14 +43,14 @@ void Level::SetUpLevelLayout()
 {
 	char tile;
 	//loops through the _levelData vector and processes each tile
-	for (int x = 0; x < m_vlevelData.size(); x++)
+	for (unsigned int x = 0; x < m_vlevelData.size(); x++)
 	{
-		for (int y = 0; y < m_vlevelData[x].size(); y++)
+		for (unsigned int y = 0; y < m_vlevelData[x].size(); y++)
 		{
 			tile = m_vlevelData[x][y];
 
-			float xPos = x - 10;
-			float yPos = y - 20;
+			float xPos = (float)x - 10;
+			float yPos = (float)y - 20;
 
 			switch (tile)
 			{
@@ -72,12 +72,12 @@ void Level::SetUpLevelLayout()
 
 void Level::Draw(XMMATRIX view, XMMATRIX projection)
 {
-	for (int i = 0; i < m_vFloor.size(); i++)
+	for (unsigned int i = 0; i < m_vFloor.size(); i++)
 	{
 		m_vFloor[i]->Draw(view, projection);
 	}
 
-	for (int i = 0; i < m_vWalls.size(); i++)
+	for (unsigned int i = 0; i < m_vWalls.size(); i++)
 	{
 		m_vWalls[i]->Draw(view, projection);
 	}

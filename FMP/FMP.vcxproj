@@ -157,7 +157,6 @@
     <ClInclude Include="Time.h" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="model_shaders.hlsl" />
     <FxCompile Include="shaders.hlsl" />
     <FxCompile Include="text2D_shaders.hlsl" />
   </ItemGroup>
