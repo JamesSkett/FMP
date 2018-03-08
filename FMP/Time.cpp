@@ -39,7 +39,7 @@ float Time::GetDeltaTime()
 	frameTimeOld = currentTime.QuadPart;
 
 	if (tickCount < 0.0f)
-		tickCount = 0.0f;
+		tickCount = 0;
 
 	return float(tickCount) / countsPerSecond;
 }
