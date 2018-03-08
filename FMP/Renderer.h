@@ -58,6 +58,7 @@ public:
 	static Time time;
 	static ID3D11Device*           pD3DDevice;
 	static ID3D11DeviceContext*    pImmediateContext;
+	static ID3D11RenderTargetView* pBackBufferRTView;
 
 	//matrices for object transforms
 	XMMATRIX identity, projection, view;
@@ -99,7 +100,6 @@ private:
 	IDXGISwapChain*         m_pSwapChain = NULL;
 
 	//Shader and depth view variables
-	ID3D11RenderTargetView* m_pBackBufferRTView = NULL;
 
 	ID3D11Buffer*			m_pVertexBuffer;
 	ID3D11VertexShader*		m_pVertexShader;
@@ -125,7 +125,6 @@ private:
 	int m_fps = 0;
 
 	//Entity* entity1;
-	Level* m_plevel;
 
 };
 

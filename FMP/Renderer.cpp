@@ -7,13 +7,13 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 ID3D11Device*           Renderer::pD3DDevice;
 ID3D11DeviceContext*    Renderer::pImmediateContext;
+ID3D11RenderTargetView*  Renderer::pBackBufferRTView;
 
 Time Renderer::time;
 
 
 Renderer::Renderer()
 {
-	m_plevel = new Level;
 
 }
 
@@ -150,13 +150,13 @@ HRESULT Renderer::InitialiseD3D()
 
 	// Use the back buffer texture pointer to create the render target view
 	hr = pD3DDevice->CreateRenderTargetView(pBackBufferTexture, NULL,
-		&m_pBackBufferRTView);
+		&pBackBufferRTView);
 	pBackBufferTexture->Release();
 
 	if (FAILED(hr)) return hr;
 
 	// Set the render target view
-	pImmediateContext->OMSetRenderTargets(1, &m_pBackBufferRTView, NULL);
+	pImmediateContext->OMSetRenderTargets(1, &pBackBufferRTView, NULL);
 
 	// Set the viewport
 	D3D11_VIEWPORT viewport;
@@ -205,35 +205,20 @@ void Renderer::ShutdownD3D()
 
 void Renderer::RenderFrame()
 {
-	// Clear the back buffer - choose a colour you like
-	float rgba_clear_colour[4] = { 0.1f, 0.1f, 0.1f, 1.0f };
-	pImmediateContext->ClearRenderTargetView(m_pBackBufferRTView, rgba_clear_colour);
-
-	XMMATRIX view, projection;
-
-	float w = m_screenWidth / m_cOrthographicSize;
-	float h = m_screenHeight / m_cOrthographicSize;
-
-	projection = XMMatrixOrthographicLH(w, h, m_cNearClip, m_cFarClip);
-	view = XMMatrixIdentity();
+	
 
 	// RENDER HERE
 	//entity1->Draw(view, projection);
 
-	m_plevel->Draw(view, projection);
 
 	// Display what has just been rendered
-	m_pSwapChain->Present(0, 0);
+	m_pSwapChain->Present(1, 0);
 }
 
 
 //sets up the camera skybox and frame counter
 HRESULT Renderer::InitialiseGraphics(void)
 {
-	//entity1 = new Entity;
-
-	m_plevel->LoadLevelData("scripts/Level_Data.txt");
-	m_plevel->SetUpLevelLayout();
 
 	return S_OK;
 

@@ -11,8 +11,8 @@ using namespace DirectX;
 
 #include "Renderer.h"
 #include "text2D.h"
-#include "Entity.h"
 #include "Level.h"
+#include "Player.h"
 
 class GameSystem
 {
@@ -31,8 +31,21 @@ public:
 	void GetControllerInput();
 	CXBOXController* player1 = new CXBOXController(1);
 
+	void DrawLevel(XMMATRIX view, XMMATRIX projection);
+
 
 private:
 	Renderer* renderer;
-	//Level* m_plevel;
+	Level* m_plevel;
+
+	vector <Tile*> m_vWalls;
+	vector <Tile*> m_vFloor;
+	Player* m_pPlayer;
+
+	//screen properties
+	const float m_screenWidth = 1920.0f;
+	const float m_screenHeight = 1080.0f;
+	const float m_cNearClip = 0.1f;
+	const float m_cFarClip = 100.0f;
+	const float m_cOrthographicSize = 100.0f;
 };

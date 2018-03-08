@@ -7,7 +7,7 @@
 GameSystem::GameSystem()
 {
 	renderer = new Renderer;
-	//m_plevel = new Level;
+	m_plevel = new Level;
 }
 
 //clean up before exiting
@@ -18,6 +18,28 @@ GameSystem::~GameSystem()
 		delete renderer;
 		renderer = nullptr;
 	}
+
+	if (m_pPlayer)
+	{
+		delete m_pPlayer;
+		m_pPlayer = nullptr;
+	}
+
+	for (unsigned int i = 0; i < m_vFloor.size(); i++)
+	{
+		delete m_vFloor[i];
+		m_vFloor[i] = nullptr;
+	}
+
+	m_vFloor.clear();
+
+	for (unsigned int i = 0; i < m_vWalls.size(); i++)
+	{
+		delete m_vWalls[i];
+		m_vWalls[i] = nullptr;
+	}
+
+	m_vWalls.clear();
 
 }
 
@@ -33,11 +55,11 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 		return 0;
 	}
 
-	//if (FAILED(renderer->InitialiseInput()))
-	//{
-	//	DXTRACE_MSG("Failed to create Window");
-	//	return 0;
-	//}
+	if (FAILED(renderer->InitialiseInput()))
+	{
+		DXTRACE_MSG("Failed to Set up input");
+		return 0;
+	}
 
 	if (FAILED(renderer->InitialiseD3D()))
 	{
@@ -57,8 +79,8 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 	//set up the main game when menu is done
 	//SetupLevel();
 
-	//m_plevel->LoadLevelData("scripts/Level_Data.txt");
-	//m_plevel->SetUpLevelLayout();
+	m_plevel->LoadLevelData("scripts/Level_Data.txt");
+	m_plevel->SetUpLevelLayout(m_vWalls, m_vFloor, m_pPlayer);
 
 
 	//Main game loop
@@ -74,10 +96,31 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 			//get the deltatime
 			float deltaTime = Renderer::time.GetDeltaTime();
 
+			// Clear the back buffer - choose a colour you like
+			float rgba_clear_colour[4] = { 0.1f, 0.1f, 0.1f, 1.0f };
+			Renderer::pImmediateContext->ClearRenderTargetView(Renderer::pBackBufferRTView, rgba_clear_colour);
+
+			XMMATRIX view, projection;
+
+			float w = m_screenWidth / m_cOrthographicSize;
+			float h = m_screenHeight / m_cOrthographicSize;
+
+			projection = XMMatrixOrthographicLH(w, h, m_cNearClip, m_cFarClip);
+			view = XMMatrixIdentity();
+
 			//Get the controller and keyboard input
 			//GetControllerInput();
-			//GetKeyboardInput();
+			renderer->ReadInputState();
+			GetKeyboardInput();
+			m_pPlayer->Update();
+			
+			for (unsigned int i = 0; i < m_vWalls.size(); i++)
+			{
+				m_pPlayer->CollisionCheck(m_vWalls[1]);
+			}
 
+
+			DrawLevel(view, projection);
 
 			renderer->RenderFrame();
 
@@ -111,21 +154,24 @@ void GameSystem::GetKeyboardInput()
 
 	if (renderer->IsKeyPressed(DIK_W))
 	{
+		m_pPlayer->UpdateYPos(0.1f);
 	}
 
 	if (renderer->IsKeyPressed(DIK_S))
 	{
+		m_pPlayer->UpdateYPos(-0.1f);
 	}
 
 	if (renderer->IsKeyPressed(DIK_D))
 	{
+		m_pPlayer->UpdateXPos(0.1f);
 	}
 
 	if (renderer->IsKeyPressed(DIK_A))
 	{
+		m_pPlayer->UpdateXPos(-0.1f);
 	}
 
-	//change the direction the camera is facing
 	if (renderer->IsKeyPressed(DIK_UP))
 	{
 		
@@ -224,4 +270,19 @@ void GameSystem::GetControllerInput()
 		//std::cin.get();
 
 	}
+}
+
+void GameSystem::DrawLevel(XMMATRIX view, XMMATRIX projection)
+{
+	for (unsigned int i = 0; i < m_vFloor.size(); i++)
+	{
+		m_vFloor[i]->Draw(view, projection);
+	}
+
+	for (unsigned int i = 0; i < m_vWalls.size(); i++)
+	{
+		m_vWalls[i]->Draw(view, projection);
+	}
+
+	m_pPlayer->Draw(view, projection);
 }
