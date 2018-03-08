@@ -4,11 +4,14 @@
 
 Level::Level()
 {
+
 }
 
 
 Level::~Level()
 {
+	
+	m_vlevelData.clear();
 }
 
 void Level::LoadLevelData(string filePath)
@@ -39,7 +42,7 @@ void Level::LoadLevelData(string filePath)
 
 }
 
-void Level::SetUpLevelLayout()
+void Level::SetUpLevelLayout(vector <Tile*> &vWalls, vector <Tile*> &vFloor, Player* &player)
 {
 	char tile;
 	//loops through the _levelData vector and processes each tile
@@ -49,16 +52,22 @@ void Level::SetUpLevelLayout()
 		{
 			tile = m_vlevelData[x][y];
 
+			//move the tiles so they display from top left corner
 			float xPos = (float)x - 10;
 			float yPos = (float)y - 20;
 
+			//check the current tile
 			switch (tile)
 			{
-			case '#': 
-				m_vWalls.push_back(new Tile(colour.DarkSlateGray, yPos / 0.56f, -xPos / 0.56f, 5, 0.25f, true));
+			case '#': //create a wall tile
+				vWalls.push_back(new Tile(colour.DarkSlateGray, yPos / m_tileOffset, -xPos / m_tileOffset, 5, 0.25f, 1.0f, 1.0f, true));
 				break;
-			case '.':
-				m_vFloor.push_back(new Tile(colour.WhiteSmoke, yPos / 0.56f, -xPos / 0.56f, 5, 0.25f, false));
+			case '.': //create a floor tile
+				vFloor.push_back(new Tile(colour.WhiteSmoke, yPos / m_tileOffset, -xPos / m_tileOffset, 5, 0.25f, 1.0f, 1.0f, false));
+				break;
+			case '@':
+				vFloor.push_back(new Tile(colour.WhiteSmoke, yPos / m_tileOffset, -xPos / m_tileOffset, 6, 0.25f, 1.0f, 1.0f, false));
+				player = new Player(colour.DarkCyan, yPos / m_tileOffset, -xPos / m_tileOffset, 1, 0.125f, 0.5f, 0.5f);
 				break;
 			default: //If it gets here, tile hasnt been registered the, so print out a warning
 				printf("WARNING: Unknown tile %c at %d,%d", tile, x, y);
@@ -68,18 +77,6 @@ void Level::SetUpLevelLayout()
 		}
 	}
 
-}
 
-void Level::Draw(XMMATRIX view, XMMATRIX projection)
-{
-	for (unsigned int i = 0; i < m_vFloor.size(); i++)
-	{
-		m_vFloor[i]->Draw(view, projection);
-	}
-
-	for (unsigned int i = 0; i < m_vWalls.size(); i++)
-	{
-		m_vWalls[i]->Draw(view, projection);
-	}
 
 }
