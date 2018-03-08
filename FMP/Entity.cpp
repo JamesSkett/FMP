@@ -1,12 +1,17 @@
 #include "Entity.h"
 #include "Renderer.h"
 
-Entity::Entity(XMFLOAT4 colour, float x, float y, float z, float scale)
+Entity::Entity(XMFLOAT4 colour, float x, float y, float z, float scale, float width, float height)
 {
 	m_xPos = x;
 	m_yPos = y;
 	m_zPos = z;
 	m_scale = scale;
+
+	colBox.x = x;
+	colBox.y = y;
+	colBox.w = width;
+	colBox.h = height;
 
 	if (FAILED(CreateVertices(colour)))
 	{
@@ -29,11 +34,15 @@ void Entity::Draw(XMMATRIX view, XMMATRIX projection)
 
 	XMMATRIX world, WVP;
 
-	world = XMMatrixTranslation(m_xPos, m_yPos, m_zPos);
-	world *= XMMatrixScaling(m_scale, m_scale, m_scale);
+	world = XMMatrixScaling(m_scale, m_scale, m_scale);
+
 	world *= XMMatrixRotationX(XMConvertToRadians(m_xAngle));
 	world *= XMMatrixRotationX(XMConvertToRadians(m_xAngle));
 	world *= XMMatrixRotationX(XMConvertToRadians(m_xAngle));
+
+	world *= XMMatrixTranslation(m_xPos, m_yPos, m_zPos);
+	
+
 
 	WVP = world * view * projection;
 
@@ -61,6 +70,15 @@ void Entity::Draw(XMMATRIX view, XMMATRIX projection)
 	// Draw the vertex buffer to the back buffer
 	Renderer::pImmediateContext->Draw(6, 0);
 }
+
+void Entity::GetColBoxParameters(float &x, float &y, float &w, float &h)
+{
+	x = colBox.x;
+	y = colBox.y;
+	w = colBox.w;
+	h = colBox.h;
+}
+
 
 HRESULT Entity::CreateVertices(XMFLOAT4 colour)
 {
