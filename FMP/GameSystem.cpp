@@ -8,6 +8,7 @@ GameSystem::GameSystem()
 {
 	renderer = new Renderer;
 	m_plevel = new Level;
+	m_fpsCount = nullptr;
 }
 
 //clean up before exiting
@@ -77,10 +78,9 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 	//m_mainMenu->StartMenu(Renderer::m_pD3DDevice, Renderer::m_pImmediateContext, renderer);
 
 	//set up the main game when menu is done
-	//SetupLevel();
+	SetupLevel();
 
-	m_plevel->LoadLevelData("scripts/Level_Data.txt");
-	m_plevel->SetUpLevelLayout(m_vWalls, m_vFloor, m_pPlayer);
+	
 
 
 	//Main game loop
@@ -114,13 +114,17 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 			GetKeyboardInput();
 			m_pPlayer->Update();
 			
-			for (unsigned int i = 0; i < m_vWalls.size(); i++)
-			{
-				m_pPlayer->CollisionCheck(m_vWalls[1]);
-			}
+			
 
+			m_fps = m_time.GetFPS();
+
+			string fps = "FPS";
+			fps = fps + to_string(m_fps);
+
+			m_fpsCount->AddText(fps, -0.95f, 0.95f, 0.05f);
 
 			DrawLevel(view, projection);
+			m_fpsCount->RenderText();
 
 			renderer->RenderFrame();
 
@@ -136,7 +140,10 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 //set up the main game level
 void GameSystem::SetupLevel()
 {
-	
+	m_plevel->LoadLevelData("scripts/Level_Data.txt");
+	m_plevel->SetUpLevelLayout(m_vWalls, m_vFloor, m_pPlayer);
+
+	m_fpsCount = new Text2D("Assets/font1.bmp", Renderer::pD3DDevice, Renderer::pImmediateContext);
 }
 
 //Get the keyboard input

@@ -13,6 +13,7 @@ using namespace DirectX;
 #include "text2D.h"
 #include "Level.h"
 #include "Player.h"
+#include "Time.h"
 
 class GameSystem
 {
@@ -37,6 +38,9 @@ public:
 private:
 	Renderer* renderer;
 	Level* m_plevel;
+	Text2D* m_fpsCount;
+	Time m_time;
+	int m_fps = 0;
 
 	vector <Tile*> m_vWalls;
 	vector <Tile*> m_vFloor;
