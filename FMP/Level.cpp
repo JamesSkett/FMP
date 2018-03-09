@@ -60,14 +60,14 @@ void Level::SetUpLevelLayout(vector <Tile*> &vWalls, vector <Tile*> &vFloor, Pla
 			switch (tile)
 			{
 			case '#': //create a wall tile
-				vWalls.push_back(new Tile(colour.DarkSlateGray, yPos / m_tileOffset, -xPos / m_tileOffset, 5, 0.25f, 0.25f, 0.25f, true));
+				vWalls.push_back(new Tile(colour.DarkSlateGray, yPos / m_tileOffset, -xPos / m_tileOffset, 5, 0.25f, 0.35f, 0.35f, true));
 				break;
 			case '.': //create a floor tile
-				vFloor.push_back(new Tile(colour.WhiteSmoke, yPos / m_tileOffset, -xPos / m_tileOffset, 5, 0.25f, 0.25f,0.25f, false));
+				vFloor.push_back(new Tile(colour.WhiteSmoke, yPos / m_tileOffset, -xPos / m_tileOffset, 5, 0.25f, 0.0f, 0.0f, false));
 				break;
 			case '@':
-				vFloor.push_back(new Tile(colour.WhiteSmoke, yPos / m_tileOffset, -xPos / m_tileOffset, 6, 0.25f, 0.25f, 0.25f, false));
-				player = new Player(colour.DarkCyan, yPos / m_tileOffset, -xPos / m_tileOffset, 1, 0.125f, 0.125f, 0.125f);
+				vFloor.push_back(new Tile(colour.WhiteSmoke, yPos / m_tileOffset, -xPos / m_tileOffset, 6, 0.25f, 0.37f, 0.37f, false));
+				player = new Player(colour.Fuchsia, yPos / m_tileOffset, -xPos / m_tileOffset, 1, 0.125f, 0.245f, 0.245f);
 				break;
 			default: //If it gets here, tile hasnt been registered the, so print out a warning
 				printf("WARNING: Unknown tile %c at %d,%d", tile, x, y);

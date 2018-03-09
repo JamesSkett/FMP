@@ -65,23 +65,12 @@ void Player::UpdateXPos(float distance)
 	float oldXPos = m_xPos;
 	m_xPos += distance;
 
-	if (m_isColliding)
-	{
-		// if collision restore state
-		m_xPos = oldXPos;
-	}
 }
 
 void Player::UpdateYPos(float distance)
 {
 	float oldYPos = m_yPos;
 	m_yPos += distance;
-
-	if (m_isColliding)
-	{
-		// if collision restore state
-		m_yPos = oldYPos;
-	}
 }
 
 void Player::UpdateZPos(float distance)
@@ -106,9 +95,22 @@ bool Player::CollisionCheck(Entity* colObject)
 
 	colObject->GetColBoxParameters(box2x, box2y, box2w, box2h);
 
+	float direction = (box2x - box1x) - (box2y - box1y);
+
 	if (box1x < box2x + box2w && box1x + box1w > box2x && box1y < box2y + box2h && box1h + box1y > box2y)
 	{
 		m_isColliding = true;
+		
+		if (direction > -0.4)
+		{
+			m_yPos = m_yPos - 0.1f;
+		}
+
+		else if (direction < 0.4)
+		{
+			m_yPos = m_yPos + 0.1f;
+		}
+
 
 		return true;
 	}

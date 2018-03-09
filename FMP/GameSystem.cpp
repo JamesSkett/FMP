@@ -114,7 +114,10 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 			GetKeyboardInput();
 			m_pPlayer->Update();
 			
-			
+			for (int i = 0; i < m_vWalls.size(); i++)
+			{
+				m_pPlayer->CollisionCheck(m_vWalls[i]);
+			}
 
 			m_fps = m_time.GetFPS();
 
