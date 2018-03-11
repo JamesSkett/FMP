@@ -113,11 +113,6 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 			renderer->ReadInputState();
 			GetKeyboardInput();
 			m_pPlayer->Update();
-			
-			for (int i = 0; i < m_vWalls.size(); i++)
-			{
-				m_pPlayer->CollisionCheck(m_vWalls[i]);
-			}
 
 			m_fps = m_time.GetFPS();
 
@@ -164,22 +159,22 @@ void GameSystem::GetKeyboardInput()
 
 	if (renderer->IsKeyPressed(DIK_W))
 	{
-		m_pPlayer->UpdateYPos(0.1f);
+		m_pPlayer->UpdateYPos(0.05f, m_vWalls);
 	}
 
 	if (renderer->IsKeyPressed(DIK_S))
 	{
-		m_pPlayer->UpdateYPos(-0.1f);
+		m_pPlayer->UpdateYPos(-0.05f, m_vWalls);
 	}
 
 	if (renderer->IsKeyPressed(DIK_D))
 	{
-		m_pPlayer->UpdateXPos(0.1f);
+		m_pPlayer->UpdateXPos(0.05f, m_vWalls);
 	}
 
 	if (renderer->IsKeyPressed(DIK_A))
 	{
-		m_pPlayer->UpdateXPos(-0.1f);
+		m_pPlayer->UpdateXPos(-0.05f, m_vWalls);
 	}
 
 	if (renderer->IsKeyPressed(DIK_UP))

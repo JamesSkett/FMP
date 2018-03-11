@@ -1,5 +1,10 @@
 #pragma once
-#include "Entity.h"
+
+#include "Tile.h"
+#include <vector>
+
+using namespace std;
+
 class Player : public Entity
 {
 public:
@@ -18,12 +23,12 @@ public:
 	float GetZPos();
 	float GetScale();
 
-	void UpdateXPos(float distance);
-	void UpdateYPos(float distance);
+	void UpdateXPos(float distance, vector <Tile*> colObject);
+	void UpdateYPos(float distance, vector <Tile*> colObject);
 	void UpdateZPos(float distance);
 	void UpdateScale(float scale);
 
-	bool CollisionCheck(Entity* colObject);
+	bool CollisionCheck(vector <Tile*> colObject);
 
 private:
 	bool m_isColliding;
