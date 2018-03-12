@@ -41,6 +41,7 @@ protected:
 
 	float m_xPos, m_yPos, m_zPos, m_scale;
 	float m_xAngle, m_yAngle, m_zAngle;
+	float m_width, m_height;
 };
 
 

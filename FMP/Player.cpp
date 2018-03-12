@@ -1,5 +1,5 @@
 #include "Player.h"
-
+#include "Tile.h"
 #include <math.h>
 
 Player::Player(XMFLOAT4 colour, float x, float y, float z, float scale, float width, float height)
@@ -53,7 +53,7 @@ void Player::SetPlayerVelocity(float velocity)
 
 void Player::SetTilemap(vector <string> tilemap)
 {
-	m_tilemap = tilemap;
+	m_levelData = tilemap;
 }
 
 
@@ -90,10 +90,10 @@ void Player::UpdateXPos(vector <Tile*> colObject, bool isRight)
 		m_xPos -= m_velocity;
 	}
 	
-	if (CollisionCheck())
+	/*if (CollisionCheck())
 	{
 		m_xPos = oldXPos;
-	}
+	}*/
 	
 }
 
@@ -110,10 +110,10 @@ void Player::UpdateYPos(vector <Tile*> colObject, bool isUp)
 		 m_yPos -= m_velocity;
 	}
 
-	if (CollisionCheck())
+	/*if (CollisionCheck())
 	{
 		m_xPos = oldYPos;
-	}
+	}*/
 }
 
 void Player::UpdateZPos(float distance)
@@ -126,39 +126,29 @@ void Player::UpdateScale(float scale)
 	m_scale += scale;
 }
 
-bool Player::CollisionCheck()
+bool Player::CollisionCheck(vector <Tile*> tilemap)
 {
-	/*for (int x = 0; x < m_tilemap.size(); x++)
+	for (int i = 0; i < tilemap.size(); i++)
 	{
-		for (int y = 0; x < m_tilemap[x].size(); y++)
+		if (tilemap[i])
 		{
-			char tile = m_tilemap[x][y];
+			float box1x = m_xPos;
+			float box1y = m_yPos;
+			float box1w = m_width;
+			float box1h = m_height;
 
-			switch (tile)
+			float box2x, box2y;
+			float box2w, box2h;
+
+			if ((box1x < box2x + box2w) && (box1x + box1w > box2x) && (box1y < box2y + box2h) && (box1h + box1y > box2y))
 			{
-			case '#':
 
-				float box2x, box2y;
-				float box2w, box2h;
-
-				float tileNum = x + y;
-
-				///colObject[56]->GetColBoxParameters(box2x, box2y, box2w, box2h);
-
-				angle = XMConvertToDegrees(atan2(box1y - box2y, box1x - box2x));
-
-				if ((box1x < box2x + box2w) && (box1x + box1w > box2x) && (box1y < box2y + box2h) && (box1h + box1y > box2y))
-				{
-					m_isColliding = true;
-
-					return true;
-				}
-				break;
+				return true;
 			}
 		}
 	}
 
-	for (int i = 0; i < colObject.size(); i++)
+	/*for (int i = 0; i < colObject.size(); i++)
 	{
 		float box1x = colBox.x;
 		float box1y = colBox.y;

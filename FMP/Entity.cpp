@@ -8,6 +8,8 @@ Entity::Entity(XMFLOAT4 colour, float x, float y, float z, float scale, float wi
 	m_zPos = z;
 	m_scale = scale;
 
+	m_width = width;
+	m_height = height;
 
 	if (FAILED(CreateVertices(colour)))
 	{

@@ -32,7 +32,7 @@ public:
 	void UpdateZPos(float distance);
 	void UpdateScale(float scale);
 
-	bool CollisionCheck();
+	bool CollisionCheck(vector <Tile*> tilemap);
 
 	float angle;
 
@@ -42,6 +42,6 @@ private:
 
 	float m_velocity = 0.05f;
 
-	vector <string> m_tilemap;
+	vector <string> m_levelData;
 };
 
