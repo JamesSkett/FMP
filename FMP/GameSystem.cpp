@@ -26,21 +26,13 @@ GameSystem::~GameSystem()
 		m_pPlayer = nullptr;
 	}
 
-	for (unsigned int i = 0; i < m_vFloor.size(); i++)
+	for (unsigned int i = 0; i < m_tileMap.size(); i++)
 	{
-		delete m_vFloor[i];
-		m_vFloor[i] = nullptr;
+		delete m_tileMap[i];
+		m_tileMap[i] = nullptr;
 	}
 
-	m_vFloor.clear();
-
-	for (unsigned int i = 0; i < m_vWalls.size(); i++)
-	{
-		delete m_vWalls[i];
-		m_vWalls[i] = nullptr;
-	}
-
-	m_vWalls.clear();
+	m_tileMap.clear();
 
 }
 
@@ -108,16 +100,21 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 			projection = XMMatrixOrthographicLH(w, h, m_cNearClip, m_cFarClip);
 			view = XMMatrixIdentity();
 
+
 			//Get the controller and keyboard input
 			//GetControllerInput();
 			renderer->ReadInputState();
 			GetKeyboardInput();
 			m_pPlayer->Update();
 
+
+			//m_pPlayer->CollisionCheck(m_tileMap);
+			
+
 			m_fps = m_time.GetFPS();
 
-			string fps = "FPS";
-			fps = fps + to_string(m_fps);
+			string fps = "Angle";
+			fps = fps + to_string(m_pPlayer->angle);
 
 			m_fpsCount->AddText(fps, -0.95f, 0.95f, 0.05f);
 
@@ -139,7 +136,7 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 void GameSystem::SetupLevel()
 {
 	m_plevel->LoadLevelData("scripts/Level_Data.txt");
-	m_plevel->SetUpLevelLayout(m_vWalls, m_vFloor, m_pPlayer);
+	m_plevel->SetUpLevelLayout(m_tileMap, m_pPlayer);
 
 	m_fpsCount = new Text2D("Assets/font1.bmp", Renderer::pD3DDevice, Renderer::pImmediateContext);
 }
@@ -159,22 +156,22 @@ void GameSystem::GetKeyboardInput()
 
 	if (renderer->IsKeyPressed(DIK_W))
 	{
-		m_pPlayer->UpdateYPos(0.05f, m_vWalls);
+		m_pPlayer->UpdateYPos(m_tileMap, true);
 	}
 
 	if (renderer->IsKeyPressed(DIK_S))
 	{
-		m_pPlayer->UpdateYPos(-0.05f, m_vWalls);
+		m_pPlayer->UpdateYPos(m_tileMap, false);
 	}
 
 	if (renderer->IsKeyPressed(DIK_D))
 	{
-		m_pPlayer->UpdateXPos(0.05f, m_vWalls);
+		m_pPlayer->UpdateXPos(m_tileMap, true);
 	}
 
 	if (renderer->IsKeyPressed(DIK_A))
 	{
-		m_pPlayer->UpdateXPos(-0.05f, m_vWalls);
+		m_pPlayer->UpdateXPos(m_tileMap, false);
 	}
 
 	if (renderer->IsKeyPressed(DIK_UP))
@@ -279,14 +276,9 @@ void GameSystem::GetControllerInput()
 
 void GameSystem::DrawLevel(XMMATRIX view, XMMATRIX projection)
 {
-	for (unsigned int i = 0; i < m_vFloor.size(); i++)
+	for (unsigned int i = 0; i < m_tileMap.size(); i++)
 	{
-		m_vFloor[i]->Draw(view, projection);
-	}
-
-	for (unsigned int i = 0; i < m_vWalls.size(); i++)
-	{
-		m_vWalls[i]->Draw(view, projection);
+		m_tileMap[i]->Draw(view, projection);
 	}
 
 	m_pPlayer->Draw(view, projection);

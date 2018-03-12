@@ -1,6 +1,6 @@
 #include "Player.h"
 
-
+#include <math.h>
 
 Player::Player(XMFLOAT4 colour, float x, float y, float z, float scale, float width, float height)
 	: Entity(colour, x, y, z, scale, width, height)
@@ -16,8 +16,14 @@ Player::~Player()
 
 void Player::Update()
 {
-	colBox.x = m_xPos;
-	colBox.y = m_yPos;
+	/*colBox.x = m_xPos;
+	colBox.y = m_yPos;*/
+}
+
+void Player::ResetPlayerPos()
+{
+	m_xPos = m_previousXPos;
+	m_yPos = m_previousYPos;
 }
 
 void Player::SetXPos(float x)
@@ -40,6 +46,17 @@ void Player::SetScale(float scale)
 	m_scale = scale;
 }
 
+void Player::SetPlayerVelocity(float velocity)
+{
+	m_velocity = velocity;
+}
+
+void Player::SetTilemap(vector <string> tilemap)
+{
+	m_tilemap = tilemap;
+}
+
+
 float Player::GetXPos()
 {
 	return m_xPos;
@@ -60,26 +77,42 @@ float Player::GetScale()
 	return m_scale;
 }
 
-void Player::UpdateXPos(float distance, vector <Tile*> colObject)
+void Player::UpdateXPos(vector <Tile*> colObject, bool isRight)
 {
 	float oldXPos = m_xPos;
-	m_xPos += distance;
 
-	if (CollisionCheck(colObject))
+	if (isRight)
+	{
+		m_xPos += m_velocity;
+	}
+	else
+	{
+		m_xPos -= m_velocity;
+	}
+	
+	if (CollisionCheck())
 	{
 		m_xPos = oldXPos;
 	}
-
+	
 }
 
-void Player::UpdateYPos(float distance, vector <Tile*> colObject)
+void Player::UpdateYPos(vector <Tile*> colObject, bool isUp)
 {
 	float oldYPos = m_yPos;
-	m_yPos += distance;
 
-	if (CollisionCheck(colObject))
+	if (isUp)
 	{
-		m_yPos = oldYPos - 0.2;
+		m_yPos += m_velocity;
+	}
+	else
+	{
+		 m_yPos -= m_velocity;
+	}
+
+	if (CollisionCheck())
+	{
+		m_xPos = oldYPos;
 	}
 }
 
@@ -93,8 +126,38 @@ void Player::UpdateScale(float scale)
 	m_scale += scale;
 }
 
-bool Player::CollisionCheck(vector <Tile*> colObject)
+bool Player::CollisionCheck()
 {
+	/*for (int x = 0; x < m_tilemap.size(); x++)
+	{
+		for (int y = 0; x < m_tilemap[x].size(); y++)
+		{
+			char tile = m_tilemap[x][y];
+
+			switch (tile)
+			{
+			case '#':
+
+				float box2x, box2y;
+				float box2w, box2h;
+
+				float tileNum = x + y;
+
+				///colObject[56]->GetColBoxParameters(box2x, box2y, box2w, box2h);
+
+				angle = XMConvertToDegrees(atan2(box1y - box2y, box1x - box2x));
+
+				if ((box1x < box2x + box2w) && (box1x + box1w > box2x) && (box1y < box2y + box2h) && (box1h + box1y > box2y))
+				{
+					m_isColliding = true;
+
+					return true;
+				}
+				break;
+			}
+		}
+	}
+
 	for (int i = 0; i < colObject.size(); i++)
 	{
 		float box1x = colBox.x;
@@ -105,22 +168,23 @@ bool Player::CollisionCheck(vector <Tile*> colObject)
 		float box2x, box2y;
 		float box2w, box2h;
 
-		colObject[i]->GetColBoxParameters(box2x, box2y, box2w, box2h);
+		colObject[56]->GetColBoxParameters(box2x, box2y, box2w, box2h);
 
-		XMVECTOR box1 = { box1x, box2y, 0, 0 };
-		XMVECTOR box2 = { box2x, box2y, 0, 0 };
+		angle = XMConvertToDegrees(atan2(box1y - box2y, box1x - box2x));
 
-		XMVECTOR direction = box2 - box1;
-
-		if (box1x < box2x + box2w && box1x + box1w > box2x && box1y < box2y + box2h && box1h + box1y > box2y)
+		if ((box1x < box2x + box2w) && (box1x + box1w > box2x) && (box1y < box2y + box2h) && (box1h + box1y > box2y))
 		{
 			m_isColliding = true;
 
+			m_velocity = - m_velocity;
 
 			return true;
 		}
+
+		else m_velocity = 0.05;
 	}
 
-	return false;
 
+	return false;*/
+	return false;
 }

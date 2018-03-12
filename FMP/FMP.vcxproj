@@ -137,6 +137,7 @@
   <ItemGroup>
     <ClCompile Include="CXBOXController.cpp" />
     <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="Floor.cpp" />
     <ClCompile Include="GameSystem.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -145,11 +146,13 @@
     <ClCompile Include="text2D.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="Time.cpp" />
+    <ClCompile Include="Wall.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Colours.h" />
     <ClInclude Include="CXBOXController.h" />
     <ClInclude Include="Entity.h" />
+    <ClInclude Include="Floor.h" />
     <ClInclude Include="GameSystem.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="Player.h" />
@@ -157,6 +160,7 @@
     <ClInclude Include="text2D.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="Time.h" />
+    <ClInclude Include="Wall.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shaders.hlsl" />

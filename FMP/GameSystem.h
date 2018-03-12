@@ -42,8 +42,7 @@ private:
 	Time m_time;
 	int m_fps = 0;
 
-	vector <Tile*> m_vWalls;
-	vector <Tile*> m_vFloor;
+	vector <Tile*> m_tileMap;
 	Player* m_pPlayer;
 
 	//screen properties

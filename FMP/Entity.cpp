@@ -8,10 +8,6 @@ Entity::Entity(XMFLOAT4 colour, float x, float y, float z, float scale, float wi
 	m_zPos = z;
 	m_scale = scale;
 
-	colBox.x = x;
-	colBox.y = y;
-	colBox.w = width;
-	colBox.h = height;
 
 	if (FAILED(CreateVertices(colour)))
 	{
@@ -73,10 +69,10 @@ void Entity::Draw(XMMATRIX view, XMMATRIX projection)
 
 void Entity::GetColBoxParameters(float &x, float &y, float &w, float &h)
 {
-	x = colBox.x;
+	/*x = colBox.x;
 	y = colBox.y;
 	w = colBox.w;
-	h = colBox.h;
+	h = colBox.h;*/
 }
 
 

@@ -1,4 +1,6 @@
 #include "Level.h"
+#include "Floor.h"
+#include "Wall.h"
 
 #include <fstream>
 
@@ -42,7 +44,7 @@ void Level::LoadLevelData(string filePath)
 
 }
 
-void Level::SetUpLevelLayout(vector <Tile*> &vWalls, vector <Tile*> &vFloor, Player* &player)
+void Level::SetUpLevelLayout(vector <Tile*> &tilemap, Player* &player)
 {
 	char tile;
 	//loops through the _levelData vector and processes each tile
@@ -60,14 +62,15 @@ void Level::SetUpLevelLayout(vector <Tile*> &vWalls, vector <Tile*> &vFloor, Pla
 			switch (tile)
 			{
 			case '#': //create a wall tile
-				vWalls.push_back(new Tile(colour.DarkSlateGray, yPos / m_tileOffset, -xPos / m_tileOffset, 5, 0.25f, 0.25f, 0.25f, true));
+				tilemap.push_back(new Wall(colour.DarkSlateGray, yPos / m_tileOffset, -xPos / m_tileOffset, 5, 0.25f, 0.27f, 0.27f));
 				break;
 			case '.': //create a floor tile
-				vFloor.push_back(new Tile(colour.WhiteSmoke, yPos / m_tileOffset, -xPos / m_tileOffset, 5, 0.25f, 0.0f, 0.0f, false));
+				tilemap.push_back(new Floor(colour.WhiteSmoke, yPos / m_tileOffset, -xPos / m_tileOffset, 5, 0.25f, 0.27f, 0.27f));
 				break;
 			case '@':
-				vFloor.push_back(new Tile(colour.WhiteSmoke, yPos / m_tileOffset, -xPos / m_tileOffset, 6, 0.25f, 0.0f, 0.0f, false));
+				tilemap.push_back(new Floor(colour.WhiteSmoke, yPos / m_tileOffset, -xPos / m_tileOffset, 6, 0.25f, 0.27f, 0.27f));
 				player = new Player(colour.Fuchsia, yPos / m_tileOffset, -xPos / m_tileOffset, 1, 0.125f, 0.245f, 0.245f);
+				player->SetTilemap(m_vlevelData);
 				break;
 			default: //If it gets here, tile hasnt been registered the, so print out a warning
 				printf("WARNING: Unknown tile %c at %d,%d", tile, x, y);

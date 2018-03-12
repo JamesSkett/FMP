@@ -16,7 +16,7 @@ public:
 	~Level();
 
 	void LoadLevelData(string filePath);
-	void SetUpLevelLayout(vector <Tile*> &vWalls, vector <Tile*> &vFloor, Player* &player);
+	void SetUpLevelLayout(vector <Tile*> &tilemap, Player* &player);
 	//void Draw(XMMATRIX view, XMMATRIX projection);
 
 private:

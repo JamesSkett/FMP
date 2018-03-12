@@ -9,15 +9,6 @@
 #include <DirectXMath.h>
 using namespace DirectX;
 
-//Used for AABB box collisions
-struct COL_BOX
-{
-	float w;
-	float h;
-	float x;
-	float y;
-};
-
 class Entity
 {
 public:
@@ -27,6 +18,17 @@ public:
 	void Draw(XMMATRIX view, XMMATRIX projection);
 
 	void GetColBoxParameters(float &x, float &y, float &w, float &h);
+
+	struct POS_COL_VERTEX
+	{
+		XMFLOAT3 Pos;
+		XMFLOAT4 Col;
+	};
+
+	struct ENTITY_CONSTANT_BUFFER
+	{
+		XMMATRIX WorldViewProjection;
+	};
 	
 protected:
 	HRESULT CreateVertices(XMFLOAT4 colour);
@@ -39,18 +41,7 @@ protected:
 
 	float m_xPos, m_yPos, m_zPos, m_scale;
 	float m_xAngle, m_yAngle, m_zAngle;
-
-	COL_BOX colBox;
 };
 
-struct POS_COL_VERTEX
-{
-	XMFLOAT3 Pos;
-	XMFLOAT4 Col;
-};
 
-struct ENTITY_CONSTANT_BUFFER
-{
-	XMMATRIX WorldViewProjection;
-};
 
