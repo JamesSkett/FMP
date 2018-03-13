@@ -6,6 +6,7 @@ Wall::Wall(XMFLOAT4 colour, float x, float y, float z, float scale, float width,
 	Tile(colour, x, y, z, scale, width, height)
 {
 	m_walkable = false;
+	m_index = 2;
 }
 
 

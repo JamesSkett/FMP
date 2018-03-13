@@ -68,6 +68,21 @@ void Tile::Draw(XMMATRIX view, XMMATRIX projection)
 	Renderer::pImmediateContext->Draw(6, 0);
 }
 
+void Tile::GetParameters(float &x, float &y, float &width, float &height)
+{
+	x = m_xPos;
+	y = m_yPos;
+	width = m_w;
+	height = m_h;
+}
+
+int Tile::GetIndex()
+{
+	return m_index;
+}
+
+
+
 HRESULT Tile::CreateVertices(XMFLOAT4 colour)
 {
 	HRESULT hr = S_OK;
