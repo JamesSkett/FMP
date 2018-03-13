@@ -16,6 +16,8 @@ public:
 
 	void Draw(XMMATRIX view, XMMATRIX projection);
 
+	void GetParameters(float &x, float &y, float &width, float &height);
+	int GetIndex();
 protected:
 	HRESULT CreateVertices(XMFLOAT4 colour);
 
@@ -31,6 +33,8 @@ protected:
 	float m_w, m_h;
 
 	bool m_walkable;
+
+	int m_index;
 };
 
 struct POS_COL_VERTEX

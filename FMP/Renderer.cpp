@@ -265,16 +265,16 @@ HRESULT Renderer::InitialiseInput()
 //read the keyboard and mouse input
 void Renderer::ReadInputState()
 {
-	HRESULT hr;
+	HRESULT hr, hr2;
 
 
 	hr = m_keyboard_device->GetDeviceState(sizeof(m_keyboard_keys_state), (LPVOID)&m_keyboard_keys_state);
 
-	hr = m_mouse_device->GetDeviceState(sizeof(DIMOUSESTATE), &mouseCurrState);
+	hr2 = m_mouse_device->GetDeviceState(sizeof(DIMOUSESTATE), &mouseCurrState);
 
-	if (FAILED(hr))
+	if (FAILED(hr) || FAILED(hr2))
 	{
-		if ((hr == DIERR_INPUTLOST) || (hr == DIERR_NOTACQUIRED))
+		if ((hr == DIERR_INPUTLOST) || (hr == DIERR_NOTACQUIRED) || (hr2 == DIERR_INPUTLOST) || (hr2 == DIERR_NOTACQUIRED))
 		{
 			m_keyboard_device->Acquire();
 			m_mouse_device->Acquire();

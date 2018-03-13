@@ -113,8 +113,8 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 
 			m_fps = m_time.GetFPS();
 
-			string fps = "Angle";
-			fps = fps + to_string(m_pPlayer->angle);
+			string fps = "Mouse x";
+			fps = fps + to_string(renderer->mouseCurrState.lX);
 
 			m_fpsCount->AddText(fps, -0.95f, 0.95f, 0.05f);
 

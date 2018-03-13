@@ -77,7 +77,7 @@ float Player::GetScale()
 	return m_scale;
 }
 
-void Player::UpdateXPos(vector <Tile*> colObject, bool isRight)
+void Player::UpdateXPos(vector <Tile*> tilemap, bool isRight)
 {
 	float oldXPos = m_xPos;
 
@@ -90,14 +90,14 @@ void Player::UpdateXPos(vector <Tile*> colObject, bool isRight)
 		m_xPos -= m_velocity;
 	}
 	
-	/*if (CollisionCheck())
+	if (CollisionCheck(tilemap))
 	{
 		m_xPos = oldXPos;
-	}*/
+	}
 	
 }
 
-void Player::UpdateYPos(vector <Tile*> colObject, bool isUp)
+void Player::UpdateYPos(vector <Tile*> tilemap, bool isUp)
 {
 	float oldYPos = m_yPos;
 
@@ -110,10 +110,10 @@ void Player::UpdateYPos(vector <Tile*> colObject, bool isUp)
 		 m_yPos -= m_velocity;
 	}
 
-	/*if (CollisionCheck())
+	if (CollisionCheck(tilemap))
 	{
-		m_xPos = oldYPos;
-	}*/
+		m_yPos = oldYPos;
+	}
 }
 
 void Player::UpdateZPos(float distance)
@@ -128,17 +128,22 @@ void Player::UpdateScale(float scale)
 
 bool Player::CollisionCheck(vector <Tile*> tilemap)
 {
-	for (int i = 0; i < tilemap.size(); i++)
+	for (unsigned int i = 0; i < tilemap.size(); i++)
 	{
-		if (tilemap[i])
+		if (tilemap[i]->GetIndex() == 2)
 		{
-			float box1x = m_xPos;
-			float box1y = m_yPos;
+			float box1x = m_xPos - (m_width/2);
+			float box1y = m_yPos - (m_height/2);
 			float box1w = m_width;
 			float box1h = m_height;
 
 			float box2x, box2y;
 			float box2w, box2h;
+
+			tilemap[i]->GetParameters(box2x, box2y, box2w, box2h);
+
+			box2x = box2x - (box2w / 2);
+			box2y = box2y - (box2h / 2);
 
 			if ((box1x < box2x + box2w) && (box1x + box1w > box2x) && (box1y < box2y + box2h) && (box1h + box1y > box2y))
 			{
