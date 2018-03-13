@@ -62,13 +62,13 @@ void Level::SetUpLevelLayout(vector <Tile*> &tilemap, Player* &player)
 			switch (tile)
 			{
 			case '#': //create a wall tile
-				tilemap.push_back(new Wall(colour.DarkSlateGray, yPos / m_tileOffset, -xPos / m_tileOffset, 5, 0.25f, 0.27f, 0.27f));
+				tilemap.push_back(new Wall(colour.DarkSlateGray, yPos / m_tileOffset, -xPos / m_tileOffset, 5, 0.25f, 0.34f, 0.34f));
 				break;
 			case '.': //create a floor tile
-				tilemap.push_back(new Floor(colour.WhiteSmoke, yPos / m_tileOffset, -xPos / m_tileOffset, 5, 0.25f, 0.27f, 0.27f));
+				tilemap.push_back(new Floor(colour.WhiteSmoke, yPos / m_tileOffset, -xPos / m_tileOffset, 5, 0.25f, 0.29f, 0.29f));
 				break;
 			case '@':
-				tilemap.push_back(new Floor(colour.WhiteSmoke, yPos / m_tileOffset, -xPos / m_tileOffset, 6, 0.25f, 0.27f, 0.27f));
+				tilemap.push_back(new Floor(colour.WhiteSmoke, yPos / m_tileOffset, -xPos / m_tileOffset, 6, 0.25f, 0.29f, 0.29f));
 				player = new Player(colour.Fuchsia, yPos / m_tileOffset, -xPos / m_tileOffset, 1, 0.125f, 0.245f, 0.245f);
 				player->SetTilemap(m_vlevelData);
 				break;
