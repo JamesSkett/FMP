@@ -44,7 +44,7 @@ void Level::LoadLevelData(string filePath)
 
 }
 
-void Level::SetUpLevelLayout(vector <Tile*> &tilemap, Player* &player)
+void Level::SetUpLevelLayout(vector <Tile*> &tilemap, Player* &player, Monster* &monster)
 {
 	char tile;
 	//loops through the _levelData vector and processes each tile
@@ -71,6 +71,10 @@ void Level::SetUpLevelLayout(vector <Tile*> &tilemap, Player* &player)
 				tilemap.push_back(new Floor(colour.WhiteSmoke, yPos / m_tileOffset, -xPos / m_tileOffset, 6, 0.25f, 0.29f, 0.29f));
 				player = new Player(colour.Fuchsia, yPos / m_tileOffset, -xPos / m_tileOffset, 1, 0.125f, 0.245f, 0.245f);
 				player->SetTilemap(m_vlevelData);
+				break;
+			case 'M':
+				tilemap.push_back(new Floor(colour.WhiteSmoke, yPos / m_tileOffset, -xPos / m_tileOffset, 6, 0.25f, 0.29f, 0.29f));
+				monster = new Monster(colour.DarkRed, yPos / m_tileOffset, -xPos / m_tileOffset, 1, 0.125f, 0.245f, 0.245f);
 				break;
 			default: //If it gets here, tile hasnt been registered the, so print out a warning
 				printf("WARNING: Unknown tile %c at %d,%d", tile, x, y);

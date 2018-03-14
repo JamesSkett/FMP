@@ -14,6 +14,7 @@ using namespace DirectX;
 #include "Level.h"
 #include "Player.h"
 #include "Time.h"
+#include "Monster.h"
 
 class GameSystem
 {
@@ -44,6 +45,7 @@ private:
 
 	vector <Tile*> m_tileMap;
 	Player* m_pPlayer;
+	Monster* m_pMonster;
 
 	//screen properties
 	const float m_screenWidth = 1920.0f;

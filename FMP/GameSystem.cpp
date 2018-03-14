@@ -8,6 +8,8 @@ GameSystem::GameSystem()
 {
 	renderer = new Renderer;
 	m_plevel = new Level;
+	m_pPlayer = nullptr;
+	m_pMonster = nullptr;
 	m_fpsCount = nullptr;
 }
 
@@ -18,6 +20,12 @@ GameSystem::~GameSystem()
 	{
 		delete renderer;
 		renderer = nullptr;
+	}
+
+	if (m_pMonster)
+	{
+		delete m_pMonster;
+		m_pMonster = nullptr;
 	}
 
 	if (m_pPlayer)
@@ -136,7 +144,7 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 void GameSystem::SetupLevel()
 {
 	m_plevel->LoadLevelData("scripts/Level_Data.txt");
-	m_plevel->SetUpLevelLayout(m_tileMap, m_pPlayer);
+	m_plevel->SetUpLevelLayout(m_tileMap, m_pPlayer, m_pMonster);
 
 	m_fpsCount = new Text2D("Assets/font1.bmp", Renderer::pD3DDevice, Renderer::pImmediateContext);
 }
@@ -282,4 +290,5 @@ void GameSystem::DrawLevel(XMMATRIX view, XMMATRIX projection)
 	}
 
 	m_pPlayer->Draw(view, projection);
+	m_pMonster->Draw(view, projection);
 }
