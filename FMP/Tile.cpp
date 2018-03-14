@@ -81,6 +81,21 @@ int Tile::GetIndex()
 	return m_index;
 }
 
+float Tile::GetXPos()
+{
+	return m_xPos;
+}
+
+float Tile::GetYPos()
+{
+	return m_yPos;
+}
+
+bool Tile::GetIsWalkable()
+{
+	return m_walkable;
+}
+
 
 
 HRESULT Tile::CreateVertices(XMFLOAT4 colour)

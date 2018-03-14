@@ -141,6 +141,8 @@
     <ClCompile Include="GameSystem.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Monster.cpp" />
+    <ClCompile Include="Pathfinding.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="text2D.cpp" />
@@ -155,6 +157,8 @@
     <ClInclude Include="Floor.h" />
     <ClInclude Include="GameSystem.h" />
     <ClInclude Include="Level.h" />
+    <ClInclude Include="Monster.h" />
+    <ClInclude Include="Pathfinding.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="text2D.h" />

@@ -18,6 +18,12 @@ public:
 
 	void GetParameters(float &x, float &y, float &width, float &height);
 	int GetIndex();
+
+	float GetXPos();
+	float GetYPos();
+
+	bool GetIsWalkable();
+
 protected:
 	HRESULT CreateVertices(XMFLOAT4 colour);
 

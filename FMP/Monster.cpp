@@ -14,3 +14,12 @@ Monster::~Monster()
 
 }
 
+float Monster::GetXPos()
+{
+	return m_xPos;
+}
+
+float Monster::GetYPos()
+{
+	return m_yPos;
+}

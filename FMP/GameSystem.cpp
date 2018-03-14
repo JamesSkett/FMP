@@ -117,12 +117,17 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 
 
 			//m_pPlayer->CollisionCheck(m_tileMap);
+			float x1 = m_tileMap[127]->GetXPos();
+			float x2 = m_pPlayer->GetXPos();
+			float y1 = m_tileMap[127]->GetYPos();
+			float y2 = m_pPlayer->GetYPos();
 			
+			float distance = pow(x2 - x1, 2) + pow(y2 - y1, 2);
 
 			m_fps = m_time.GetFPS();
 
-			string fps = "Mouse x";
-			fps = fps + to_string(renderer->mouseCurrState.lX);
+			string fps = "Distance";
+			fps = fps + to_string(distance);
 
 			m_fpsCount->AddText(fps, -0.95f, 0.95f, 0.05f);
 

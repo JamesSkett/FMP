@@ -41,6 +41,8 @@
     <ClCompile Include="Wall.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Monster.cpp" />
+    <ClCompile Include="Pathfinding.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Time.h">
@@ -79,6 +81,8 @@
     <ClInclude Include="Wall.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Monster.h" />
+    <ClInclude Include="Pathfinding.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
