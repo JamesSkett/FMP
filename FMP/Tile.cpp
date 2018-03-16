@@ -96,6 +96,35 @@ bool Tile::GetIsWalkable()
 	return m_walkable;
 }
 
+void Tile::SetGValue(int value)
+{
+	m_gValue = value;
+}
+
+void Tile::SetHValue(int value)
+{
+	m_hValue = value;
+}
+
+void Tile::SetFValue(int value)
+{
+	m_fValue = value;
+}
+
+int Tile::Get_G_Value()
+{
+	return m_gValue;
+}
+
+int Tile::Get_H_Value()
+{
+	return m_hValue;
+}
+
+int Tile::Get_F_Value()
+{
+	return m_fValue;
+}
 
 
 HRESULT Tile::CreateVertices(XMFLOAT4 colour)

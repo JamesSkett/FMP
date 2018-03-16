@@ -24,6 +24,14 @@ public:
 
 	bool GetIsWalkable();
 
+	void SetGValue(int value);
+	void SetHValue(int value);
+	void SetFValue(int value);
+
+	int Get_G_Value();
+	int Get_H_Value();
+	int Get_F_Value();
+
 protected:
 	HRESULT CreateVertices(XMFLOAT4 colour);
 
@@ -41,6 +49,10 @@ protected:
 	bool m_walkable;
 
 	int m_index;
+
+	int m_gValue;
+	int m_hValue;
+	int m_fValue;
 };
 
 struct POS_COL_VERTEX

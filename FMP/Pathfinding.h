@@ -21,6 +21,9 @@ public:
 	Tile* GetStartTile(Monster* monster);
 	bool IsAdjacent(Monster* monster, Tile* tile);
 
+	void CalculateHValue(XMFLOAT2 targetPos);
+	void FindAdjacentTiles(Monster* monster);
+
 private:
 	vector <Tile*> m_openList;
 	vector <Tile*> m_closedList;

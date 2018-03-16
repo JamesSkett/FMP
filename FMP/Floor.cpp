@@ -13,3 +13,6 @@ Floor::Floor(XMFLOAT4 colour, float x, float y, float z, float scale, float widt
 Floor::~Floor()
 {
 }
+
+
+}

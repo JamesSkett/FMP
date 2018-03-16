@@ -153,33 +153,5 @@ bool Player::CollisionCheck(vector <Tile*> tilemap)
 		}
 	}
 
-	/*for (int i = 0; i < colObject.size(); i++)
-	{
-		float box1x = colBox.x;
-		float box1y = colBox.y;
-		float box1w = colBox.w;
-		float box1h = colBox.h;
-
-		float box2x, box2y;
-		float box2w, box2h;
-
-		colObject[56]->GetColBoxParameters(box2x, box2y, box2w, box2h);
-
-		angle = XMConvertToDegrees(atan2(box1y - box2y, box1x - box2x));
-
-		if ((box1x < box2x + box2w) && (box1x + box1w > box2x) && (box1y < box2y + box2h) && (box1h + box1y > box2y))
-		{
-			m_isColliding = true;
-
-			m_velocity = - m_velocity;
-
-			return true;
-		}
-
-		else m_velocity = 0.05;
-	}
-
-
-	return false;*/
 	return false;
 }
