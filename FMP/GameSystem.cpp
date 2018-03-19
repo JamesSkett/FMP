@@ -1,5 +1,5 @@
 #include "GameSystem.h"
-
+#include "Pathfinding.h"
 #include <thread>
 
 
@@ -80,7 +80,9 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 	//set up the main game when menu is done
 	SetupLevel();
 
-	
+	Pathfinding* pathfinder = new Pathfinding(m_tileMap);
+
+	pathfinder->UpdatePath(m_pMonster, XMFLOAT2(m_pPlayer->GetXPos(), m_pPlayer->GetYPos()));
 
 
 	//Main game loop

@@ -62,7 +62,7 @@ void Tile::Draw(XMMATRIX view, XMMATRIX projection)
 
 
 	// Select which primitive type to use //03-01
-	Renderer::pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	Renderer::pImmediateContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINESTRIP);
 
 	// Draw the vertex buffer to the back buffer
 	Renderer::pImmediateContext->Draw(6, 0);

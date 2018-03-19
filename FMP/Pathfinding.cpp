@@ -23,12 +23,13 @@ void Pathfinding::UpdatePath(Monster* monster, XMFLOAT2 targetPos)
 
 		FindAdjacentTiles(monster);
 		
+		int g = 1;
+		int lowestF = 100;
+		int currentF;
+		Tile* bestTile = nullptr;
+
 		do
 		{
-			int g = 1;
-			int lowestF;
-			int currentF;
-			Tile* bestTile;
 			for (unsigned int i = 0; i < m_openList.size(); i++)
 			{
 				m_openList[i]->SetGValue(g);
@@ -36,7 +37,7 @@ void Pathfinding::UpdatePath(Monster* monster, XMFLOAT2 targetPos)
 				int h = m_openList[i]->Get_H_Value();
 				m_openList[i]->SetFValue(g + h);
 
-				currentF = m_openList[i]->Get_F_Value;
+				currentF = m_openList[i]->Get_F_Value();
 
 				if (currentF < lowestF)
 				{
@@ -45,12 +46,13 @@ void Pathfinding::UpdatePath(Monster* monster, XMFLOAT2 targetPos)
 				}
 			}
 
-			if (bestTile->GetXPos == targetPos.x && bestTile->GetYPos == targetPos.y)
+			if (bestTile->GetXPos() == targetPos.x && bestTile->GetYPos() == targetPos.y)
 			{
 				m_pathFound = true;
 			}
 
 			AddToClosedList(bestTile);
+
 
 		} while (!m_pathFound);
 
@@ -100,7 +102,7 @@ bool Pathfinding::IsAdjacent(Monster* monster, Tile * tile)
 
 	float distance = ((tileX - monsterX) * (tileX - monsterY)) + ((tileY - monsterY) * (tileY - monsterY));
 
-	if (distance < 0.4f)
+	if (distance < 0.4f && distance > 0)
 	{
 		if (tile->GetIsWalkable())
 		{
@@ -116,7 +118,7 @@ void Pathfinding::CalculateHValue(XMFLOAT2 targetPos)
 {
 	for (unsigned int i = 0; i < m_tileMap.size(); i++)
 	{
-		if (m_tileMap[i]->GetIsWalkable)
+		if (m_tileMap[i]->GetIsWalkable())
 		{
 			float targetX = targetPos.x;
 			float targetY = targetPos.y;
@@ -136,16 +138,33 @@ void Pathfinding::FindAdjacentTiles(Monster* monster)
 	{
 		for (int j = 0; j < m_closedList.size(); j++)
 		{
-			if (m_tileMap[i] == m_closedList[j])
+			if (!m_openList.empty())
 			{
-				break;
-			}
-
-			for (int x = 0; x < m_openList.size(); x++)
-			{
-				if (m_tileMap[i] == m_openList[i])
+				for (int x = 0; x < m_openList.size(); x++)
 				{
-					break;
+					if (m_tileMap[i] == m_closedList[j])
+					{
+						continue;
+					}
+					
+					if (m_tileMap[i] == m_openList[x])
+					{
+						continue;
+					}
+					
+					if (IsAdjacent(monster, m_tileMap[i]))
+					{
+						AddToOpenList(m_tileMap[i]);
+						continue;
+					}
+					
+				}
+			}
+			else
+			{
+				if (m_tileMap[i] == m_closedList[j])
+				{
+					continue;
 				}
 				else
 				{
@@ -155,8 +174,9 @@ void Pathfinding::FindAdjacentTiles(Monster* monster)
 					}
 				}
 			}
+			
 
-			break;
+			continue;
 		}
 	}
 }
