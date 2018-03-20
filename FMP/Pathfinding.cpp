@@ -1,182 +1,187 @@
 #include "Pathfinding.h"
 #include <math.h>
-
+#include <algorithm>
 
 Pathfinding::Pathfinding(vector <Tile*> tilemap)
 {
-	m_tileMap = tilemap;
+	for (unsigned int i = 0; i < tilemap.size(); i++)
+	{
+		m_nodeList.push_back(new Node(i, tilemap[i]->GetIsWalkable(), tilemap[i]->GetXPos(), tilemap[i]->GetYPos()));
+	}
 }
 
 
 Pathfinding::~Pathfinding()
 {
+	for (unsigned int i = 0; i < m_openList.size(); i++)
+	{
+		delete m_openList[i];
+		m_openList[i] = nullptr;
+	}
+
+	m_openList.clear();
+
+	for (unsigned int i = 0; i < m_closedList.size(); i++)
+	{
+		delete m_closedList[i];
+		m_closedList[i] = nullptr;
+	}
+
+	m_closedList.clear();
+
+	for (unsigned int i = 0; i < m_nodeList.size(); i++)
+	{
+		delete m_nodeList[i];
+		m_nodeList[i] = nullptr;
+	}
+
+	m_nodeList.clear();
 }
 
-void Pathfinding::UpdatePath(Monster* monster, XMFLOAT2 targetPos)
+void Pathfinding::FindPath(XMFLOAT2 startPos, XMFLOAT2 targetPos)
 {
+	//list of nodes that form the path
+	vector <XMFLOAT2> waypoints;
+	//lets us know if we found a path
+	bool pathSuccess = false;
 
-	if (!m_pathFound)
+	//get the start and destination nodes from the grid
+	Node* startNode = GetNodeFromList(startPos);
+	Node* targetNode = GetNodeFromList(targetPos);
+
+	//check that the starting and ending nodes are valid
+	if (startNode->walkable && targetNode->walkable)
 	{
-		CalculateHValue(targetPos);
+		//add the start node to the open list
+		AddToOpenList(startNode);
 
-		AddToClosedList(GetStartTile(monster));
-
-		FindAdjacentTiles(monster);
-		
-		int g = 1;
-		int lowestF = 100;
-		int currentF;
-		Tile* bestTile = nullptr;
-
-		do
+		//While there are still nodes to evaluate
+		while (m_openList.size() > 0)
 		{
-			for (unsigned int i = 0; i < m_openList.size(); i++)
+			Node* currentNode = m_openList.back();
+			m_openList.erase(m_openList.end());
+
+			m_closedList.push_back(currentNode);
+
+			if (currentNode == targetNode)
 			{
-				m_openList[i]->SetGValue(g);
-				int g = m_openList[i]->Get_G_Value();
-				int h = m_openList[i]->Get_H_Value();
-				m_openList[i]->SetFValue(g + h);
+				pathSuccess = true;
+				break;
+			}
 
-				currentF = m_openList[i]->Get_F_Value();
-
-				if (currentF < lowestF)
+			for each (Node* neighbour in GetNeighbours(currentNode))
+			{
+				if (!neighbour->walkable || find(m_closedList.begin(), m_closedList.end(), neighbour) != m_closedList.end())
 				{
-					lowestF = currentF;
-					bestTile = m_openList[i];
+					continue;
+				}
+
+				int newMovementCostToNeigbour = currentNode->gValue + m_movementCost;
+
+				if (newMovementCostToNeigbour < neighbour->gValue || find(m_openList.begin(), m_openList.end(), neighbour) != m_openList.end())
+				{
+					//Store the new costs
+					neighbour->gValue = newMovementCostToNeigbour;
+					neighbour->hValue = CalculateHValue(neighbour, targetNode);
+					neighbour->parent = currentNode;
+
+					if (find(m_closedList.begin(), m_closedList.end(), neighbour) != m_closedList.end())
+					{
+						AddToOpenList(neighbour);
+					}
 				}
 			}
-
-			if (bestTile->GetXPos() == targetPos.x && bestTile->GetYPos() == targetPos.y)
-			{
-				m_pathFound = true;
-			}
-
-			AddToClosedList(bestTile);
-
-
-		} while (!m_pathFound);
-
-		
+		}
 	}
 }
 
-void Pathfinding::AddToOpenList(Tile * tile)
+void Pathfinding::AddToOpenList(Node* node)
 {
-	m_openList.push_back(tile);
+	if (m_openList.empty())
+	{
+		m_openList.push_back(node);
+	}
+	else
+	{
+		bool placed = false;
+
+		for (int i = 0; i < m_openList.size(); i++)
+		{
+			if (node->fCost < m_openList[i]->fCost)
+			{
+				m_openList.insert(m_closedList.begin() + i, node);
+				placed = true;
+				break;
+			}
+		}
+
+		if (!placed)
+		{
+			m_openList.push_back(node);
+		}
+	}
+
 }
 
-void Pathfinding::AddToClosedList(Tile * tile)
+void Pathfinding::AddToClosedList(Node* node)
 {
-	m_closedList.push_back(tile);
+	m_closedList.push_back(node);
 }
 
-Tile* Pathfinding::GetStartTile(Monster * monster)
+vector <Node*> Pathfinding::GetNeighbours(Node* currentNode)
+{
+	vector <Node*> neigbours;
+
+	float currentX = currentNode->xPos;
+	float currentY = currentNode->yPos;
+
+	for (unsigned int i = 0; i < m_nodeList.size(); i++)
+	{
+		float checkNodeX = m_nodeList[i]->xPos;
+		float checkNodeY = m_nodeList[i]->yPos;
+
+		float distance = ((checkNodeX - currentX) * (checkNodeX - currentX)) + ((checkNodeY - currentY) * (checkNodeY - currentY));
+
+		if (distance == 0) continue;
+		
+
+		if (distance < 0.4f && distance > -0.4)
+		{
+			neigbours.push_back(m_nodeList[i]);
+		}
+	}
+
+	return neigbours;
+}
+
+int Pathfinding::CalculateHValue(Node* n1, Node* n2)
+{
+	
+	int h = abs(n1->xPos - n2->xPos) + abs(n1->yPos - n2->yPos);
+		
+	return h;
+}
+
+Node * Pathfinding::GetNodeFromList(XMFLOAT2 pos)
 {
 	float currentDistance;
-	float minDistance = pow(m_tileMap[0]->GetXPos() - monster->GetXPos(), 2) + pow(m_tileMap[0]->GetYPos() - monster->GetYPos(), 2);
-	for (int i = 0; i < m_tileMap.size(); i++)
+	float minDistance = pow(m_nodeList[0]->xPos - pos.x, 2) + pow(m_nodeList[0]->yPos - pos.y, 2);
+	Node* currentNode;
+	for (int i = 0; i < m_nodeList.size(); i++)
 	{
-		float monsterPosX = monster->GetXPos();
-		float monsterPosY = monster->GetYPos();
-		float tilePosX = m_tileMap[i]->GetXPos();
-		float tilePosY = m_tileMap[i]->GetYPos();
+		float startPosX = pos.x;
+		float startPosY = pos.y;
+		float nodePosX = m_nodeList[i]->xPos;
+		float nodePosY = m_nodeList[i]->yPos;
 
-		currentDistance = ((tilePosX - monsterPosX) * (tilePosX - monsterPosX)) + ((tilePosY - monsterPosY) * (tilePosY - monsterPosY));
+		currentDistance = ((nodePosX - startPosX) * (nodePosX - startPosX)) + ((nodePosY - startPosY) * (nodePosY - startPosY));
 
 		if (currentDistance < minDistance)
 		{
 			minDistance = currentDistance;
-			m_StartTile = m_tileMap[i];
+			currentNode = m_nodeList[i];
 		}
 	}
 
-	return m_StartTile;
-}
-
-bool Pathfinding::IsAdjacent(Monster* monster, Tile * tile)
-{
-	float monsterX = monster->GetXPos();
-	float monsterY = monster->GetYPos();
-	float tileX = tile->GetXPos();
-	float tileY = tile->GetYPos();
-
-	float distance = ((tileX - monsterX) * (tileX - monsterY)) + ((tileY - monsterY) * (tileY - monsterY));
-
-	if (distance < 0.4f && distance > 0)
-	{
-		if (tile->GetIsWalkable())
-		{
-			return false;
-		}
-		return true;
-	}
-
-	return false;
-}
-
-void Pathfinding::CalculateHValue(XMFLOAT2 targetPos)
-{
-	for (unsigned int i = 0; i < m_tileMap.size(); i++)
-	{
-		if (m_tileMap[i]->GetIsWalkable())
-		{
-			float targetX = targetPos.x;
-			float targetY = targetPos.y;
-			float tileX = m_tileMap[i]->GetXPos();
-			float tileY = m_tileMap[i]->GetYPos();
-
-			int h = abs(tileX- targetX) + abs(tileY - targetY);
-
-			m_tileMap[i]->SetHValue(h);
-		}
-	}
-}
-
-void Pathfinding::FindAdjacentTiles(Monster* monster)
-{
-	for (int i = 0; i < m_tileMap.size(); i++)
-	{
-		for (int j = 0; j < m_closedList.size(); j++)
-		{
-			if (!m_openList.empty())
-			{
-				for (int x = 0; x < m_openList.size(); x++)
-				{
-					if (m_tileMap[i] == m_closedList[j])
-					{
-						continue;
-					}
-					
-					if (m_tileMap[i] == m_openList[x])
-					{
-						continue;
-					}
-					
-					if (IsAdjacent(monster, m_tileMap[i]))
-					{
-						AddToOpenList(m_tileMap[i]);
-						continue;
-					}
-					
-				}
-			}
-			else
-			{
-				if (m_tileMap[i] == m_closedList[j])
-				{
-					continue;
-				}
-				else
-				{
-					if (IsAdjacent(monster, m_tileMap[i]))
-					{
-						AddToOpenList(m_tileMap[i]);
-					}
-				}
-			}
-			
-
-			continue;
-		}
-	}
+	return currentNode;
 }

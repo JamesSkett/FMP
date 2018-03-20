@@ -7,30 +7,66 @@
 
 using namespace std;
 
+class Node
+{
+public:
+	bool walkable;
+	int index;
+	int gValue;
+	int hValue;
+	int fCost;
+
+	float xPos, yPos;
+
+	Node* parent;
+
+	Node::Node(int i, bool canWalk, float x, float y)
+	{
+		index = i;
+		walkable = canWalk;
+		xPos = x;
+		yPos = y;
+		parent = nullptr;
+	}
+
+	Node::~Node()
+	{
+		if (parent)
+		{
+			delete parent;
+			parent = nullptr;
+		}
+	}
+
+	
+};
+
 class Pathfinding
 {
 public:
 	Pathfinding(vector <Tile*> tilemap);
 	~Pathfinding();
 
-	void UpdatePath(Monster* monster, XMFLOAT2 targetPos);
+	void FindPath(XMFLOAT2 startPos, XMFLOAT2 targetPos);
 
-	void AddToOpenList(Tile* tile);
-	void AddToClosedList(Tile* tile);
+	void AddToOpenList(Node* node);
+	void AddToClosedList(Node* node);
 
-	Tile* GetStartTile(Monster* monster);
-	bool IsAdjacent(Monster* monster, Tile* tile);
+	vector <Node*> GetNeighbours(Node* currentNode);
 
-	void CalculateHValue(XMFLOAT2 targetPos);
-	void FindAdjacentTiles(Monster* monster);
+	int CalculateHValue(Node* n1, Node* n2);
+
+	Node* GetNodeFromList(XMFLOAT2 pos);
 
 private:
-	vector <Tile*> m_openList;
-	vector <Tile*> m_closedList;
-	vector <Tile*> m_tileMap;
+	vector <Node*> m_openList;
+	vector <Node*> m_closedList;
+	vector <Node*> m_nodeList;
 
-	Tile* m_StartTile;
+	Node* m_StartNode;
 	
 	bool m_pathFound;
+
+	int m_movementCost = 1;
 };
 
