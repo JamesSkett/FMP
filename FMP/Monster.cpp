@@ -31,7 +31,6 @@ float Monster::GetYPos()
 
 bool Monster::MoveTo(float x, float y, int &pointNum)
 {
-	if (m_xPos == x && m_yPos == y) return true;
 
 	m_dirX = x - m_xPos;
 	m_dirY = y - m_yPos;

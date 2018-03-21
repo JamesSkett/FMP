@@ -228,3 +228,8 @@ bool Pathfinding::GetIsPathFound()
 {
 	return m_pathFound;
 }
+
+void Pathfinding::SetIsPathFound(bool pathFound)
+{
+	m_pathFound = pathFound;
+}

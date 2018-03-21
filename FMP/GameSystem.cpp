@@ -120,7 +120,11 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 
 			if (pathfinder->GetIsPathFound())
 			{
-				if (m_pMonster->MoveTo(waypoints[waypontNum].x, waypoints[waypontNum].y, waypontNum))
+				if (waypontNum >= waypoints.size())
+				{
+					pathfinder->SetIsPathFound(false);
+				}
+				else if (m_pMonster->MoveTo(waypoints[waypontNum].x, waypoints[waypontNum].y, waypontNum))
 				{
 					//waypontNum++;
 				}
