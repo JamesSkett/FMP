@@ -80,10 +80,11 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 	//set up the main game when menu is done
 	SetupLevel();
 
-	//Pathfinding* pathfinder = new Pathfinding(m_tileMap);
+	Pathfinding* pathfinder = new Pathfinding(m_tileMap);
 
-	//pathfinder->UpdatePath(m_pMonster, XMFLOAT2(m_pPlayer->GetXPos(), m_pPlayer->GetYPos()));
-
+	
+	vector <XMFLOAT2> waypoints;
+	int waypontNum = 0;
 
 	//Main game loop
 	while (msg.message != WM_QUIT)
@@ -117,12 +118,24 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 			GetKeyboardInput();
 			m_pPlayer->Update();
 
+			if (pathfinder->GetIsPathFound())
+			{
+				if (m_pMonster->MoveTo(waypoints[waypontNum].x, waypoints[waypontNum].y))
+				{
+					waypontNum++;
+				}
+			}
+			else
+			{
+				waypoints = pathfinder->FindPath(XMFLOAT2(m_pMonster->GetXPos(), m_pMonster->GetYPos()), XMFLOAT2(m_pPlayer->GetXPos(), m_pPlayer->GetYPos()));
+			}
+			
 
 			//m_pPlayer->CollisionCheck(m_tileMap);
-			float x1 = m_tileMap[127]->GetXPos();
-			float x2 = m_pPlayer->GetXPos();
-			float y1 = m_tileMap[127]->GetYPos();
-			float y2 = m_pPlayer->GetYPos();
+			float x1 = m_tileMap[773]->GetXPos();
+			float x2 = m_tileMap[772]->GetXPos();
+			float y1 = m_tileMap[773]->GetYPos();
+			float y2 = m_tileMap[772]->GetYPos();
 			
 			float distance = pow(x2 - x1, 2) + pow(y2 - y1, 2);
 

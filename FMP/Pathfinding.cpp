@@ -38,7 +38,7 @@ Pathfinding::~Pathfinding()
 	m_nodeList.clear();
 }
 
-void Pathfinding::FindPath(XMFLOAT2 startPos, XMFLOAT2 targetPos)
+vector <XMFLOAT2> Pathfinding::FindPath(XMFLOAT2 startPos, XMFLOAT2 targetPos)
 {
 	//list of nodes that form the path
 	vector <XMFLOAT2> waypoints;
@@ -58,41 +58,80 @@ void Pathfinding::FindPath(XMFLOAT2 startPos, XMFLOAT2 targetPos)
 		//While there are still nodes to evaluate
 		while (m_openList.size() > 0)
 		{
+			//Get the node with the lowest cost
 			Node* currentNode = m_openList.back();
-			m_openList.erase(m_openList.end());
-
+			//remove it from the open list
+			m_openList.erase(m_openList.end() - 1);
+			//add it to the closed list
 			m_closedList.push_back(currentNode);
 
+			//Path has been found so set flag to true and exit
 			if (currentNode == targetNode)
 			{
 				pathSuccess = true;
 				break;
 			}
 
+			//evaluate all the neigbours
 			for each (Node* neighbour in GetNeighbours(currentNode))
 			{
+				//check if the node we are looking at is navigable or already closed.
 				if (!neighbour->walkable || find(m_closedList.begin(), m_closedList.end(), neighbour) != m_closedList.end())
 				{
+					//No point in evaluating it
 					continue;
 				}
 
-				int newMovementCostToNeigbour = currentNode->gValue + m_movementCost;
+				//Get the total cost for this neighbour
+				int newMovementCostToNeigbour = currentNode->gValue + CalculateHValue(currentNode, neighbour);
 
-				if (newMovementCostToNeigbour < neighbour->gValue || find(m_openList.begin(), m_openList.end(), neighbour) != m_openList.end())
+				//If this neighbour has a lower cost from this node or is not in the in the open list evaluate it
+				if (newMovementCostToNeigbour < neighbour->gValue || find(m_openList.begin(), m_openList.end(), neighbour) == m_openList.end())
 				{
 					//Store the new costs
 					neighbour->gValue = newMovementCostToNeigbour;
 					neighbour->hValue = CalculateHValue(neighbour, targetNode);
 					neighbour->parent = currentNode;
+					neighbour->fCost = neighbour->gValue + neighbour->hValue;
 
-					if (find(m_closedList.begin(), m_closedList.end(), neighbour) != m_closedList.end())
+					//If this neighbour is not on the open list add it to the open list.
+					if (find(m_openList.begin(), m_openList.end(), neighbour) == m_openList.end())
 					{
 						AddToOpenList(neighbour);
 					}
 				}
 			}
 		}
+
+		//Build the path
+		if (pathSuccess)
+		{
+			waypoints = RetracePath(startNode, targetNode);
+			m_pathFound = true;
+		}
+
+		return waypoints;
 	}
+
+	return vector<XMFLOAT2>();
+}
+
+vector<XMFLOAT2> Pathfinding::RetracePath(Node * startNode, Node * endNode)
+{
+	vector <XMFLOAT2> waypoints;
+
+	Node* currentNode = endNode;
+
+	while (currentNode != startNode)
+	{
+		waypoints.push_back(XMFLOAT2(currentNode->xPos, currentNode->yPos));
+		currentNode = currentNode->parent;
+	}
+
+
+	reverse(waypoints.begin(), waypoints.end());
+
+	return waypoints;
 }
 
 void Pathfinding::AddToOpenList(Node* node)
@@ -105,11 +144,11 @@ void Pathfinding::AddToOpenList(Node* node)
 	{
 		bool placed = false;
 
-		for (int i = 0; i < m_openList.size(); i++)
+		for (unsigned int i = 0; i < m_openList.size(); i++)
 		{
 			if (node->fCost < m_openList[i]->fCost)
 			{
-				m_openList.insert(m_closedList.begin() + i, node);
+				m_openList.insert(m_openList.begin() + i, node);
 				placed = true;
 				break;
 			}
@@ -137,18 +176,17 @@ vector <Node*> Pathfinding::GetNeighbours(Node* currentNode)
 
 	for (unsigned int i = 0; i < m_nodeList.size(); i++)
 	{
-		float checkNodeX = m_nodeList[i]->xPos;
-		float checkNodeY = m_nodeList[i]->yPos;
-
-		float distance = ((checkNodeX - currentX) * (checkNodeX - currentX)) + ((checkNodeY - currentY) * (checkNodeY - currentY));
-
-		if (distance == 0) continue;
+		if (currentNode->index == m_nodeList[i]->index)
+		{
+			continue;
+		}
 		
-
-		if (distance < 0.4f && distance > -0.4)
+		if (m_nodeList[i]->index == currentNode->index - 41 || m_nodeList[i]->index == currentNode->index - 1 || m_nodeList[i]->index == currentNode->index + 1 || m_nodeList[i]->index == currentNode->index + 41)
 		{
 			neigbours.push_back(m_nodeList[i]);
 		}
+
+
 	}
 
 	return neigbours;
@@ -157,7 +195,7 @@ vector <Node*> Pathfinding::GetNeighbours(Node* currentNode)
 int Pathfinding::CalculateHValue(Node* n1, Node* n2)
 {
 	
-	int h = abs(n1->xPos - n2->xPos) + abs(n1->yPos - n2->yPos);
+	int h = (int)abs(n1->xPos - n2->xPos) + (int)abs(n1->yPos - n2->yPos);
 		
 	return h;
 }
@@ -166,8 +204,8 @@ Node * Pathfinding::GetNodeFromList(XMFLOAT2 pos)
 {
 	float currentDistance;
 	float minDistance = pow(m_nodeList[0]->xPos - pos.x, 2) + pow(m_nodeList[0]->yPos - pos.y, 2);
-	Node* currentNode;
-	for (int i = 0; i < m_nodeList.size(); i++)
+	Node* currentNode = m_nodeList[0];
+	for (unsigned int i = 0; i < m_nodeList.size(); i++)
 	{
 		float startPosX = pos.x;
 		float startPosY = pos.y;
@@ -184,4 +222,9 @@ Node * Pathfinding::GetNodeFromList(XMFLOAT2 pos)
 	}
 
 	return currentNode;
+}
+
+bool Pathfinding::GetIsPathFound()
+{
+	return m_pathFound;
 }
