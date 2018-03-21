@@ -38,7 +38,7 @@ void Entity::Draw(XMMATRIX view, XMMATRIX projection)
 	world *= XMMatrixRotationX(XMConvertToRadians(m_xAngle));
 	world *= XMMatrixRotationX(XMConvertToRadians(m_xAngle));
 
-	world *= XMMatrixTranslation(m_xPos + m_dirX, m_yPos + m_dirY, m_zPos);
+	world *= XMMatrixTranslation(m_xPos, m_yPos, m_zPos);
 	
 
 

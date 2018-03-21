@@ -13,7 +13,7 @@ public:
 	float GetXPos();
 	float GetYPos();
 
-	bool MoveTo(float x, float y);
+	bool MoveTo(float x, float y, int &pointNNum);
 
 private:
 	float m_speed = 0.1f;

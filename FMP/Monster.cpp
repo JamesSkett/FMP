@@ -29,13 +29,19 @@ float Monster::GetYPos()
 	return m_yPos;
 }
 
-bool Monster::MoveTo(float x, float y)
+bool Monster::MoveTo(float x, float y, int &pointNum)
 {
 	if (m_xPos == x && m_yPos == y) return true;
 
-	float moveAngle = atan2(y - m_yPos, x - m_xPos) * (180 / XM_PI);
-	m_dirX = cosf(XMConvertToRadians(moveAngle));
-	m_dirY = sinf(XMConvertToRadians(moveAngle));
+	m_dirX = x - m_xPos;
+	m_dirY = y - m_yPos;
+
+	float distance = sqrt(m_dirX * m_dirX + m_dirY * m_dirY);
+
+	if (distance < 0.1) pointNum++;
+
+	m_dirX /= distance;
+	m_dirY /= distance;
 
 	m_xPos += m_dirX * m_speed;
 	m_yPos += m_dirY * m_speed;
