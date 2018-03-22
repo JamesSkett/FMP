@@ -17,22 +17,6 @@ Monster::~Monster()
 void Monster::Update(XMFLOAT2 targetPos)
 {
 
-	/*if (!pathfinder->GetIsPathFound())
-	{
-		waypoints = pathfinder->FindPath(XMFLOAT2(m_xPos, m_yPos), targetPos);
-	}
-	else
-	{
-		if (waypointNum >= waypoints.size())
-		{
-			pathfinder->SetIsPathFound(false);
-		}
-		else if (MoveTo(waypoints[waypointNum].x, waypoints[waypointNum].y))
-		{
-			waypointNum++;
-		}
-	}*/
-
 	if (pathfinder->GetIsPathFound())
 	{
 		if (waypointNum >= waypoints.size())
