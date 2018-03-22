@@ -1,6 +1,5 @@
 #pragma once
 #include "Tile.h"
-#include "Monster.h"
 #include "Player.h"
 
 #include <vector>
@@ -12,7 +11,7 @@ class Node
 public:
 	bool walkable;
 	int index;
-	int gValue;
+	int gValue = 1;
 	int hValue;
 	int fCost;
 

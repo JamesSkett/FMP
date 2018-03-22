@@ -1,6 +1,11 @@
 #pragma once
 #include "Entity.h"
+#include "Tile.h"
 #include "Pathfinding.h"
+
+#include <vector>
+
+using namespace std;
 
 class Monster : public Entity
 {
@@ -13,9 +18,16 @@ public:
 	float GetXPos();
 	float GetYPos();
 
-	bool MoveTo(float x, float y, int &pointNNum);
+	bool MoveTo(float x, float y);
+
+	void SetPathfinder(vector <Tile*> tilemap);
 
 private:
-	float m_speed = 0.1f;
+	float m_speed = 0.05f;
+	Pathfinding* pathfinder;
+
+	vector <XMFLOAT2> waypoints;
+
+	int waypointNum = 0;
 };
 

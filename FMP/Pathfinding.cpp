@@ -83,7 +83,7 @@ vector <XMFLOAT2> Pathfinding::FindPath(XMFLOAT2 startPos, XMFLOAT2 targetPos)
 				}
 
 				//Get the total cost for this neighbour
-				int newMovementCostToNeigbour = currentNode->gValue + CalculateHValue(currentNode, neighbour);
+				int newMovementCostToNeigbour = currentNode->gValue + CalculateHValue(currentNode, targetNode);
 
 				//If this neighbour has a lower cost from this node or is not in the in the open list evaluate it
 				if (newMovementCostToNeigbour < neighbour->gValue || find(m_openList.begin(), m_openList.end(), neighbour) == m_openList.end())
@@ -109,6 +109,9 @@ vector <XMFLOAT2> Pathfinding::FindPath(XMFLOAT2 startPos, XMFLOAT2 targetPos)
 			waypoints = RetracePath(startNode, targetNode);
 			m_pathFound = true;
 		}
+
+		m_closedList.clear();
+		m_openList.clear();
 
 		return waypoints;
 	}
@@ -136,6 +139,7 @@ vector<XMFLOAT2> Pathfinding::RetracePath(Node * startNode, Node * endNode)
 
 void Pathfinding::AddToOpenList(Node* node)
 {
+	//sorts the open list in order of fCost
 	if (m_openList.empty())
 	{
 		m_openList.push_back(node);
@@ -146,7 +150,7 @@ void Pathfinding::AddToOpenList(Node* node)
 
 		for (unsigned int i = 0; i < m_openList.size(); i++)
 		{
-			if (node->fCost < m_openList[i]->fCost)
+			if (node->fCost > m_openList[i]->fCost)
 			{
 				m_openList.insert(m_openList.begin() + i, node);
 				placed = true;

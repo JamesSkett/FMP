@@ -80,11 +80,11 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 	//set up the main game when menu is done
 	SetupLevel();
 
-	Pathfinding* pathfinder = new Pathfinding(m_tileMap);
+	/*Pathfinding* pathfinder = new Pathfinding(m_tileMap);
 
 	
 	vector <XMFLOAT2> waypoints;
-	int waypontNum = 0;
+	int waypontNum = 0;*/
 
 	//Main game loop
 	while (msg.message != WM_QUIT)
@@ -118,35 +118,28 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 			GetKeyboardInput();
 			m_pPlayer->Update();
 
-			if (pathfinder->GetIsPathFound())
-			{
-				if (waypontNum >= waypoints.size())
-				{
-					pathfinder->SetIsPathFound(false);
-				}
-				else if (m_pMonster->MoveTo(waypoints[waypontNum].x, waypoints[waypontNum].y, waypontNum))
-				{
-					//waypontNum++;
-				}
-			}
-			else
-			{
-				waypoints = pathfinder->FindPath(XMFLOAT2(m_pMonster->GetXPos(), m_pMonster->GetYPos()), XMFLOAT2(m_pPlayer->GetXPos(), m_pPlayer->GetYPos()));
-			}
+			//if (pathfinder->GetIsPathFound())
+			//{
+			//	if (waypontNum >= waypoints.size())
+			//	{
+			//		pathfinder->SetIsPathFound(false);
+			//	}
+			//	else if (m_pMonster->MoveTo(waypoints[waypontNum].x, waypoints[waypontNum].y, waypontNum))
+			//	{
+			//		//waypontNum++;
+			//	}
+			//}
+			//else
+			//{
+			//	waypoints = pathfinder->FindPath(XMFLOAT2(m_pMonster->GetXPos(), m_pMonster->GetYPos()), XMFLOAT2(m_pPlayer->GetXPos(), m_pPlayer->GetYPos()));
+			//}
 			
-
-			//m_pPlayer->CollisionCheck(m_tileMap);
-			float x1 = m_tileMap[773]->GetXPos();
-			float x2 = m_tileMap[772]->GetXPos();
-			float y1 = m_tileMap[773]->GetYPos();
-			float y2 = m_tileMap[772]->GetYPos();
-			
-			float distance = pow(x2 - x1, 2) + pow(y2 - y1, 2);
+			m_pMonster->Update(XMFLOAT2(m_pPlayer->GetXPos(), m_pPlayer->GetYPos()));
 
 			m_fps = m_time.GetFPS();
 
-			string fps = "Distance";
-			fps = fps + to_string(distance);
+			string fps = "FPS";
+			fps = fps + to_string(m_fps);
 
 			m_fpsCount->AddText(fps, -0.95f, 0.95f, 0.05f);
 
@@ -169,6 +162,8 @@ void GameSystem::SetupLevel()
 {
 	m_plevel->LoadLevelData("scripts/Level_Data.txt");
 	m_plevel->SetUpLevelLayout(m_tileMap, m_pPlayer, m_pMonster);
+
+	m_pMonster->SetPathfinder(m_tileMap);
 
 	m_fpsCount = new Text2D("Assets/font1.bmp", Renderer::pD3DDevice, Renderer::pImmediateContext);
 }
