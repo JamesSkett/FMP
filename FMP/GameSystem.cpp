@@ -111,30 +111,26 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 			projection = XMMatrixOrthographicLH(w, h, m_cNearClip, m_cFarClip);
 			view = XMMatrixIdentity();
 
+			
 
 			//Get the controller and keyboard input
 			//GetControllerInput();
 			renderer->ReadInputState();
 			GetKeyboardInput();
 			m_pPlayer->Update();
+			m_pMonster->RandomWander();
 
-			//if (pathfinder->GetIsPathFound())
-			//{
-			//	if (waypontNum >= waypoints.size())
-			//	{
-			//		pathfinder->SetIsPathFound(false);
-			//	}
-			//	else if (m_pMonster->MoveTo(waypoints[waypontNum].x, waypoints[waypontNum].y, waypontNum))
-			//	{
-			//		//waypontNum++;
-			//	}
-			//}
-			//else
-			//{
-			//	waypoints = pathfinder->FindPath(XMFLOAT2(m_pMonster->GetXPos(), m_pMonster->GetYPos()), XMFLOAT2(m_pPlayer->GetXPos(), m_pPlayer->GetYPos()));
-			//}
-			
-			m_pMonster->Update(XMFLOAT2(m_pPlayer->GetXPos(), m_pPlayer->GetYPos()));
+			POINT cursorPos;
+			GetCursorPos(&cursorPos);
+
+			float mouseX = cursorPos.x;
+			float mouseY = cursorPos.y;
+
+			mouseX = ((mouseX / 1920.0f) * 2.0f) - 1.0f;
+			mouseY = ((mouseY / 1080.0f) * 2.0f) - 1.0f;
+
+			m_pPlayer->LookAt(mouseX, mouseY);
+
 
 			m_fps = m_time.GetFPS();
 
