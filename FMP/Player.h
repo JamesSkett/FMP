@@ -34,13 +34,15 @@ public:
 
 	bool CollisionCheck(vector <Tile*> tilemap);
 
-	float angle;
+	void LookAt(float targetX, float targetY);
 
 private:
 	bool m_isColliding;
 	float m_previousXPos, m_previousYPos;
 
 	float m_velocity = 0.05f;
+
+	float m_rotation;
 
 	vector <string> m_levelData;
 };

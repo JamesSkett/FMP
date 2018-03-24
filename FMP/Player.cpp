@@ -155,3 +155,16 @@ bool Player::CollisionCheck(vector <Tile*> tilemap)
 
 	return false;
 }
+
+void Player::LookAt(float targetX, float targetY)
+{
+	char mousePos[100];
+	sprintf_s(mousePos, "MouseX: %f, MouseY: %f\n\n", targetX, targetY);
+	OutputDebugString(mousePos);
+
+	m_xAngle = atan2f((targetX - m_screenSpaceX), (targetY - m_screenSpaceY));
+
+	char s[100];
+	sprintf_s(s, "atan: %f\n\n", m_xAngle);
+	OutputDebugString(s);
+}
