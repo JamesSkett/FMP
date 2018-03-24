@@ -1,5 +1,5 @@
 #include "Monster.h"
-
+#include <time.h>
 
 
 Monster::Monster(XMFLOAT4 colour, float x, float y, float z, float scale, float width, float height) :
@@ -68,4 +68,29 @@ bool Monster::MoveTo(float x, float y)
 void Monster::SetPathfinder(vector<Tile*> tilemap)
 {
 	pathfinder = new Pathfinding(tilemap);
+	m_tileMap = tilemap;
+}
+
+void Monster::RandomWander()
+{
+	srand(time(NULL));
+	int randTileNum = rand() % 901;
+
+	if (pathfinder->GetIsPathFound())
+	{
+		if (waypointNum >= waypoints.size())
+		{
+			pathfinder->SetIsPathFound(false);
+			waypointNum = 0;
+		}
+		else if (MoveTo(waypoints[waypointNum].x, waypoints[waypointNum].y))
+		{
+			waypointNum++;
+		}
+	}
+	else
+	{
+		waypoints = pathfinder->FindPath(XMFLOAT2(m_xPos, m_yPos), XMFLOAT2(m_tileMap[randTileNum]->GetXPos(), m_tileMap[randTileNum]->GetYPos()));
+	}
+	
 }

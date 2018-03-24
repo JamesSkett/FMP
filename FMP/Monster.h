@@ -22,11 +22,16 @@ public:
 
 	void SetPathfinder(vector <Tile*> tilemap);
 
+	//Behaviours
+	void RandomWander();
+
 private:
-	float m_speed = 0.05f;
+	float m_speed = 0.01f;
 	Pathfinding* pathfinder;
 
 	vector <XMFLOAT2> waypoints;
+
+	vector <Tile*> m_tileMap;
 
 	int waypointNum = 0;
 };
