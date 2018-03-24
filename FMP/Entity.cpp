@@ -34,15 +34,18 @@ void Entity::Draw(XMMATRIX view, XMMATRIX projection)
 
 	world = XMMatrixScaling(m_scale, m_scale, m_scale);
 
-	world *= XMMatrixRotationX(XMConvertToRadians(m_xAngle));
-	world *= XMMatrixRotationX(XMConvertToRadians(m_xAngle));
-	world *= XMMatrixRotationX(XMConvertToRadians(m_xAngle));
+	world *= XMMatrixRotationZ(m_xAngle);
 
 	world *= XMMatrixTranslation(m_xPos, m_yPos, m_zPos);
 	
 
 
 	WVP = world * view * projection;
+
+	XMVECTOR posVec = WVP.r[3];
+
+	m_screenSpaceX = XMVectorGetX(posVec);
+	m_screenSpaceY = XMVectorGetY(posVec);
 
 	ENTITY_CONSTANT_BUFFER entity_cb_values;
 

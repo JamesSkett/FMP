@@ -45,6 +45,9 @@ protected:
 
 	float m_dirX = 0.0f;
 	float m_dirY = 0.0f;
+
+	float m_screenSpaceX;
+	float m_screenSpaceY;
 };
 
 
