@@ -5,7 +5,7 @@
 Player::Player(XMFLOAT4 colour, float x, float y, float z, float scale, float width, float height)
 	: Entity(colour, x, y, z, scale, width, height)
 {
-
+	
 }
 
 
@@ -75,6 +75,16 @@ float Player::GetZPos()
 float Player::GetScale()
 {
 	return m_scale;
+}
+
+float Player::GetDirectionX()
+{
+	return m_dirX;
+}
+
+float Player::GetDirectionY()
+{
+	return m_dirY;
 }
 
 void Player::UpdateXPos(vector <Tile*> tilemap, bool isRight)
@@ -158,13 +168,17 @@ bool Player::CollisionCheck(vector <Tile*> tilemap)
 
 void Player::LookAt(float targetX, float targetY)
 {
-	char mousePos[100];
-	sprintf_s(mousePos, "MouseX: %f, MouseY: %f\n\n", targetX, targetY);
-	OutputDebugString(mousePos);
+	m_zAngle = -atan2f((targetX - m_screenSpaceX), (targetY - m_screenSpaceY));
 
-	m_xAngle = atan2f((targetX - m_screenSpaceX), (targetY - m_screenSpaceY));
+	m_dirX = sinf(XMConvertToRadians(m_zAngle));
+	m_dirY = atan(XMConvertToRadians(m_zAngle));
+}
 
-	char s[100];
-	sprintf_s(s, "atan: %f\n\n", m_xAngle);
-	OutputDebugString(s);
+void Player::Shoot(vector <Projectile*> projectiles)
+{
+	int randBullet = rand() % 50;
+
+	projectiles[randBullet]->SetXPos(m_xPos);
+	projectiles[randBullet]->SetYPos(m_yPos);
+	projectiles[randBullet]->SetIsFired(true);
 }

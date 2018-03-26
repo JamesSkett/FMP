@@ -84,6 +84,14 @@ void Level::SetUpLevelLayout(vector <Tile*> &tilemap, Player* &player, Monster* 
 		}
 	}
 
+	
 
+}
 
+void Level::LoadProjectiles(vector<Projectile*> &projectiles)
+{
+	for (unsigned int i = 0; i < 50; i++)
+	{
+		projectiles.push_back(new Projectile(colour.BurlyWood, 10.0f, 10.0f, 2.0f, 0.05f, 0.1f, 0.1f));
+	}
 }

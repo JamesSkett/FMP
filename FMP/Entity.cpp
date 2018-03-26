@@ -34,7 +34,7 @@ void Entity::Draw(XMMATRIX view, XMMATRIX projection)
 
 	world = XMMatrixScaling(m_scale, m_scale, m_scale);
 
-	world *= XMMatrixRotationZ(m_xAngle);
+	world *= XMMatrixRotationZ(m_zAngle);
 
 	world *= XMMatrixTranslation(m_xPos, m_yPos, m_zPos);
 	
@@ -89,13 +89,10 @@ HRESULT Entity::CreateVertices(XMFLOAT4 colour)
 	POS_COL_VERTEX vertices[] =
 	{
 
-		{ XMFLOAT3( 0.9f,  0.9f, 1.0f), colour },
+		{ XMFLOAT3( 0.0f,  0.9f, 1.0f), colour },
 		{ XMFLOAT3( 0.9f, -0.9f, 1.0f), colour },
 		{ XMFLOAT3(-0.9f, -0.9f, 1.0f), colour },
 								 
-		{ XMFLOAT3(-0.9f, -0.9f, 1.0f), colour },
-		{ XMFLOAT3(-0.9f,  0.9f, 1.0f), colour },
-		{ XMFLOAT3( 0.9f,  0.9f, 1.0f), colour },
 
 	};
 

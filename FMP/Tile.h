@@ -32,6 +32,17 @@ public:
 	int Get_H_Value();
 	int Get_F_Value();
 
+	struct POS_COL_VERTEX
+	{
+		XMFLOAT3 Pos;
+		XMFLOAT4 Col;
+	};
+
+	struct ENTITY_CONSTANT_BUFFER
+	{
+		XMMATRIX WorldViewProjection;
+	};
+
 protected:
 	HRESULT CreateVertices(XMFLOAT4 colour);
 
@@ -55,14 +66,5 @@ protected:
 	int m_fValue;
 };
 
-struct POS_COL_VERTEX
-{
-	XMFLOAT3 Pos;
-	XMFLOAT4 Col;
-};
 
-struct ENTITY_CONSTANT_BUFFER
-{
-	XMMATRIX WorldViewProjection;
-};
 

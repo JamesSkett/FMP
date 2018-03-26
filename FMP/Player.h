@@ -2,6 +2,7 @@
 
 #include "Entity.h"
 #include "Tile.h"
+#include "Projectile.h"
 #include <vector>
 
 using namespace std;
@@ -26,6 +27,8 @@ public:
 	float GetYPos();
 	float GetZPos();
 	float GetScale();
+	float GetDirectionX();
+	float GetDirectionY();
 
 	void UpdateXPos(vector <Tile*> colObject, bool isRight);
 	void UpdateYPos(vector <Tile*> colObject, bool isUp);
@@ -35,6 +38,7 @@ public:
 	bool CollisionCheck(vector <Tile*> tilemap);
 
 	void LookAt(float targetX, float targetY);
+	void Shoot(vector <Projectile*> projectiles);
 
 private:
 	bool m_isColliding;
@@ -45,5 +49,6 @@ private:
 	float m_rotation;
 
 	vector <string> m_levelData;
+
 };
 

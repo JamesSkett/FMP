@@ -15,6 +15,7 @@ using namespace DirectX;
 #include "Player.h"
 #include "Time.h"
 #include "Monster.h"
+#include "Projectile.h"
 
 class GameSystem
 {
@@ -35,6 +36,7 @@ public:
 
 	void DrawLevel(XMMATRIX view, XMMATRIX projection);
 
+	static float DeltaTime;
 
 private:
 	Renderer* renderer;
@@ -45,12 +47,13 @@ private:
 
 	vector <Tile*> m_tileMap;
 	Player* m_pPlayer;
+	vector <Projectile*> m_vProjectiles;
 	Monster* m_pMonster;
 
 	//screen properties
 	const float m_screenWidth = 1920.0f;
 	const float m_screenHeight = 1080.0f;
-	const float m_cNearClip = 0.1f;
+	const float m_cNearClip = 0.05f;
 	const float m_cFarClip = 100.0f;
 	const float m_cOrthographicSize = 100.0f;
 };

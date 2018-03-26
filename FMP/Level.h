@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "Colours.h"
 #include "Monster.h"
+#include "Projectile.h"
 
 using namespace std;
 using namespace DirectX;
@@ -18,7 +19,7 @@ public:
 
 	void LoadLevelData(string filePath);
 	void SetUpLevelLayout(vector <Tile*> &tilemap, Player* &player, Monster* &monster);
-	//void Draw(XMMATRIX view, XMMATRIX projection);
+	void LoadProjectiles(vector <Projectile*> &projectiles);
 
 private:
 	vector <string> m_vlevelData;

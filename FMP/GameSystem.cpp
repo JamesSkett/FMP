@@ -2,6 +2,7 @@
 #include "Pathfinding.h"
 #include <thread>
 
+float GameSystem::DeltaTime = 0.0f;
 
 //set up the renderer and main menu
 GameSystem::GameSystem()
@@ -97,7 +98,7 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 		else
 		{
 			//get the deltatime
-			float deltaTime = Renderer::time.GetDeltaTime();
+			DeltaTime = Renderer::time.GetDeltaTime();
 
 			// Clear the back buffer - choose a colour you like
 			float rgba_clear_colour[4] = { 0.1f, 0.1f, 0.1f, 1.0f };
@@ -111,7 +112,16 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 			projection = XMMatrixOrthographicLH(w, h, m_cNearClip, m_cFarClip);
 			view = XMMatrixIdentity();
 
-			
+			POINT cursorPos;
+			GetCursorPos(&cursorPos);
+
+			float mouseX = cursorPos.x;
+			float mouseY = cursorPos.y;
+
+			mouseX = ((mouseX / m_screenWidth) * 2.0f) - 1.0f;
+			mouseY = ((mouseY / m_screenHeight) * 2.0f) - 1.0f;
+
+			m_pPlayer->LookAt(mouseX, -mouseY);
 
 			//Get the controller and keyboard input
 			//GetControllerInput();
@@ -120,16 +130,13 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 			m_pPlayer->Update();
 			m_pMonster->RandomWander();
 
-			POINT cursorPos;
-			GetCursorPos(&cursorPos);
-
-			float mouseX = cursorPos.x;
-			float mouseY = cursorPos.y;
-
-			mouseX = ((mouseX / 1920.0f) * 2.0f) - 1.0f;
-			mouseY = ((mouseY / 1080.0f) * 2.0f) - 1.0f;
-
-			m_pPlayer->LookAt(mouseX, mouseY);
+			for (unsigned int i = 0; i < m_vProjectiles.size(); i++)
+			{
+				if (m_vProjectiles[i]->GetIsFired())
+				{
+					m_vProjectiles[i]->Update(m_pPlayer->GetDirectionX(), m_pPlayer->GetDirectionY());
+				}
+			}
 
 
 			m_fps = m_time.GetFPS();
@@ -158,7 +165,7 @@ void GameSystem::SetupLevel()
 {
 	m_plevel->LoadLevelData("scripts/Level_Data.txt");
 	m_plevel->SetUpLevelLayout(m_tileMap, m_pPlayer, m_pMonster);
-
+	m_plevel->LoadProjectiles(m_vProjectiles);
 	m_pMonster->SetPathfinder(m_tileMap);
 
 	m_fpsCount = new Text2D("Assets/font1.bmp", Renderer::pD3DDevice, Renderer::pImmediateContext);
@@ -235,7 +242,7 @@ void GameSystem::GetKeyboardInput()
 
 	if (renderer->mouseCurrState.rgbButtons[0])
 	{
-		
+		m_pPlayer->Shoot(m_vProjectiles);
 	}
 
 	if (!renderer->mouseCurrState.rgbButtons[0])
@@ -303,6 +310,14 @@ void GameSystem::DrawLevel(XMMATRIX view, XMMATRIX projection)
 	{
 		m_tileMap[i]->Draw(view, projection);
 	}
+
+	for (unsigned int i = 0; i < m_vProjectiles.size(); i++)
+	{
+		
+		m_vProjectiles[i]->Draw(view, projection);
+		
+	}
+
 
 	m_pPlayer->Draw(view, projection);
 	m_pMonster->Draw(view, projection);

@@ -90,7 +90,7 @@ private:
 	const float m_cOrthographicSize = 100.0f;
 
 	//Name of the Game
-	char		m_GameName[100] = "Space Game\0";
+	char		m_GameName[100] = "FMP\0";
 
 	HINSTANCE	m_hInst = NULL;
 

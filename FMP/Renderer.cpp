@@ -25,7 +25,7 @@ Renderer::~Renderer()
 HRESULT Renderer::InitialiseWindow(HINSTANCE hInstance, int nCmdShow)
 {
 	// Give your app window your own name
-	char Name[100] = "Hello World\0";
+	char Name[100] = "FMP\0";
 
 	// Register class
 	WNDCLASSEX wcex = { 0 };
