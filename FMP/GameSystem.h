@@ -56,4 +56,11 @@ private:
 	const float m_cNearClip = 0.05f;
 	const float m_cFarClip = 100.0f;
 	const float m_cOrthographicSize = 100.0f;
+
+	bool m_isMousePressed = false;
+
+	int m_bulletNum = 0;
+
+	float mouseX;
+	float mouseY;
 };

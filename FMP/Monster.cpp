@@ -71,6 +71,18 @@ void Monster::SetPathfinder(vector<Tile*> tilemap)
 	m_tileMap = tilemap;
 }
 
+bool Monster::LineOfSightCheck(XMFLOAT2 targetPos)
+{
+	XMFLOAT2 ray;
+
+	ray.x = targetPos.x - m_xPos;
+	ray.y = targetPos.y - m_yPos;
+
+
+
+	return false;
+}
+
 void Monster::RandomWander()
 {
 	srand(time(NULL));

@@ -43,6 +43,14 @@ GameSystem::~GameSystem()
 
 	m_tileMap.clear();
 
+	for (unsigned int i = 0; i < m_vProjectiles.size(); i++)
+	{
+		delete m_vProjectiles[i];
+		m_vProjectiles[i] = nullptr;
+	}
+
+	m_vProjectiles.clear();
+
 }
 
 //set up the game and run the main game loop
@@ -100,6 +108,11 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 			//get the deltatime
 			DeltaTime = Renderer::time.GetDeltaTime();
 
+			//Get the controller and keyboard input
+			//GetControllerInput();
+			renderer->ReadInputState();
+			GetKeyboardInput();
+
 			// Clear the back buffer - choose a colour you like
 			float rgba_clear_colour[4] = { 0.1f, 0.1f, 0.1f, 1.0f };
 			Renderer::pImmediateContext->ClearRenderTargetView(Renderer::pBackBufferRTView, rgba_clear_colour);
@@ -115,18 +128,14 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 			POINT cursorPos;
 			GetCursorPos(&cursorPos);
 
-			float mouseX = cursorPos.x;
-			float mouseY = cursorPos.y;
+			mouseX = (float)cursorPos.x;
+			mouseY = (float)cursorPos.y;
 
 			mouseX = ((mouseX / m_screenWidth) * 2.0f) - 1.0f;
 			mouseY = ((mouseY / m_screenHeight) * 2.0f) - 1.0f;
 
 			m_pPlayer->LookAt(mouseX, -mouseY);
 
-			//Get the controller and keyboard input
-			//GetControllerInput();
-			renderer->ReadInputState();
-			GetKeyboardInput();
 			m_pPlayer->Update();
 			m_pMonster->RandomWander();
 
@@ -134,7 +143,20 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 			{
 				if (m_vProjectiles[i]->GetIsFired())
 				{
-					m_vProjectiles[i]->Update(m_pPlayer->GetDirectionX(), m_pPlayer->GetDirectionY());
+					m_vProjectiles[i]->Update();
+
+					if (m_vProjectiles[i]->CollisionCheck(m_tileMap))
+					{
+						m_vProjectiles[i]->SetXPos(10.0f);
+						m_vProjectiles[i]->SetYPos(10.0f);
+						m_vProjectiles[i]->SetIsFired(false);
+					}
+					else if (m_vProjectiles[i]->CollisionCheck(m_pMonster))
+					{
+						m_vProjectiles[i]->SetXPos(10.0f);
+						m_vProjectiles[i]->SetYPos(10.0f);
+						m_vProjectiles[i]->SetIsFired(false);
+					}
 				}
 			}
 
@@ -242,12 +264,33 @@ void GameSystem::GetKeyboardInput()
 
 	if (renderer->mouseCurrState.rgbButtons[0])
 	{
-		m_pPlayer->Shoot(m_vProjectiles);
+		if (!m_isMousePressed)
+		{
+			m_vProjectiles[m_bulletNum]->SetIsFired(true);
+
+			m_vProjectiles[m_bulletNum]->SetIsFired(true);
+
+			m_vProjectiles[m_bulletNum]->SetXPos(m_pPlayer->GetXPos());
+			m_vProjectiles[m_bulletNum]->SetYPos(m_pPlayer->GetYPos());
+
+			m_vProjectiles[m_bulletNum]->SetDirection(m_pPlayer->GetDirectionX(), m_pPlayer->GetDirectionY());
+
+			
+
+			m_bulletNum++;
+
+			if (m_bulletNum == 50)
+			{
+				m_bulletNum = 0;
+			}
+
+			m_isMousePressed = true;
+		}
 	}
 
 	if (!renderer->mouseCurrState.rgbButtons[0])
 	{
-
+		m_isMousePressed = false;
 	}
 
 	if (renderer->IsKeyPressed(DIK_SPACE))
@@ -313,9 +356,10 @@ void GameSystem::DrawLevel(XMMATRIX view, XMMATRIX projection)
 
 	for (unsigned int i = 0; i < m_vProjectiles.size(); i++)
 	{
-		
-		m_vProjectiles[i]->Draw(view, projection);
-		
+		if (m_vProjectiles[i]->GetIsFired())
+		{
+			m_vProjectiles[i]->Draw(view, projection);
+		}
 	}
 
 

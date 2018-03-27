@@ -21,6 +21,8 @@ public:
 	bool MoveTo(float x, float y);
 
 	void SetPathfinder(vector <Tile*> tilemap);
+	
+	bool LineOfSightCheck(XMFLOAT2 targetPos);
 
 	//Behaviours
 	void RandomWander();

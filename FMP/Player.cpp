@@ -77,6 +77,11 @@ float Player::GetScale()
 	return m_scale;
 }
 
+float Player::GetRotation()
+{
+	return m_rotation;
+}
+
 float Player::GetDirectionX()
 {
 	return m_dirX;
@@ -168,10 +173,10 @@ bool Player::CollisionCheck(vector <Tile*> tilemap)
 
 void Player::LookAt(float targetX, float targetY)
 {
-	m_zAngle = -atan2f((targetX - m_screenSpaceX), (targetY - m_screenSpaceY));
+	m_rotation = -atan2f((targetX - m_screenSpaceX), (targetY - m_screenSpaceY));
 
-	m_dirX = sinf(XMConvertToRadians(m_zAngle));
-	m_dirY = atan(XMConvertToRadians(m_zAngle));
+	m_dirX = sinf(m_rotation);
+	m_dirY = cosf(m_rotation);
 }
 
 void Player::Shoot(vector <Projectile*> projectiles)
@@ -181,4 +186,5 @@ void Player::Shoot(vector <Projectile*> projectiles)
 	projectiles[randBullet]->SetXPos(m_xPos);
 	projectiles[randBullet]->SetYPos(m_yPos);
 	projectiles[randBullet]->SetIsFired(true);
+	projectiles[randBullet]->SetDirection(m_dirX, m_dirY);
 }

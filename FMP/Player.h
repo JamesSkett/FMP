@@ -27,6 +27,7 @@ public:
 	float GetYPos();
 	float GetZPos();
 	float GetScale();
+	float GetRotation();
 	float GetDirectionX();
 	float GetDirectionY();
 
@@ -45,8 +46,6 @@ private:
 	float m_previousXPos, m_previousYPos;
 
 	float m_velocity = 0.05f;
-
-	float m_rotation;
 
 	vector <string> m_levelData;
 

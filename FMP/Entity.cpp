@@ -34,7 +34,7 @@ void Entity::Draw(XMMATRIX view, XMMATRIX projection)
 
 	world = XMMatrixScaling(m_scale, m_scale, m_scale);
 
-	world *= XMMatrixRotationZ(m_zAngle);
+	world *= XMMatrixRotationZ(m_rotation);
 
 	world *= XMMatrixTranslation(m_xPos, m_yPos, m_zPos);
 	
@@ -74,10 +74,10 @@ void Entity::Draw(XMMATRIX view, XMMATRIX projection)
 
 void Entity::GetColBoxParameters(float &x, float &y, float &w, float &h)
 {
-	/*x = colBox.x;
-	y = colBox.y;
-	w = colBox.w;
-	h = colBox.h;*/
+	x = m_xPos;
+	y = m_yPos;
+	w = m_width;
+	h = m_height;
 }
 
 

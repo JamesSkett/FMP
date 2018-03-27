@@ -40,7 +40,7 @@ protected:
 	ID3D11Buffer*			m_pConstantBuffer0;
 
 	float m_xPos, m_yPos, m_zPos, m_scale;
-	float m_xAngle, m_yAngle, m_zAngle;
+	float m_rotation;
 	float m_width, m_height;
 
 	float m_dirX = 0.0f;

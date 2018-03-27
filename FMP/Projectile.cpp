@@ -15,14 +15,18 @@ Projectile::~Projectile()
 }
 
 
-void Projectile::Update(float dirX, float dirY)
+void Projectile::Update()
 {
 	if (m_isFired)
 	{
-		m_xPos += dirX * m_velocity;
-		m_yPos += dirY * m_velocity;
-		m_isFired = true;
+		XMFLOAT2 currentPos = { m_xPos, m_yPos };
+
+		m_xPos += -m_dirX * m_velocity;
+		m_yPos += m_dirY * m_velocity;
+
+		
 	}
+
 }
 
 bool Projectile::GetIsFired()
@@ -43,4 +47,64 @@ void Projectile::SetYPos(float y)
 void Projectile::SetIsFired(bool isFired)
 {
 	m_isFired = isFired;
+}
+
+void Projectile::SetDirection(float dx, float dy)
+{
+	m_dirX = dx;
+	m_dirY = dy;
+}
+
+bool Projectile::CollisionCheck(Entity* colObject)
+{
+	float box1x = m_xPos - (m_width / 2);
+	float box1y = m_yPos - (m_height / 2);
+	float box1w = m_width;
+	float box1h = m_height;
+
+	float box2x, box2y;
+	float box2w, box2h;
+
+	colObject->GetColBoxParameters(box2x, box2y, box2w, box2h);
+
+	box2x = box2x - (box2w / 2);
+	box2y = box2y - (box2h / 2);
+
+	if ((box1x < box2x + box2w) && (box1x + box1w > box2x) && (box1y < box2y + box2h) && (box1h + box1y > box2y))
+	{
+		return true;
+	}
+	
+	return false;
+}
+
+bool Projectile::CollisionCheck(vector <Tile*> tilemap)
+{
+	for (unsigned int i = 0; i < tilemap.size(); i++)
+	{
+		if (tilemap[i]->GetIndex() == 2)
+		{
+			float box1x = m_xPos - (m_width / 2);
+			float box1y = m_yPos - (m_height / 2);
+			float box1w = m_width;
+			float box1h = m_height;
+
+			float box2x, box2y;
+			float box2w, box2h;
+
+			tilemap[i]->GetParameters(box2x, box2y, box2w, box2h);
+
+			box2x = box2x - (box2w / 2);
+			box2y = box2y - (box2h / 2);
+
+			if ((box1x < box2x + box2w) && (box1x + box1w > box2x) && (box1y < box2y + box2h) && (box1h + box1y > box2y))
+			{
+
+				return true;
+			}
+		}
+	}
+
+	return false;
+	
 }
