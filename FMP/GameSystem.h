@@ -29,26 +29,35 @@ public:
 	//set up all the objects in the game
 	void SetupLevel();
 
-	//get device input
+	//Get the keyboard input
 	void GetKeyboardInput();
+	//Get the controller input
 	void GetControllerInput();
+
+	//player 1 controller
 	CXBOXController* player1 = new CXBOXController(1);
 
+	//Draws the whole level
 	void DrawLevel(XMMATRIX view, XMMATRIX projection);
 
+	//calculated every frame
 	static float DeltaTime;
 
 private:
+	//Level objects
 	Renderer* renderer;
 	Level* m_plevel;
 	Text2D* m_fpsCount;
 	Time m_time;
-	int m_fps = 0;
-
-	vector <Tile*> m_tileMap;
 	Player* m_pPlayer;
-	vector <Projectile*> m_vProjectiles;
 	Monster* m_pMonster;
+
+	//vector objects
+	vector <Tile*> m_tileMap;
+	vector <Projectile*> m_vProjectiles;
+
+	//frames per second
+	int m_fps = 0;
 
 	//screen properties
 	const float m_screenWidth = 1920.0f;
@@ -57,6 +66,7 @@ private:
 	const float m_cFarClip = 100.0f;
 	const float m_cOrthographicSize = 100.0f;
 
+	//Used as a toggle for the mouse
 	bool m_isMousePressed = false;
 
 	int m_bulletNum = 0;

@@ -136,7 +136,6 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 
 			m_pPlayer->LookAt(mouseX, -mouseY);
 
-			m_pPlayer->Update();
 			m_pMonster->RandomWander();
 
 			for (unsigned int i = 0; i < m_vProjectiles.size(); i++)
@@ -163,13 +162,19 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 
 			m_fps = m_time.GetFPS();
 
-			string fps = "FPS";
+			string fps = "FPS:";
 			fps = fps + to_string(m_fps);
 
-			m_fpsCount->AddText(fps, -0.95f, 0.95f, 0.05f);
+			m_fpsCount->AddText(fps, -0.99f, 0.99f, 0.03f);
 
 			DrawLevel(view, projection);
+
+			Renderer::pImmediateContext->OMSetBlendState(Renderer::pAlphaBlendEnable, 0, 0xffffffff);
+
 			m_fpsCount->RenderText();
+
+			Renderer::pImmediateContext->OMSetBlendState(Renderer::pAlphaBlendDisable, 0, 0xffffffff);
+
 
 			renderer->RenderFrame();
 
@@ -190,7 +195,7 @@ void GameSystem::SetupLevel()
 	m_plevel->LoadProjectiles(m_vProjectiles);
 	m_pMonster->SetPathfinder(m_tileMap);
 
-	m_fpsCount = new Text2D("Assets/font1.bmp", Renderer::pD3DDevice, Renderer::pImmediateContext);
+	m_fpsCount = new Text2D("Assets/myFont.png", Renderer::pD3DDevice, Renderer::pImmediateContext);
 }
 
 //Get the keyboard input

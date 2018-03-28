@@ -5,9 +5,11 @@ HWND		m_hWnd = NULL;
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
-ID3D11Device*           Renderer::pD3DDevice;
-ID3D11DeviceContext*    Renderer::pImmediateContext;
+ID3D11Device*            Renderer::pD3DDevice;
+ID3D11DeviceContext*     Renderer::pImmediateContext;
 ID3D11RenderTargetView*  Renderer::pBackBufferRTView;
+ID3D11BlendState*        Renderer::pAlphaBlendEnable;
+ID3D11BlendState*        Renderer::pAlphaBlendDisable;
 
 Time Renderer::time;
 
@@ -33,7 +35,7 @@ HRESULT Renderer::InitialiseWindow(HINSTANCE hInstance, int nCmdShow)
 	wcex.style = CS_HREDRAW | CS_VREDRAW;
 	wcex.lpfnWndProc = WndProc;
 	wcex.hInstance = hInstance;
-	wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wcex.hCursor = LoadCursor(NULL, IDC_CROSS);
 	//   wcex.hbrBackground = (HBRUSH )( COLOR_WINDOW + 1); // Needed for non-D3D apps
 	wcex.lpszClassName = Name;
 
@@ -158,6 +160,20 @@ HRESULT Renderer::InitialiseD3D()
 	// Set the render target view
 	pImmediateContext->OMSetRenderTargets(1, &pBackBufferRTView, NULL);
 
+	D3D11_BLEND_DESC b;
+	b.RenderTarget[0].BlendEnable = TRUE;
+	b.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	b.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	b.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	b.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	b.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	b.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	b.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+	b.IndependentBlendEnable = FALSE;
+	b.AlphaToCoverageEnable = FALSE;
+
+	hr = pD3DDevice->CreateBlendState(&b, &pAlphaBlendEnable);
+
 	// Set the viewport
 	D3D11_VIEWPORT viewport;
 
@@ -199,8 +215,8 @@ void Renderer::ShutdownD3D()
 	if (m_pConstantBuffer0)  m_pConstantBuffer0->Release();
 	if (pImmediateContext) pImmediateContext->Release();
 	if (pD3DDevice)        pD3DDevice->Release();
-	if (m_pAlphaBlendEnable) m_pAlphaBlendEnable->Release();
-	if (m_pAlphaBlendDisable) m_pAlphaBlendDisable->Release();
+	if (pAlphaBlendEnable) pAlphaBlendEnable->Release();
+	if (pAlphaBlendDisable) pAlphaBlendDisable->Release();
 }
 
 void Renderer::RenderFrame()

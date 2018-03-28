@@ -59,6 +59,8 @@ public:
 	static ID3D11Device*           pD3DDevice;
 	static ID3D11DeviceContext*    pImmediateContext;
 	static ID3D11RenderTargetView* pBackBufferRTView;
+	static ID3D11BlendState*       pAlphaBlendEnable;
+	static ID3D11BlendState*       pAlphaBlendDisable;
 
 	//matrices for object transforms
 	XMMATRIX identity, projection, view;
@@ -111,8 +113,7 @@ private:
 	ID3D11ShaderResourceView* m_pTexture0;
 	ID3D11SamplerState* m_pSampler0;
 	
-	ID3D11BlendState* m_pAlphaBlendEnable;
-	ID3D11BlendState* m_pAlphaBlendDisable;
+
 
 	//keyboard and mouse variables
 	IDirectInput8* m_direct_input;

@@ -14,18 +14,6 @@ Player::~Player()
 
 }
 
-void Player::Update()
-{
-	/*colBox.x = m_xPos;
-	colBox.y = m_yPos;*/
-}
-
-void Player::ResetPlayerPos()
-{
-	m_xPos = m_previousXPos;
-	m_yPos = m_previousYPos;
-}
-
 void Player::SetXPos(float x)
 {
 	m_xPos = x;
@@ -45,17 +33,6 @@ void Player::SetScale(float scale)
 {
 	m_scale = scale;
 }
-
-void Player::SetPlayerVelocity(float velocity)
-{
-	m_velocity = velocity;
-}
-
-void Player::SetTilemap(vector <string> tilemap)
-{
-	m_levelData = tilemap;
-}
-
 
 float Player::GetXPos()
 {
@@ -179,12 +156,3 @@ void Player::LookAt(float targetX, float targetY)
 	m_dirY = cosf(m_rotation);
 }
 
-void Player::Shoot(vector <Projectile*> projectiles)
-{
-	int randBullet = rand() % 50;
-
-	projectiles[randBullet]->SetXPos(m_xPos);
-	projectiles[randBullet]->SetYPos(m_yPos);
-	projectiles[randBullet]->SetIsFired(true);
-	projectiles[randBullet]->SetDirection(m_dirX, m_dirY);
-}
