@@ -13,28 +13,33 @@ public:
 	Monster(XMFLOAT4 colour, float x, float y, float z, float scale, float width, float height);
 	~Monster();
 
-	void Update(XMFLOAT2 targetPos);
+	//Updates the monster 
+	void Update(XMFLOAT2 targetPos, float deltaTime);
 
+	//Gets the current x position value
 	float GetXPos();
+	//Gets the current y position value
 	float GetYPos();
 
-	bool MoveTo(float x, float y);
+	//Moves to a specified point
+	bool MoveTo(float x, float y, float deltaTime);
 
+	//Creates the pathfinder object and gives it the tilemap
 	void SetPathfinder(vector <Tile*> tilemap);
 	
 	bool LineOfSightCheck(XMFLOAT2 targetPos);
 
 	//Behaviours
-	void RandomWander();
+	void RandomWander(float deltaTime);
 
 private:
-	float m_speed = 0.01f;
+	float m_speed = 10.0f;
 	Pathfinding* pathfinder;
 
 	vector <XMFLOAT2> waypoints;
 
 	vector <Tile*> m_tileMap;
 
-	int waypointNum = 0;
+	unsigned int waypointNum = 0;
 };
 

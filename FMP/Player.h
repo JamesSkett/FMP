@@ -38,9 +38,9 @@ public:
 	float GetDirectionY();
 
 	//Update the x position value
-	void UpdateXPos(vector <Tile*> colObject, bool isRight);
+	void UpdateXPos(vector <Tile*> colObject, bool isRight, float deltaTime);
 	//Update the y position value
-	void UpdateYPos(vector <Tile*> colObject, bool isUp);
+	void UpdateYPos(vector <Tile*> colObject, bool isUp, float deltaTime);
 	//Update the z position value
 	void UpdateZPos(float distance);
 	//Update the scalar value
@@ -54,7 +54,7 @@ public:
 
 private:
 	//Player move speed
-	float m_velocity = 0.05f;
+	float m_velocity = 20.0f;
 
 };
 

@@ -15,15 +15,12 @@ Projectile::~Projectile()
 }
 
 
-void Projectile::Update()
+void Projectile::Update(float deltaTime)
 {
 	if (m_isFired)
 	{
-		XMFLOAT2 currentPos = { m_xPos, m_yPos };
-
-		m_xPos += -m_dirX * m_velocity;
-		m_yPos += m_dirY * m_velocity;
-
+		m_xPos += (-m_dirX * m_velocity) * deltaTime;
+		m_yPos += (m_dirY * m_velocity) * deltaTime;
 		
 	}
 

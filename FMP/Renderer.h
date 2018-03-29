@@ -42,7 +42,6 @@ public:
 	void ShutdownD3D();
 
 	//render objects in game
-	//render object in menu
 	void RenderFrame();
 
 	//Set up the graphics

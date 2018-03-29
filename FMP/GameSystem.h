@@ -40,8 +40,7 @@ public:
 	//Draws the whole level
 	void DrawLevel(XMMATRIX view, XMMATRIX projection);
 
-	//calculated every frame
-	static float DeltaTime;
+	
 
 private:
 	//Level objects
@@ -58,6 +57,8 @@ private:
 
 	//frames per second
 	int m_fps = 0;
+	//calculated every frame
+	float m_deltaTime;
 
 	//screen properties
 	const float m_screenWidth = 1920.0f;

@@ -1,4 +1,5 @@
 #include "Monster.h"
+#include "GameSystem.h"
 #include <time.h>
 
 
@@ -14,7 +15,7 @@ Monster::~Monster()
 
 }
 
-void Monster::Update(XMFLOAT2 targetPos)
+void Monster::Update(XMFLOAT2 targetPos, float deltaTime)
 {
 
 	if (pathfinder->GetIsPathFound())
@@ -24,7 +25,7 @@ void Monster::Update(XMFLOAT2 targetPos)
 			pathfinder->SetIsPathFound(false);
 			waypointNum = 0;
 		}
-		else if (MoveTo(waypoints[waypointNum].x, waypoints[waypointNum].y))
+		else if (MoveTo(waypoints[waypointNum].x, waypoints[waypointNum].y, deltaTime))
 		{
 			waypointNum++;
 		}
@@ -46,7 +47,7 @@ float Monster::GetYPos()
 	return m_yPos;
 }
 
-bool Monster::MoveTo(float x, float y)
+bool Monster::MoveTo(float x, float y, float deltaTime)
 {
 
 	m_dirX = x - m_xPos;
@@ -59,8 +60,8 @@ bool Monster::MoveTo(float x, float y)
 	m_dirX /= distance;
 	m_dirY /= distance;
 
-	m_xPos += m_dirX * m_speed;
-	m_yPos += m_dirY * m_speed;
+	m_xPos += (m_dirX * m_speed) * deltaTime;
+	m_yPos += (m_dirY * m_speed) * deltaTime;
 
 	return false;
 }
@@ -83,9 +84,8 @@ bool Monster::LineOfSightCheck(XMFLOAT2 targetPos)
 	return false;
 }
 
-void Monster::RandomWander()
+void Monster::RandomWander(float deltaTime)
 {
-	srand(time(NULL));
 	int randTileNum = rand() % 901;
 
 	if (pathfinder->GetIsPathFound())
@@ -95,7 +95,7 @@ void Monster::RandomWander()
 			pathfinder->SetIsPathFound(false);
 			waypointNum = 0;
 		}
-		else if (MoveTo(waypoints[waypointNum].x, waypoints[waypointNum].y))
+		else if (MoveTo(waypoints[waypointNum].x, waypoints[waypointNum].y, deltaTime))
 		{
 			waypointNum++;
 		}

@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "Tile.h"
+#include "GameSystem.h"
 #include <math.h>
 
 Player::Player(XMFLOAT4 colour, float x, float y, float z, float scale, float width, float height)
@@ -69,17 +70,17 @@ float Player::GetDirectionY()
 	return m_dirY;
 }
 
-void Player::UpdateXPos(vector <Tile*> tilemap, bool isRight)
+void Player::UpdateXPos(vector <Tile*> tilemap, bool isRight, float deltaTime)
 {
 	float oldXPos = m_xPos;
 
 	if (isRight)
 	{
-		m_xPos += m_velocity;
+		m_xPos += (m_velocity * deltaTime);
 	}
 	else
 	{
-		m_xPos -= m_velocity;
+		m_xPos -= (m_velocity * deltaTime);
 	}
 	
 	if (CollisionCheck(tilemap))
@@ -89,17 +90,17 @@ void Player::UpdateXPos(vector <Tile*> tilemap, bool isRight)
 	
 }
 
-void Player::UpdateYPos(vector <Tile*> tilemap, bool isUp)
+void Player::UpdateYPos(vector <Tile*> tilemap, bool isUp, float deltaTime)
 {
 	float oldYPos = m_yPos;
 
 	if (isUp)
 	{
-		m_yPos += m_velocity;
+		m_yPos += m_velocity * deltaTime;
 	}
 	else
 	{
-		 m_yPos -= m_velocity;
+		 m_yPos -= m_velocity * deltaTime;
 	}
 
 	if (CollisionCheck(tilemap))

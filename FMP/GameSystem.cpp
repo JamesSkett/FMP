@@ -2,7 +2,7 @@
 #include "Pathfinding.h"
 #include <thread>
 
-float GameSystem::DeltaTime = 0.0f;
+
 
 //set up the renderer and main menu
 GameSystem::GameSystem()
@@ -95,6 +95,9 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 	vector <XMFLOAT2> waypoints;
 	int waypontNum = 0;*/
 
+	float currentTime = 0;
+	float previousTime = 0;
+
 	//Main game loop
 	while (msg.message != WM_QUIT)
 	{
@@ -105,8 +108,12 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 		}
 		else
 		{
+			previousTime = currentTime;
+			currentTime = clock() / 10000.0f;
 			//get the deltatime
-			DeltaTime = Renderer::time.GetDeltaTime();
+			m_deltaTime = currentTime - previousTime;
+
+			
 
 			//Get the controller and keyboard input
 			//GetControllerInput();
@@ -136,13 +143,13 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 
 			m_pPlayer->LookAt(mouseX, -mouseY);
 
-			m_pMonster->RandomWander();
+			m_pMonster->RandomWander(m_deltaTime);
 
 			for (unsigned int i = 0; i < m_vProjectiles.size(); i++)
 			{
 				if (m_vProjectiles[i]->GetIsFired())
 				{
-					m_vProjectiles[i]->Update();
+					m_vProjectiles[i]->Update(m_deltaTime);
 
 					if (m_vProjectiles[i]->CollisionCheck(m_tileMap))
 					{
@@ -165,7 +172,7 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 			string fps = "FPS:";
 			fps = fps + to_string(m_fps);
 
-			m_fpsCount->AddText(fps, -0.99f, 0.99f, 0.03f);
+			m_fpsCount->AddText(fps, -0.99f, 0.99f, 0.02f);
 
 			DrawLevel(view, projection);
 
@@ -213,22 +220,22 @@ void GameSystem::GetKeyboardInput()
 
 	if (renderer->IsKeyPressed(DIK_W))
 	{
-		m_pPlayer->UpdateYPos(m_tileMap, true);
+		m_pPlayer->UpdateYPos(m_tileMap, true, m_deltaTime);
 	}
 
 	if (renderer->IsKeyPressed(DIK_S))
 	{
-		m_pPlayer->UpdateYPos(m_tileMap, false);
+		m_pPlayer->UpdateYPos(m_tileMap, false, m_deltaTime);
 	}
 
 	if (renderer->IsKeyPressed(DIK_D))
 	{
-		m_pPlayer->UpdateXPos(m_tileMap, true);
+		m_pPlayer->UpdateXPos(m_tileMap, true, m_deltaTime);
 	}
 
 	if (renderer->IsKeyPressed(DIK_A))
 	{
-		m_pPlayer->UpdateXPos(m_tileMap, false);
+		m_pPlayer->UpdateXPos(m_tileMap, false, m_deltaTime);
 	}
 
 	if (renderer->IsKeyPressed(DIK_UP))
