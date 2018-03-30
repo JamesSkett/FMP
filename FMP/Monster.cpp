@@ -72,17 +72,90 @@ void Monster::SetPathfinder(vector<Tile*> tilemap)
 	m_tileMap = tilemap;
 }
 
-bool Monster::LineOfSightCheck(XMFLOAT2 targetPos)
+bool Monster::LineOfSightCheck(XMFLOAT2 targetPos, vector <Tile*> tilemap)
 {
-	XMFLOAT2 ray;
+	XMFLOAT2 point = { 10, 10 };
+	float angle;
+	float directionX, directionY;
+	float distance;
 
-	ray.x = targetPos.x - m_xPos;
-	ray.y = targetPos.y - m_yPos;
+	angle = atan2f((targetPos.x - m_xPos), (targetPos.y - m_yPos));
+	directionX = sinf(angle);
+	directionY = cosf(angle);
 
+	point = { m_xPos + (directionX * 0.2f), m_yPos + (directionY * 0.2f) };
 
+	while (true)
+	{
+		point = { point.x + (directionX * 0.2f), point.y + (directionY * 0.2f) };
+
+		if (point.x == targetPos.x && point.y == targetPos.y)
+		{
+			return true;
+		}
+
+		for (unsigned int i = 0; i < tilemap.size(); i++)
+		{
+			if (tilemap[i]->GetIsWalkable())
+			{
+				float tileX;
+				float tileY;
+				float tileW;
+				float tileH;
+
+				float pointW = 0.05f;
+				float pointH = 0.05f;
+				float pointX = point.x - (pointW / 2);
+				float pointY = point.y - (pointH / 2);
+
+				tilemap[i]->GetParameters(tileX, tileY, tileW, tileH);
+
+				tileX = tileX - (tileW / 2);
+				tileY = tileY - (tileH / 2);
+
+				if ((pointX < tileX + tileW) && (pointX + pointW > tileX) && (pointY < tileY + tileH) && (pointY + pointH > tileY))
+				{
+					return false;
+				}
+			}
+		}
+		
+	}
+	
 
 	return false;
 }
+
+//bool Monster::LineOfSightCheck(XMFLOAT2 targetPos, vector <Tile*> tilemap)
+//{
+//
+//	for (unsigned int i = 0; i < tilemap.size(); i++)
+//	{
+//		float tileX;
+//		float tileY;
+//		float tileW;
+//		float tileH;
+//
+//		XMFLOAT2 origin = { m_xPos, m_yPos };
+//		XMFLOAT2 direction = { targetPos.x - m_xPos, targetPos.y - m_yPos };
+//
+//
+//		tilemap[i]->GetParameters(tileX, tileY, tileW, tileH);
+//
+//		if (tilemap[i]->GetIsWalkable)
+//		{
+//			XMFLOAT2 boxMin = { tileX - (tileW / 2), tileY - (tileH / 2) };
+//			XMFLOAT2 boxMax = { tileX + (tileW / 2), tileY + (tileH / 2) };
+//
+//			XMFLOAT2 tMin = { ((boxMin.x - origin.x) / direction.x), ((boxMin.y - origin.y) / direction.y) };
+//			XMFLOAT2 tMax = { ((boxMax.x - origin.x) / direction.x), ((boxMax.y - origin.y) / direction.y) };
+//
+//			min(tMin, tMax);
+//		}
+//	}
+//
+//	return false;
+//}
 
 void Monster::RandomWander(float deltaTime)
 {

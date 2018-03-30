@@ -27,7 +27,7 @@ public:
 	//Creates the pathfinder object and gives it the tilemap
 	void SetPathfinder(vector <Tile*> tilemap);
 	
-	bool LineOfSightCheck(XMFLOAT2 targetPos);
+	bool LineOfSightCheck(XMFLOAT2 targetPos, vector <Tile*> tilemap);
 
 	//Behaviours
 	void RandomWander(float deltaTime);
@@ -42,4 +42,3 @@ private:
 
 	unsigned int waypointNum = 0;
 };
-
