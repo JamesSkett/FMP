@@ -74,23 +74,31 @@ void Monster::SetPathfinder(vector<Tile*> tilemap)
 
 bool Monster::LineOfSightCheck(XMFLOAT2 targetPos, vector <Tile*> tilemap)
 {
-	XMFLOAT2 point = { 10, 10 };
-	float angle;
+	XMFLOAT2 point;
+
 	float directionX, directionY;
 	float distance;
+	float startPosX = m_xPos, startPosY = m_yPos;
 
-	angle = atan2f((targetPos.x - m_xPos), (targetPos.y - m_yPos));
-	directionX = sinf(angle);
-	directionY = cosf(angle);
-
-	point = { m_xPos + (directionX * 0.2f), m_yPos + (directionY * 0.2f) };
 
 	while (true)
 	{
-		point = { point.x + (directionX * 0.2f), point.y + (directionY * 0.2f) };
+		directionX = targetPos.x - startPosX;
+		directionY = targetPos.y - startPosY;
 
-		if (point.x == targetPos.x && point.y == targetPos.y)
+		distance = sqrt(directionX * directionX + directionY * directionY);
+
+		directionX /= distance;
+		directionY /= distance;
+
+		startPosX += (directionX * 0.1f);
+		startPosY += (directionY * 0.1f);
+
+		if (distance <= 0.1f)
 		{
+			char s[128];
+			sprintf_s(s, "In sight\n\n");
+			OutputDebugString(s);
 			return true;
 		}
 
@@ -105,8 +113,8 @@ bool Monster::LineOfSightCheck(XMFLOAT2 targetPos, vector <Tile*> tilemap)
 
 				float pointW = 0.05f;
 				float pointH = 0.05f;
-				float pointX = point.x - (pointW / 2);
-				float pointY = point.y - (pointH / 2);
+				float pointX = startPosX - (pointW / 2);
+				float pointY = startPosY - (pointH / 2);
 
 				tilemap[i]->GetParameters(tileX, tileY, tileW, tileH);
 
