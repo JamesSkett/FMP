@@ -6,12 +6,13 @@
 Monster::Monster(XMFLOAT4 colour, float x, float y, float z, float scale, float width, float height) :
 	Entity(colour, x, y, z, scale, width, height)
 {
-	
+	m_rotation = 0;
 }
 
 
 Monster::~Monster()
 {
+	
 
 }
 
@@ -49,6 +50,7 @@ float Monster::GetYPos()
 
 bool Monster::MoveTo(float x, float y, float deltaTime)
 {
+	
 
 	m_dirX = x - m_xPos;
 	m_dirY = y - m_yPos;
@@ -72,66 +74,49 @@ void Monster::SetPathfinder(vector<Tile*> tilemap)
 	m_tileMap = tilemap;
 }
 
-bool Monster::LineOfSightCheck(XMFLOAT2 targetPos, vector <Tile*> tilemap)
+bool Monster::LineOfSightCheck(XMFLOAT2 targetPos)
 {
-	XMFLOAT2 point;
+	// Make sure A is facing towards B
 
-	float directionX, directionY;
-	float distance;
-	float startPosX = m_xPos, startPosY = m_yPos;
+	//// Get angle we'd need to look straight at B
+	//float angle = atan2f(targetPos.x - m_xPos, targetPos.y - m_yPos);
+	//angle = angle * 180 / XM_PI;
+	//// Keep rotation in a nice 360 circle
+	//if (angle <= -1) angle = 360 + angle;
+	//if (angle >= 360) angle = angle - 360;
+	//// Now check if our rotation falls in our field of view, 60 degrees on each side
+	//if (m_rotation < angle - 60 || m_rotation > angle + 60)
+	//	return false;
 
+	float x = targetPos.x - m_xPos;
+	float y = targetPos.y - m_yPos;
+	float length = sqrt((x*x) + (y*y));
 
-	while (true)
-	{
-		directionX = targetPos.x - startPosX;
-		directionY = targetPos.y - startPosY;
+	if (!length) return true;
 
-		distance = sqrt(directionX * directionX + directionY * directionY);
-
-		directionX /= distance;
-		directionY /= distance;
-
-		startPosX += (directionX * 0.1f);
-		startPosY += (directionY * 0.1f);
-
-		if (distance <= 0.1f)
-		{
-			char s[128];
-			sprintf_s(s, "In sight\n\n");
-			OutputDebugString(s);
-			return true;
-		}
-
-		for (unsigned int i = 0; i < tilemap.size(); i++)
-		{
-			if (tilemap[i]->GetIsWalkable())
-			{
-				float tileX;
-				float tileY;
-				float tileW;
-				float tileH;
-
-				float pointW = 0.05f;
-				float pointH = 0.05f;
-				float pointX = startPosX - (pointW / 2);
-				float pointY = startPosY - (pointH / 2);
-
-				tilemap[i]->GetParameters(tileX, tileY, tileW, tileH);
-
-				tileX = tileX - (tileW / 2);
-				tileY = tileY - (tileH / 2);
-
-				if ((pointX < tileX + tileW) && (pointX + pointW > tileX) && (pointY < tileY + tileH) && (pointY + pointH > tileY))
-				{
-					return false;
-				}
-			}
-		}
-		
-	}
 	
+	float unitX = x / length;
+	float unitY = y / length;
 
-	return false;
+	x = m_xPos;
+	y = m_yPos;
+
+	while(length > 0.1f)
+	{
+		if (CheckTile(XMFLOAT2(x, y))) return false;
+
+		x += unitX * 0.3;
+		y += unitY * 0.3;
+
+		length = sqrt((targetPos.x - x) * (targetPos.x - x) + (targetPos.y - y) * (targetPos.y - y));
+
+	}
+
+	char s[128];
+	sprintf_s(s, "In sight %d", num++);
+	OutputDebugString(s);
+
+	return true;
 }
 
 //bool Monster::LineOfSightCheck(XMFLOAT2 targetPos, vector <Tile*> tilemap)
@@ -186,4 +171,30 @@ void Monster::RandomWander(float deltaTime)
 		waypoints = pathfinder->FindPath(XMFLOAT2(m_xPos, m_yPos), XMFLOAT2(m_tileMap[randTileNum]->GetXPos(), m_tileMap[randTileNum]->GetYPos()));
 	}
 	
+}
+
+bool Monster::CheckTile(XMFLOAT2 pos)
+{
+	float currentDistance;
+	float minDistance = pow(m_tileMap[0]->GetXPos() - pos.x, 2) + pow(m_tileMap[0]->GetYPos() - pos.y, 2);
+	Tile* currentTile = m_tileMap[0];
+	for (unsigned int i = 0; i < m_tileMap.size(); i++)
+	{
+		float startPosX = pos.x;
+		float startPosY = pos.y;
+		float nodePosX = m_tileMap[i]->GetXPos();
+		float nodePosY = m_tileMap[i]->GetYPos();
+
+		currentDistance = ((nodePosX - startPosX) * (nodePosX - startPosX)) + ((nodePosY - startPosY) * (nodePosY - startPosY));
+
+		if (currentDistance < minDistance)
+		{
+			minDistance = currentDistance;
+			currentTile = m_tileMap[i];
+		}
+	}
+
+	if (!currentTile->GetIsWalkable()) return true;
+
+	return false;
 }

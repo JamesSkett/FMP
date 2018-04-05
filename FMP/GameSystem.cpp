@@ -143,8 +143,8 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 
 			m_pPlayer->LookAt(mouseX, -mouseY);
 
-			m_pMonster->RandomWander(m_deltaTime);
-			m_pMonster->LineOfSightCheck(XMFLOAT2(m_pPlayer->GetXPos(), m_pPlayer->GetYPos()), m_tileMap);
+			//m_pMonster->RandomWander(m_deltaTime);
+			bool insight = m_pMonster->LineOfSightCheck(XMFLOAT2(m_pPlayer->GetXPos(), m_pPlayer->GetYPos()));
 
 			for (unsigned int i = 0; i < m_vProjectiles.size(); i++)
 			{
@@ -170,8 +170,8 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 
 			m_fps = m_time.GetFPS();
 
-			string fps = "FPS:";
-			fps = fps + to_string(m_fps);
+			string fps = "In sight: ";
+			fps = fps + to_string(insight);
 
 			m_fpsCount->AddText(fps, -0.99f, 0.99f, 0.02f);
 
