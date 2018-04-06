@@ -224,8 +224,6 @@ void Renderer::RenderFrame()
 	
 
 	// RENDER HERE
-	//entity1->Draw(view, projection);
-
 
 	// Display what has just been rendered
 	m_pSwapChain->Present(1, 0);

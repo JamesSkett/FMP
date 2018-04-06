@@ -12,6 +12,8 @@ GameSystem::GameSystem()
 	m_pPlayer = nullptr;
 	m_pMonster = nullptr;
 	m_fpsCount = nullptr;
+	m_monsterLOS = nullptr;
+	m_viewCone = nullptr;
 }
 
 //clean up before exiting
@@ -33,6 +35,18 @@ GameSystem::~GameSystem()
 	{
 		delete m_pPlayer;
 		m_pPlayer = nullptr;
+	}
+
+	if (m_fpsCount)
+	{
+		delete m_fpsCount;
+		m_fpsCount = nullptr;
+	}
+
+	if (m_viewCone)
+	{
+		delete m_viewCone;
+		m_viewCone = nullptr;
 	}
 
 	for (unsigned int i = 0; i < m_tileMap.size(); i++)
@@ -119,6 +133,7 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 			//GetControllerInput();
 			renderer->ReadInputState();
 			GetKeyboardInput();
+			GetMousePos();
 
 			// Clear the back buffer - choose a colour you like
 			float rgba_clear_colour[4] = { 0.1f, 0.1f, 0.1f, 1.0f };
@@ -132,19 +147,12 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 			projection = XMMatrixOrthographicLH(w, h, m_cNearClip, m_cFarClip);
 			view = XMMatrixIdentity();
 
-			POINT cursorPos;
-			GetCursorPos(&cursorPos);
-
-			mouseX = (float)cursorPos.x;
-			mouseY = (float)cursorPos.y;
-
-			mouseX = ((mouseX / m_screenWidth) * 2.0f) - 1.0f;
-			mouseY = ((mouseY / m_screenHeight) * 2.0f) - 1.0f;
+			
 
 			m_pPlayer->LookAt(mouseX, -mouseY);
 
-			//m_pMonster->RandomWander(m_deltaTime);
-			bool insight = m_pMonster->LineOfSightCheck(XMFLOAT2(m_pPlayer->GetXPos(), m_pPlayer->GetYPos()));
+			m_pMonster->RandomWander(m_deltaTime);
+			m_pMonster->LineOfSightCheck(XMFLOAT2(m_pPlayer->GetXPos(), m_pPlayer->GetYPos()));
 
 			for (unsigned int i = 0; i < m_vProjectiles.size(); i++)
 			{
@@ -168,20 +176,12 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 			}
 
 
-			m_fps = m_time.GetFPS();
-
-			string fps = "In sight: ";
-			fps = fps + to_string(insight);
-
-			m_fpsCount->AddText(fps, -0.99f, 0.99f, 0.02f);
+			m_viewCone->SetPos(m_pMonster->GetXPos(), m_pMonster->GetYPos());
+			m_viewCone->SetRotation(m_pMonster->GetRotation());
 
 			DrawLevel(view, projection);
 
-			Renderer::pImmediateContext->OMSetBlendState(Renderer::pAlphaBlendEnable, 0, 0xffffffff);
-
-			m_fpsCount->RenderText();
-
-			Renderer::pImmediateContext->OMSetBlendState(Renderer::pAlphaBlendDisable, 0, 0xffffffff);
+			UpdateText();
 
 
 			renderer->RenderFrame();
@@ -203,7 +203,11 @@ void GameSystem::SetupLevel()
 	m_plevel->LoadProjectiles(m_vProjectiles);
 	m_pMonster->SetPathfinder(m_tileMap);
 
+	m_viewCone = new Asset("Assets/viewCone.png", 0, 0, 3, 2.0f, 0, 0);
+
+
 	m_fpsCount = new Text2D("Assets/myFont.png", Renderer::pD3DDevice, Renderer::pImmediateContext);
+	m_monsterLOS = new Text2D("Assets/myFont.png", Renderer::pD3DDevice, Renderer::pImmediateContext);
 }
 
 //Get the keyboard input
@@ -375,7 +379,48 @@ void GameSystem::DrawLevel(XMMATRIX view, XMMATRIX projection)
 		}
 	}
 
+	Renderer::pImmediateContext->OMSetBlendState(Renderer::pAlphaBlendEnable, 0, 0xffffffff);
+	m_viewCone->Draw(view, projection);
+	Renderer::pImmediateContext->OMSetBlendState(Renderer::pAlphaBlendDisable, 0, 0xffffffff);
+
 
 	m_pPlayer->Draw(view, projection);
 	m_pMonster->Draw(view, projection);
+}
+
+void GameSystem::UpdateText()
+{
+	//Gets the fps and converts it to text
+	m_fps = m_time.GetFPS();
+	string fps = "FPS:";
+	fps = fps + to_string(m_fps);
+	m_fpsCount->AddText(fps, -0.99f, 0.99f, 0.02f);
+
+	string inSight;
+	if (m_pMonster->GetPlayerInSight())
+	{
+		inSight = "Player in Sight: True";
+	}
+	else inSight = "Player in Sight: False";
+
+	m_monsterLOS->AddText(inSight, 0.5f, 0.99f, 0.02f);
+
+	Renderer::pImmediateContext->OMSetBlendState(Renderer::pAlphaBlendEnable, 0, 0xffffffff);
+
+	m_fpsCount->RenderText();
+	m_monsterLOS->RenderText();
+
+	Renderer::pImmediateContext->OMSetBlendState(Renderer::pAlphaBlendDisable, 0, 0xffffffff);
+}
+
+void GameSystem::GetMousePos()
+{
+	POINT cursorPos;
+	GetCursorPos(&cursorPos);
+
+	mouseX = (float)cursorPos.x;
+	mouseY = (float)cursorPos.y;
+
+	mouseX = ((mouseX / m_screenWidth) * 2.0f) - 1.0f;
+	mouseY = ((mouseY / m_screenHeight) * 2.0f) - 1.0f;
 }

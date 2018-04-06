@@ -48,9 +48,21 @@ float Monster::GetYPos()
 	return m_yPos;
 }
 
+bool Monster::GetPlayerInSight()
+{
+	return m_playerInSight;
+}
+
+float Monster::GetRotation()
+{
+	return m_rotation;
+}
+
+
 bool Monster::MoveTo(float x, float y, float deltaTime)
 {
 	
+	m_rotation = -atan2f((x - m_xPos), (y - m_yPos));
 
 	m_dirX = x - m_xPos;
 	m_dirY = y - m_yPos;
@@ -78,23 +90,37 @@ bool Monster::LineOfSightCheck(XMFLOAT2 targetPos)
 {
 	// Make sure A is facing towards B
 
-	//// Get angle we'd need to look straight at B
-	//float angle = atan2f(targetPos.x - m_xPos, targetPos.y - m_yPos);
-	//angle = angle * 180 / XM_PI;
-	//// Keep rotation in a nice 360 circle
-	//if (angle <= -1) angle = 360 + angle;
-	//if (angle >= 360) angle = angle - 360;
-	//// Now check if our rotation falls in our field of view, 60 degrees on each side
-	//if (m_rotation < angle - 60 || m_rotation > angle + 60)
-	//	return false;
+	//m_rotation = XMConvertToRadians(45);
+	float currRotation = XMConvertToDegrees(m_rotation);
+
+	// Get angle we'd need to look straight at B
+	float angle = -atan2f(targetPos.x - m_xPos, targetPos.y - m_yPos);
+	angle = angle * 180 / XM_PI;
+	// Keep rotation in a nice 360 circle
+	if (angle <= -1) angle = 360 + angle;
+	if (angle >= 360) angle = angle - 360;
+	// Now check if our rotation falls in our field of view, 60 degrees on each side
+	if (currRotation < angle - 50 || currRotation > angle + 50)
+	{
+		m_playerInSight = false;
+		return true;
+	}
 
 	float x = targetPos.x - m_xPos;
 	float y = targetPos.y - m_yPos;
 	float length = sqrt((x*x) + (y*y));
 
-	if (!length) return true;
+	if (!length)
+	{
+		m_playerInSight = true;
+		return true;
+	}
+	if (length > 4)
+	{
+		m_playerInSight = false;
+		return false;
+	}
 
-	
 	float unitX = x / length;
 	float unitY = y / length;
 
@@ -103,10 +129,14 @@ bool Monster::LineOfSightCheck(XMFLOAT2 targetPos)
 
 	while(length > 0.1f)
 	{
-		if (CheckTile(XMFLOAT2(x, y))) return false;
+		if (CheckTile(XMFLOAT2(x, y)))
+		{
+			m_playerInSight = false;
+			return false;
+		}
 
-		x += unitX * 0.3;
-		y += unitY * 0.3;
+		x += unitX * 0.2;
+		y += unitY * 0.2;
 
 		length = sqrt((targetPos.x - x) * (targetPos.x - x) + (targetPos.y - y) * (targetPos.y - y));
 
@@ -116,43 +146,16 @@ bool Monster::LineOfSightCheck(XMFLOAT2 targetPos)
 	sprintf_s(s, "In sight %d", num++);
 	OutputDebugString(s);
 
+	m_playerInSight = true;
+
 	return true;
 }
 
-//bool Monster::LineOfSightCheck(XMFLOAT2 targetPos, vector <Tile*> tilemap)
-//{
-//
-//	for (unsigned int i = 0; i < tilemap.size(); i++)
-//	{
-//		float tileX;
-//		float tileY;
-//		float tileW;
-//		float tileH;
-//
-//		XMFLOAT2 origin = { m_xPos, m_yPos };
-//		XMFLOAT2 direction = { targetPos.x - m_xPos, targetPos.y - m_yPos };
-//
-//
-//		tilemap[i]->GetParameters(tileX, tileY, tileW, tileH);
-//
-//		if (tilemap[i]->GetIsWalkable)
-//		{
-//			XMFLOAT2 boxMin = { tileX - (tileW / 2), tileY - (tileH / 2) };
-//			XMFLOAT2 boxMax = { tileX + (tileW / 2), tileY + (tileH / 2) };
-//
-//			XMFLOAT2 tMin = { ((boxMin.x - origin.x) / direction.x), ((boxMin.y - origin.y) / direction.y) };
-//			XMFLOAT2 tMax = { ((boxMax.x - origin.x) / direction.x), ((boxMax.y - origin.y) / direction.y) };
-//
-//			min(tMin, tMax);
-//		}
-//	}
-//
-//	return false;
-//}
 
 void Monster::RandomWander(float deltaTime)
 {
 	int randTileNum = rand() % 901;
+
 
 	if (pathfinder->GetIsPathFound())
 	{

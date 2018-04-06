@@ -2,6 +2,7 @@
 #include "Entity.h"
 #include "Tile.h"
 #include "Pathfinding.h"
+#include "Asset.h"
 
 #include <vector>
 
@@ -20,6 +21,10 @@ public:
 	float GetXPos();
 	//Gets the current y position value
 	float GetYPos();
+	//Get the value of m_playerInSight
+	bool GetPlayerInSight();
+
+	float GetRotation();
 
 	//Moves to a specified point
 	bool MoveTo(float x, float y, float deltaTime);
@@ -37,7 +42,6 @@ public:
 private:
 	float m_speed = 10.0f;
 	Pathfinding* pathfinder;
-
 	vector <XMFLOAT2> waypoints;
 
 	vector <Tile*> m_tileMap;
@@ -45,4 +49,6 @@ private:
 	unsigned int waypointNum = 0;
 
 	int num = 0;
+
+	bool m_playerInSight = false;
 };

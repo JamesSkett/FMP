@@ -16,6 +16,7 @@ using namespace DirectX;
 #include "Time.h"
 #include "Monster.h"
 #include "Projectile.h"
+#include "Asset.h"
 
 class GameSystem
 {
@@ -33,23 +34,25 @@ public:
 	void GetKeyboardInput();
 	//Get the controller input
 	void GetControllerInput();
+	void GetMousePos();
 
 	//player 1 controller
 	CXBOXController* player1 = new CXBOXController(1);
 
 	//Draws the whole level
 	void DrawLevel(XMMATRIX view, XMMATRIX projection);
-
-	
+	void UpdateText();
 
 private:
 	//Level objects
 	Renderer* renderer;
 	Level* m_plevel;
 	Text2D* m_fpsCount;
+	Text2D* m_monsterLOS;
 	Time m_time;
 	Player* m_pPlayer;
 	Monster* m_pMonster;
+	Asset* m_viewCone;
 
 	//vector objects
 	vector <Tile*> m_tileMap;

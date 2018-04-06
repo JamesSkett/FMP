@@ -3,6 +3,7 @@
   <ItemGroup>
     <FxCompile Include="shaders.hlsl" />
     <FxCompile Include="text2D_shaders.hlsl" />
+    <FxCompile Include="AssetShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CXBOXController.cpp">
@@ -48,6 +49,7 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Projectile.cpp" />
+    <ClCompile Include="Asset.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Time.h">
@@ -93,6 +95,7 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Projectile.h" />
+    <ClInclude Include="Asset.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
