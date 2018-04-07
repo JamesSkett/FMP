@@ -92,6 +92,10 @@ bool Monster::LineOfSightCheck(XMFLOAT2 targetPos)
 
 	//m_rotation = XMConvertToRadians(45);
 	float currRotation = XMConvertToDegrees(m_rotation);
+	// Keep rotation in a nice 360 circle
+	if (currRotation <= -1) currRotation = 360 + currRotation;
+	if (currRotation >= 360) currRotation = currRotation - 360;
+
 
 	// Get angle we'd need to look straight at B
 	float angle = -atan2f(targetPos.x - m_xPos, targetPos.y - m_yPos);

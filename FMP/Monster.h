@@ -40,7 +40,7 @@ public:
 	bool CheckTile(XMFLOAT2 pos);
 
 private:
-	float m_speed = 10.0f;
+	float m_speed = 8.0f;
 	Pathfinding* pathfinder;
 	vector <XMFLOAT2> waypoints;
 
