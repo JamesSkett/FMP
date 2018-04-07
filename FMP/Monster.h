@@ -36,6 +36,7 @@ public:
 
 	//Behaviours
 	void RandomWander(float deltaTime);
+	void Chase(XMFLOAT2 playerPos, float deltaTime);
 
 	bool CheckTile(XMFLOAT2 pos);
 

@@ -180,6 +180,24 @@ void Monster::RandomWander(float deltaTime)
 	
 }
 
+void Monster::Chase(XMFLOAT2 playerPos, float deltaTime)
+{
+	XMFLOAT2 lastPlayerPos = playerPos;
+	bool chaseStarted = false;
+
+	if (m_playerInSight)
+	{
+		m_speed = 16.0f;
+		MoveTo(playerPos.x, playerPos.y, deltaTime);
+		chaseStarted = true;
+	}
+
+	if (!m_playerInSight && chaseStarted)
+	{
+		MoveTo(lastPlayerPos.x, lastPlayerPos.y);
+	}
+}
+
 bool Monster::CheckTile(XMFLOAT2 pos)
 {
 	float currentDistance;

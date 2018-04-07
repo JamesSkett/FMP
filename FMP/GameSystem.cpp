@@ -111,6 +111,7 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 
 	float currentTime = 0;
 	float previousTime = 0;
+	bool chaseStarted = false;
 
 	//Main game loop
 	while (msg.message != WM_QUIT)
@@ -151,8 +152,13 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 
 			m_pPlayer->LookAt(mouseX, -mouseY);
 
-			m_pMonster->RandomWander(m_deltaTime);
-			m_pMonster->LineOfSightCheck(XMFLOAT2(m_pPlayer->GetXPos(), m_pPlayer->GetYPos()));
+			//m_pMonster->RandomWander(m_deltaTime);
+			if (m_pMonster->LineOfSightCheck(XMFLOAT2(m_pPlayer->GetXPos(), m_pPlayer->GetYPos())))
+			{
+				m_pMonster->Chase(XMFLOAT2(m_pPlayer->GetXPos(), m_pPlayer->GetYPos()), m_deltaTime);
+				chaseStarted = true;
+			}
+			else if(!m_pMonster->LineOfSightCheck(XMFLOAT2(m_pPlayer->GetXPos(), m_pPlayer->GetYPos())) && chaseStarted)
 
 			for (unsigned int i = 0; i < m_vProjectiles.size(); i++)
 			{
