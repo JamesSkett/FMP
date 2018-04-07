@@ -86,6 +86,11 @@ void Asset::SetRotation(float rotation)
 	m_rotation = rotation;
 }
 
+void Asset::UpdateRotation(float speed)
+{
+	m_rotation += speed;
+}
+
 HRESULT Asset::CreateVertices(char* filename)
 {
 	HRESULT hr = S_OK;

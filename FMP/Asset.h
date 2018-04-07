@@ -19,6 +19,7 @@ public:
 
 	void SetPos(float x, float y);
 	void SetRotation(float rotation);
+	void UpdateRotation(float speed);
 
 	struct POS_TEX_VERTEX
 	{
