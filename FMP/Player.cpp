@@ -157,3 +157,15 @@ void Player::LookAt(float targetX, float targetY)
 	m_dirY = cosf(m_rotation);
 }
 
+void Player::SprintOn()
+{
+	m_velocity = m_velocity * 2.0f;
+}
+
+void Player::SprintOff()
+{
+	m_velocity = 20.0f;
+}
+
+
+

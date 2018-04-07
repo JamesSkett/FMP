@@ -52,6 +52,9 @@ public:
 	//Rotate the player to look at a specified point targetX & targetY
 	void LookAt(float targetX, float targetY);
 
+	void SprintOn();
+	void SprintOff();
+
 private:
 	//Player move speed
 	float m_velocity = 20.0f;

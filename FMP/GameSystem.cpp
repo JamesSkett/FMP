@@ -203,24 +203,30 @@ void GameSystem::SetupLevel()
 	m_plevel->LoadProjectiles(m_vProjectiles);
 	m_pMonster->SetPathfinder(m_tileMap);
 
-	m_viewCone = new Asset("Assets/viewCone.png", 0, 0, 3, 2.0f, 0, 0);
+	m_viewCone = new Asset("Assets/viewCone2.png", 0, 0, 3, 2.0f, 0, 0);
 
 
 	m_fpsCount = new Text2D("Assets/myFont.png", Renderer::pD3DDevice, Renderer::pImmediateContext);
 	m_monsterLOS = new Text2D("Assets/myFont.png", Renderer::pD3DDevice, Renderer::pImmediateContext);
 }
 
+bool sprinting = false;
 //Get the keyboard input
 void GameSystem::GetKeyboardInput()
 {
-	if (renderer->IsKeyPressed(DIK_1))
+	if (renderer->IsKeyPressed(DIK_LSHIFT))
 	{
-		
+		if (!sprinting)
+		{
+			m_pPlayer->SprintOn();
+			sprinting = true;
+		}
 	}
 
-	if (renderer->IsKeyPressed(DIK_2))
+	if (!renderer->IsKeyPressed(DIK_LSHIFT))
 	{
-		
+		m_pPlayer->SprintOff();
+		sprinting = false;
 	}
 
 	if (renderer->IsKeyPressed(DIK_W))
