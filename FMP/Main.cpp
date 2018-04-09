@@ -12,7 +12,7 @@
 //////////////////////////////////////////////////////////////////////////////////////
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-	srand(time(NULL));
+	srand((unsigned int)time(NULL));
 
 	GameSystem* gameSystem = new GameSystem;
 	MSG msg = { 0 };

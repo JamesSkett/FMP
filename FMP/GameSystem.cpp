@@ -150,8 +150,8 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 			
 
 			m_pPlayer->LookAt(mouseX, -mouseY);
-
-			m_pMonster->RandomWander(m_deltaTime);
+			m_pMonster->Update(XMFLOAT2(m_pPlayer->GetXPos(), m_pPlayer->GetYPos()), m_deltaTime);
+			//m_pMonster->RandomWander(m_deltaTime);
 			m_pMonster->LineOfSightCheck(XMFLOAT2(m_pPlayer->GetXPos(), m_pPlayer->GetYPos()));
 
 			for (unsigned int i = 0; i < m_vProjectiles.size(); i++)
@@ -285,7 +285,7 @@ void GameSystem::GetKeyboardInput()
 	}
 
 
-	if (renderer->mouseCurrState.rgbButtons[0])
+	if (renderer->mouseCurrState.rgbButtons[2])
 	{
 		if (!m_isMousePressed)
 		{
@@ -311,7 +311,7 @@ void GameSystem::GetKeyboardInput()
 		}
 	}
 
-	if (!renderer->mouseCurrState.rgbButtons[0])
+	if (!renderer->mouseCurrState.rgbButtons[2])
 	{
 		m_isMousePressed = false;
 	}

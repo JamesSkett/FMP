@@ -15,27 +15,19 @@ Monster::~Monster()
 	
 
 }
-
+bool chaseStarted = false;
 void Monster::Update(XMFLOAT2 targetPos, float deltaTime)
 {
-
-	if (pathfinder->GetIsPathFound())
+	if (m_playerInSight)
 	{
-		if (waypointNum >= waypoints.size())
-		{
-			pathfinder->SetIsPathFound(false);
-			waypointNum = 0;
-		}
-		else if (MoveTo(waypoints[waypointNum].x, waypoints[waypointNum].y, deltaTime))
-		{
-			waypointNum++;
-		}
+		Chase(deltaTime);
+		chaseStarted = true;
 	}
-	else
+	else if (chaseStarted)
 	{
-		waypoints = pathfinder->FindPath(XMFLOAT2(m_xPos, m_yPos), targetPos);
+		if (MoveTo(lastPlayerPos.x, lastPlayerPos.y, deltaTime))
+			chaseStarted = false;
 	}
-	
 }
 
 float Monster::GetXPos()
@@ -107,7 +99,7 @@ bool Monster::LineOfSightCheck(XMFLOAT2 targetPos)
 	if (currRotation < angle - 50 || currRotation > angle + 50)
 	{
 		m_playerInSight = false;
-		return true;
+		return false;
 	}
 
 	float x = targetPos.x - m_xPos;
@@ -117,6 +109,7 @@ bool Monster::LineOfSightCheck(XMFLOAT2 targetPos)
 	if (!length)
 	{
 		m_playerInSight = true;
+		lastPlayerPos = targetPos;
 		return true;
 	}
 	if (length > 4)
@@ -139,8 +132,8 @@ bool Monster::LineOfSightCheck(XMFLOAT2 targetPos)
 			return false;
 		}
 
-		x += unitX * 0.2;
-		y += unitY * 0.2;
+		x += unitX * 0.2f;
+		y += unitY * 0.2f;
 
 		length = sqrt((targetPos.x - x) * (targetPos.x - x) + (targetPos.y - y) * (targetPos.y - y));
 
@@ -151,6 +144,7 @@ bool Monster::LineOfSightCheck(XMFLOAT2 targetPos)
 	OutputDebugString(s);
 
 	m_playerInSight = true;
+	lastPlayerPos = targetPos;
 
 	return true;
 }
@@ -177,6 +171,14 @@ void Monster::RandomWander(float deltaTime)
 	{
 		waypoints = pathfinder->FindPath(XMFLOAT2(m_xPos, m_yPos), XMFLOAT2(m_tileMap[randTileNum]->GetXPos(), m_tileMap[randTileNum]->GetYPos()));
 	}
+	
+}
+
+void Monster::Chase(float deltaTime)
+{
+
+	m_speed = 16.0f;
+	MoveTo(lastPlayerPos.x, lastPlayerPos.y, deltaTime);
 	
 }
 
