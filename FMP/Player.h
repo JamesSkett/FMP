@@ -3,6 +3,7 @@
 #include "Entity.h"
 #include "Tile.h"
 #include "Projectile.h"
+#include "Asset.h"
 #include <vector>
 
 using namespace std;
@@ -57,7 +58,8 @@ public:
 
 private:
 	//Player move speed
-	float m_velocity = 20.0f;
+	float m_velocity = 15.0f;
 
+	Asset* m_soundWave;
 };
 

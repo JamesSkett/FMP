@@ -186,7 +186,7 @@ void Monster::Chase(float deltaTime)
 {
 	if (m_playerInSight)
 	{
-		m_speed = 16.0f;
+		m_speed = 12.0f;
 		MoveTo(lastPlayerPos.x, lastPlayerPos.y, deltaTime);
 	}
 	

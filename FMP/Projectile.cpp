@@ -52,6 +52,11 @@ void Projectile::SetDirection(float dx, float dy)
 	m_dirY = dy;
 }
 
+void Projectile::SetRotation(float angle)
+{
+	m_rotation = angle;
+}
+
 bool Projectile::CollisionCheck(Entity* colObject)
 {
 	float box1x = m_xPos - (m_width / 2);

@@ -25,7 +25,8 @@ public:
 	void SetIsFired(bool isFired);
 	//Set the directional values for the projectile
 	void SetDirection(float dx, float dy);
-
+	//Set the roatation value for the projectile
+	void SetRotation(float angle);
 	//check collisions with the monster //Returns true/false
 	bool CollisionCheck(Entity* colObject);
 	//Check collitions with the walls //Returns true/false

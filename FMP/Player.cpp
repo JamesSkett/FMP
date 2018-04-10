@@ -6,7 +6,7 @@
 Player::Player(XMFLOAT4 colour, float x, float y, float z, float scale, float width, float height)
 	: Entity(colour, x, y, z, scale, width, height)
 {
-	
+	m_soundWave = new Asset("Assets/", x, y, z - 0.2f, 1, 0, 0);
 }
 
 
@@ -77,11 +77,16 @@ void Player::UpdateXPos(vector <Tile*> tilemap, bool isRight, float deltaTime)
 	if (isRight)
 	{
 		m_xPos += (m_velocity * deltaTime);
+		m_rotation = XMConvertToRadians(270);
 	}
 	else
 	{
 		m_xPos -= (m_velocity * deltaTime);
+		m_rotation = XMConvertToRadians(90);
 	}
+
+	m_dirX = sinf(m_rotation);
+	m_dirY = cosf(m_rotation);
 	
 	if (CollisionCheck(tilemap))
 	{
@@ -97,11 +102,16 @@ void Player::UpdateYPos(vector <Tile*> tilemap, bool isUp, float deltaTime)
 	if (isUp)
 	{
 		m_yPos += m_velocity * deltaTime;
+		m_rotation = XMConvertToRadians(0);
 	}
 	else
 	{
 		 m_yPos -= m_velocity * deltaTime;
+		 m_rotation = XMConvertToRadians(180);
 	}
+
+	m_dirX = sinf(m_rotation);
+	m_dirY = cosf(m_rotation);
 
 	if (CollisionCheck(tilemap))
 	{
@@ -164,7 +174,7 @@ void Player::SprintOn()
 
 void Player::SprintOff()
 {
-	m_velocity = 20.0f;
+	m_velocity = 15.0f;
 }
 
 

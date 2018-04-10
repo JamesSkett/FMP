@@ -41,7 +41,7 @@ public:
 	bool CheckTile(XMFLOAT2 pos);
 
 private:
-	float m_speed = 8.0f;
+	float m_speed = 6.0f;
 	Pathfinding* pathfinder;
 	vector <XMFLOAT2> waypoints;
 
@@ -54,4 +54,10 @@ private:
 	bool m_playerInSight = false;
 
 	XMFLOAT2 lastPlayerPos;
+};
+
+enum State
+{
+	RANDOM_WANDER = 0,
+	CHASE = 1
 };

@@ -147,13 +147,7 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 			projection = XMMatrixOrthographicLH(w, h, m_cNearClip, m_cFarClip);
 			view = XMMatrixIdentity();
 
-			
-
-			m_pPlayer->LookAt(mouseX, -mouseY);
 			m_pMonster->Update(XMFLOAT2(m_pPlayer->GetXPos(), m_pPlayer->GetYPos()), m_deltaTime);
-			//m_pMonster->RandomWander(m_deltaTime);
-
-			//m_pMonster->Chase(m_deltaTime);
 
 			for (unsigned int i = 0; i < m_vProjectiles.size(); i++)
 			{
@@ -250,43 +244,8 @@ void GameSystem::GetKeyboardInput()
 		m_pPlayer->UpdateXPos(m_tileMap, false, m_deltaTime);
 	}
 
-	if (renderer->IsKeyPressed(DIK_UP))
-	{
-		
-	}
 
-	if (renderer->IsKeyPressed(DIK_DOWN))
-	{
-		
-	}
-
-	if (renderer->IsKeyPressed(DIK_RIGHT))
-	{
-		
-	}
-
-	if (renderer->IsKeyPressed(DIK_LEFT))
-	{
-		
-	}
-
-	if (renderer->IsKeyPressed(DIK_Q))
-	{
-	}
-	if (renderer->IsKeyPressed(DIK_E))
-	{
-	}
-
-	if (renderer->IsKeyPressed(DIK_N))
-	{
-	}
-
-	if (renderer->IsKeyPressed(DIK_M))
-	{
-	}
-
-
-	if (renderer->mouseCurrState.rgbButtons[2])
+	if (renderer->mouseCurrState.rgbButtons[0])
 	{
 		if (!m_isMousePressed)
 		{
@@ -299,7 +258,7 @@ void GameSystem::GetKeyboardInput()
 
 			m_vProjectiles[m_bulletNum]->SetDirection(m_pPlayer->GetDirectionX(), m_pPlayer->GetDirectionY());
 
-			
+			m_vProjectiles[m_bulletNum]->SetRotation(m_pPlayer->GetRotation());
 
 			m_bulletNum++;
 
@@ -312,14 +271,11 @@ void GameSystem::GetKeyboardInput()
 		}
 	}
 
-	if (!renderer->mouseCurrState.rgbButtons[2])
+	if (!renderer->mouseCurrState.rgbButtons[0])
 	{
 		m_isMousePressed = false;
 	}
 
-	if (renderer->IsKeyPressed(DIK_SPACE))
-	{
-	}
 }
 
 void GameSystem::GetControllerInput()
