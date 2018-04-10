@@ -152,7 +152,8 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 			m_pPlayer->LookAt(mouseX, -mouseY);
 			m_pMonster->Update(XMFLOAT2(m_pPlayer->GetXPos(), m_pPlayer->GetYPos()), m_deltaTime);
 			//m_pMonster->RandomWander(m_deltaTime);
-			m_pMonster->LineOfSightCheck(XMFLOAT2(m_pPlayer->GetXPos(), m_pPlayer->GetYPos()));
+
+			//m_pMonster->Chase(m_deltaTime);
 
 			for (unsigned int i = 0; i < m_vProjectiles.size(); i++)
 			{

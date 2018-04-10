@@ -1,7 +1,7 @@
 #include "Monster.h"
 #include "GameSystem.h"
 #include <time.h>
-
+#include <math.h>
 
 Monster::Monster(XMFLOAT4 colour, float x, float y, float z, float scale, float width, float height) :
 	Entity(colour, x, y, z, scale, width, height)
@@ -18,15 +18,25 @@ Monster::~Monster()
 bool chaseStarted = false;
 void Monster::Update(XMFLOAT2 targetPos, float deltaTime)
 {
+	LineOfSightCheck(targetPos);
+
 	if (m_playerInSight)
 	{
 		Chase(deltaTime);
 		chaseStarted = true;
+		waypoints.clear();
 	}
 	else if (chaseStarted)
 	{
 		if (MoveTo(lastPlayerPos.x, lastPlayerPos.y, deltaTime))
+		{
 			chaseStarted = false;
+			m_speed = 8.0f;
+		}
+	}
+	else if (!m_playerInSight)
+	{
+		RandomWander(deltaTime);
 	}
 }
 
@@ -84,17 +94,15 @@ bool Monster::LineOfSightCheck(XMFLOAT2 targetPos)
 
 	//m_rotation = XMConvertToRadians(45);
 	float currRotation = XMConvertToDegrees(m_rotation);
-	// Keep rotation in a nice 360 circle
-	if (currRotation <= -1) currRotation = 360 + currRotation;
-	if (currRotation >= 360) currRotation = currRotation - 360;
 
+	currRotation = fabsf(currRotation);
 
 	// Get angle we'd need to look straight at B
 	float angle = -atan2f(targetPos.x - m_xPos, targetPos.y - m_yPos);
 	angle = angle * 180 / XM_PI;
-	// Keep rotation in a nice 360 circle
-	if (angle <= -1) angle = 360 + angle;
-	if (angle >= 360) angle = angle - 360;
+
+	angle = fabsf(angle);
+
 	// Now check if our rotation falls in our field of view, 60 degrees on each side
 	if (currRotation < angle - 50 || currRotation > angle + 50)
 	{
@@ -176,9 +184,12 @@ void Monster::RandomWander(float deltaTime)
 
 void Monster::Chase(float deltaTime)
 {
-
-	m_speed = 16.0f;
-	MoveTo(lastPlayerPos.x, lastPlayerPos.y, deltaTime);
+	if (m_playerInSight)
+	{
+		m_speed = 16.0f;
+		MoveTo(lastPlayerPos.x, lastPlayerPos.y, deltaTime);
+	}
+	
 	
 }
 
