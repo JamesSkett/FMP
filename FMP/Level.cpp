@@ -1,7 +1,7 @@
 #include "Level.h"
 #include "Floor.h"
 #include "Wall.h"
-
+#include "Renderer.h"
 #include <fstream>
 
 Level::Level()
@@ -62,18 +62,18 @@ void Level::SetUpLevelLayout(vector <Tile*> &tilemap, Player* &player, Monster* 
 			switch (tile)
 			{
 			case '#': //create a wall tile
-				tilemap.push_back(new Wall(colour.DarkSlateGray, yPos / m_tileOffset, -xPos / m_tileOffset, 5, 0.25f, 0.34f, 0.34f));
+				tilemap.push_back(new Wall(Renderer::colour.DarkSlateGray, yPos / m_tileOffset, -xPos / m_tileOffset, 5, 0.25f, 0.34f, 0.34f));
 				break;
 			case '.': //create a floor tile
-				tilemap.push_back(new Floor(colour.WhiteSmoke, yPos / m_tileOffset, -xPos / m_tileOffset, 5, 0.25f, 0.29f, 0.29f));
+				tilemap.push_back(new Floor(Renderer::colour.WhiteSmoke, yPos / m_tileOffset, -xPos / m_tileOffset, 5, 0.25f, 0.29f, 0.29f));
 				break;
 			case '@':
-				tilemap.push_back(new Floor(colour.WhiteSmoke, yPos / m_tileOffset, -xPos / m_tileOffset, 6, 0.25f, 0.29f, 0.29f));
-				player = new Player(colour.Fuchsia, yPos / m_tileOffset, -xPos / m_tileOffset, 1, 0.125f, 0.245f, 0.245f);
+				tilemap.push_back(new Floor(Renderer::colour.WhiteSmoke, yPos / m_tileOffset, -xPos / m_tileOffset, 6, 0.25f, 0.29f, 0.29f));
+				player = new Player(Renderer::colour.Fuchsia, yPos / m_tileOffset, -xPos / m_tileOffset, 1, 0.125f, 0.245f, 0.245f);
 				break;
 			case 'M':
-				tilemap.push_back(new Floor(colour.WhiteSmoke, yPos / m_tileOffset, -xPos / m_tileOffset, 6, 0.25f, 0.29f, 0.29f));
-				monster = new Monster(colour.DarkRed, yPos / m_tileOffset, -xPos / m_tileOffset, 1, 0.125f, 0.245f, 0.245f);
+				tilemap.push_back(new Floor(Renderer::colour.WhiteSmoke, yPos / m_tileOffset, -xPos / m_tileOffset, 6, 0.25f, 0.29f, 0.29f));
+				monster = new Monster(Renderer::colour.DarkRed, yPos / m_tileOffset, -xPos / m_tileOffset, 1, 0.125f, 0.245f, 0.245f);
 				break;
 			default: //If it gets here, tile hasnt been registered the, so print out a warning
 				printf("WARNING: Unknown tile %c at %d,%d", tile, x, y);
@@ -91,6 +91,6 @@ void Level::LoadProjectiles(vector<Projectile*> &projectiles)
 {
 	for (unsigned int i = 0; i < 50; i++)
 	{
-		projectiles.push_back(new Projectile(colour.BurlyWood, 0.0f, 0.0f, 1.0f, 0.05f, 0.1f, 0.1f));
+		projectiles.push_back(new Projectile(Renderer::colour.BurlyWood, 0.0f, 0.0f, 1.0f, 0.05f, 0.1f, 0.1f));
 	}
 }

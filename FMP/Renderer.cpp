@@ -10,6 +10,7 @@ ID3D11DeviceContext*     Renderer::pImmediateContext;
 ID3D11RenderTargetView*  Renderer::pBackBufferRTView;
 ID3D11BlendState*        Renderer::pAlphaBlendEnable;
 ID3D11BlendState*        Renderer::pAlphaBlendDisable;
+Colour                   Renderer::colour;
 
 Time Renderer::time;
 

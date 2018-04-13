@@ -4,7 +4,6 @@
 #include <DirectXMath.h>
 #include "Tile.h"
 #include "Player.h"
-#include "Colours.h"
 #include "Monster.h"
 #include "Projectile.h"
 
@@ -24,7 +23,6 @@ public:
 private:
 	vector <string> m_vlevelData;
 	
-	Colour colour;
 
 	float m_tileOffset = 2.25f;
 };

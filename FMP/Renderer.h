@@ -14,7 +14,7 @@ using namespace DirectX;
 #include "Time.h"
 #include "Entity.h"
 #include "Level.h"
-
+#include "Colours.h"
 
 
 
@@ -60,7 +60,8 @@ public:
 	static ID3D11RenderTargetView* pBackBufferRTView;
 	static ID3D11BlendState*       pAlphaBlendEnable;
 	static ID3D11BlendState*       pAlphaBlendDisable;
-
+	static Colour colour;
+	
 	//matrices for object transforms
 	XMMATRIX identity, projection, view;
 
