@@ -27,10 +27,7 @@ public:
 	void SetDirection(float dx, float dy);
 	//Set the roatation value for the projectile
 	void SetRotation(float angle);
-	//check collisions with the monster //Returns true/false
-	bool CollisionCheck(Entity* colObject);
-	//Check collitions with the walls //Returns true/false
-	bool CollisionCheck(vector <Tile*> tilemap);
+
 
 private:
 	float m_velocity = 50.0f;

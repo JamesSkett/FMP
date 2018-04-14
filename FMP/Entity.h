@@ -9,6 +9,12 @@
 #include <DirectXMath.h>
 using namespace DirectX;
 
+#include <vector>
+
+using namespace std;
+
+#include "Tile.h"
+
 class Entity
 {
 public:
@@ -18,6 +24,10 @@ public:
 	void Draw(XMMATRIX view, XMMATRIX projection);
 
 	void GetColBoxParameters(float &x, float &y, float &w, float &h);
+	//Check collitions with the walls //Returns true/false
+	bool CollisionCheck(vector<Tile*> tilemap);
+	//check collisions with the monster //Returns true/false
+	bool CollisionCheck(Entity * colObject);
 
 	struct POS_COL_VERTEX
 	{
@@ -32,6 +42,8 @@ public:
 	
 protected:
 	HRESULT CreateVertices(XMFLOAT4 colour);
+
+	
 
 	ID3D11Buffer*			m_pVertexBuffer;
 	ID3D11VertexShader*		m_pVertexShader;

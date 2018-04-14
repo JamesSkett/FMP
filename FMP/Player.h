@@ -47,9 +47,6 @@ public:
 	//Update the scalar value
 	void UpdateScale(float scale);
 
-	//check for collisions across the whole level
-	bool CollisionCheck(vector <Tile*> tilemap);
-
 	//Rotate the player to look at a specified point targetX & targetY
 	void LookAt(float targetX, float targetY);
 
@@ -58,7 +55,7 @@ public:
 
 private:
 	//Player move speed
-	float m_velocity = 15.0f;
+	float m_velocity = 10.0f;
 
 	Asset* m_soundWave;
 };
