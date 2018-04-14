@@ -27,6 +27,8 @@ Asset::~Asset()
 	if (m_pVertexShader) m_pVertexShader->Release();
 	if (m_pPixelShader)  m_pPixelShader->Release();
 	if (m_pTexture)     m_pTexture->Release();
+	//if (m_pTexture1 && m_isTexture1)     m_pTexture->Release();
+	//if (m_pTexture2 && m_isTexture2)     m_pTexture->Release();
 	if (m_pSampler0)     m_pSampler0->Release();
 }
 
@@ -59,7 +61,11 @@ void Asset::Draw(XMMATRIX view, XMMATRIX projection)
 	Renderer::pImmediateContext->VSSetShader(m_pVertexShader, 0, 0);
 	Renderer::pImmediateContext->PSSetShader(m_pPixelShader, 0, 0);
 	Renderer::pImmediateContext->IASetInputLayout(m_pInputLayout);
-	Renderer::pImmediateContext->PSSetShaderResources(0, 1, &m_pTexture);
+
+
+	if(m_isTexture0) Renderer::pImmediateContext->PSSetShaderResources(0, 1, &m_pTexture);
+	else if (m_isTexture1) Renderer::pImmediateContext->PSSetShaderResources(0, 1, &m_pTexture1);
+	else if (m_isTexture2) Renderer::pImmediateContext->PSSetShaderResources(0, 1, &m_pTexture2);
 
 	//Set the vertex buffer //03-01
 	UINT stride = sizeof(POS_TEX_VERTEX);
@@ -188,6 +194,8 @@ HRESULT Asset::CreateVertices(char* filename)
 	}
 
 	D3DX11CreateShaderResourceViewFromFile(Renderer::pD3DDevice, filename, NULL, NULL, &m_pTexture, NULL);
+	D3DX11CreateShaderResourceViewFromFile(Renderer::pD3DDevice, "Assets/viewconeSeen.png", NULL, NULL, &m_pTexture1, NULL);
+	D3DX11CreateShaderResourceViewFromFile(Renderer::pD3DDevice, "Assets/viewconeSearching.png", NULL, NULL, &m_pTexture2, NULL);
 
 	D3D11_SAMPLER_DESC sampler_desc;
 	ZeroMemory(&sampler_desc, sizeof(sampler_desc));

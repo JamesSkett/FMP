@@ -32,6 +32,10 @@ public:
 		XMMATRIX WorldViewProjection;
 	};
 
+	bool m_isTexture0 = true;
+	bool m_isTexture1 = false;
+	bool m_isTexture2 = false;
+
 private:
 	HRESULT CreateVertices(char* filename);
 
@@ -42,6 +46,8 @@ private:
 	ID3D11Buffer*			m_pConstantBuffer0;
 
 	ID3D11ShaderResourceView* m_pTexture;
+	ID3D11ShaderResourceView* m_pTexture1;
+	ID3D11ShaderResourceView* m_pTexture2;
 	ID3D11SamplerState*       m_pSampler0;
 
 	float m_xPos, m_yPos, m_zPos, m_scale;
@@ -53,5 +59,7 @@ private:
 
 	float m_screenSpaceX;
 	float m_screenSpaceY;
+
+	
 };
 
