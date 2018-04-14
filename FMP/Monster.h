@@ -24,6 +24,8 @@ public:
 	float GetYPos();
 	//Get the value of m_playerInSight
 	bool GetPlayerInSight();
+	//Get the value of m_isSearching
+	bool GetIsSearching();
 
 	float GetRotation();
 

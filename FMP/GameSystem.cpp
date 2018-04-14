@@ -174,6 +174,13 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 			m_viewCone->SetPos(m_pMonster->GetXPos(), m_pMonster->GetYPos());
 			m_viewCone->SetRotation(m_pMonster->GetRotation());
 
+			if (m_pMonster->GetIsSearching())
+			{
+				m_viewCone->m_isTexture2 = true;
+				m_viewCone->m_isTexture0 = false;
+				m_viewCone->m_isTexture1 = false;
+			}
+
 			DrawLevel(view, projection);
 
 			UpdateText();
@@ -363,8 +370,16 @@ void GameSystem::UpdateText()
 	if (m_pMonster->GetPlayerInSight())
 	{
 		inSight = "Player in Sight: True";
+		m_viewCone->m_isTexture1 = true;
+		m_viewCone->m_isTexture0 = false;
 	}
-	else inSight = "Player in Sight: False";
+	else
+	{
+		inSight = "Player in Sight: False";
+		m_viewCone->m_isTexture1 = false;
+		m_viewCone->m_isTexture0 = true;
+
+	}
 
 	m_monsterLOS->AddText(inSight, 0.5f, 0.99f, 0.02f);
 

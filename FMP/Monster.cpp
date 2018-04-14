@@ -42,6 +42,7 @@ void Monster::Update(XMFLOAT2 targetPos, float deltaTime)
 			chaseStarted = false;
 			m_isSearching = true;
 			m_speed = 8.0f;
+			m_timer = 3.0f;
 		}
 	}
 	else if (!m_playerInSight && m_isSearching)
@@ -67,6 +68,11 @@ float Monster::GetYPos()
 bool Monster::GetPlayerInSight()
 {
 	return m_playerInSight;
+}
+
+bool Monster::GetIsSearching()
+{
+	return m_isSearching;
 }
 
 float Monster::GetRotation()
