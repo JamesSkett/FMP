@@ -6,7 +6,7 @@
 Monster::Monster(XMFLOAT4 colour, float x, float y, float z, float scale, float width, float height) :
 	Entity(colour, x, y, z, scale, width, height)
 {
-	m_rotation = 0;
+	m_rotation = XMConvertToRadians(-90);
 }
 
 
@@ -18,7 +18,16 @@ Monster::~Monster()
 bool chaseStarted = false;
 void Monster::Update(XMFLOAT2 targetPos, float deltaTime)
 {
+	
+	float angle = XMConvertToDegrees(m_rotation);
+
+	if (angle == -90)
+	{
+		m_rotation = XMConvertToRadians(270);
+	}
+
 	LineOfSightCheck(targetPos);
+
 
 	if (m_playerInSight)
 	{
@@ -31,8 +40,13 @@ void Monster::Update(XMFLOAT2 targetPos, float deltaTime)
 		if (MoveTo(lastPlayerPos.x, lastPlayerPos.y, deltaTime))
 		{
 			chaseStarted = false;
+			m_isSearching = true;
 			m_speed = 8.0f;
 		}
+	}
+	else if (!m_playerInSight && m_isSearching)
+	{
+		Search(targetPos, deltaTime);
 	}
 	else if (!m_playerInSight)
 	{
@@ -102,6 +116,7 @@ bool Monster::LineOfSightCheck(XMFLOAT2 targetPos)
 	angle = angle * 180 / XM_PI;
 
 	angle = fabsf(angle);
+
 
 	// Now check if our rotation falls in our field of view, 60 degrees on each side
 	if (currRotation < angle - 50 || currRotation > angle + 50)
@@ -191,6 +206,41 @@ void Monster::Chase(float deltaTime)
 	}
 	
 	
+}
+
+void Monster::Search(XMFLOAT2 playerPos, float deltaTime)
+{
+	int randTileNum = rand() % 901;
+
+
+	if (pathfinder->GetIsPathFound())
+	{
+		if (waypointNum >= waypoints.size())
+		{
+			pathfinder->SetIsPathFound(false);
+			waypointNum = 0;
+		}
+		else if (MoveTo(waypoints[waypointNum].x, waypoints[waypointNum].y, deltaTime))
+		{
+			waypointNum++;
+		}
+	}
+	else
+	{
+		float distance = sqrt((playerPos.x - m_tileMap[randTileNum]->GetXPos()) * (playerPos.x - m_tileMap[randTileNum]->GetXPos()) + (playerPos.y - m_tileMap[randTileNum]->GetYPos()) * (playerPos.y - m_tileMap[randTileNum]->GetYPos()));
+		if (distance <= 1)
+		{
+			waypoints = pathfinder->FindPath(XMFLOAT2(m_xPos, m_yPos), XMFLOAT2(m_tileMap[randTileNum]->GetXPos(), m_tileMap[randTileNum]->GetYPos()));
+		}
+	}
+
+	if (m_timer <= 0)
+	{
+		m_isSearching = false;
+	}
+
+	m_timer -= deltaTime;
+
 }
 
 bool Monster::CheckTile(XMFLOAT2 pos)
