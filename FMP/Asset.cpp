@@ -12,6 +12,7 @@ Asset::Asset(char* filename, float x, float y, float z, float scale, float width
 	m_width = width;
 	m_height = height;
 
+	//Create the object vertices
 	if (FAILED(CreateVertices(filename)))
 	{
 		DXTRACE_MSG("Failed to Initialise Graphics");
