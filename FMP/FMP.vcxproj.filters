@@ -54,6 +54,7 @@
     <ClCompile Include="Projectile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Math.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Time.h">
@@ -104,6 +105,7 @@
     <ClInclude Include="Projectile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Math.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
