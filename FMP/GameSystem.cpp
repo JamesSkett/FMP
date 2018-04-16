@@ -178,6 +178,10 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 			{
 				m_viewCone->SetColour(Renderer::colour.OrangeRed);
 			}
+			else if (!m_pMonster->GetIsSearching() && !m_pMonster->GetPlayerInSight())
+			{
+				m_viewCone->SetColour(Renderer::colour.Black);
+			}
 
 			DrawLevel(view, projection);
 

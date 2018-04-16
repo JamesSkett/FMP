@@ -129,8 +129,6 @@ void Player::UpdateScale(float scale)
 	m_scale += scale;
 }
 
-
-
 void Player::LookAt(float targetX, float targetY)
 {
 	m_rotation = -atan2f((targetX - m_screenSpaceX), (targetY - m_screenSpaceY));

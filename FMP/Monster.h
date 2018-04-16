@@ -16,7 +16,6 @@ public:
 	//Updates the monster 
 	void Update(XMFLOAT2 targetPos, float deltaTime);
 
-
 	//Gets the current x position value
 	float GetXPos();
 	//Gets the current y position value
@@ -42,9 +41,6 @@ public:
 	void Search(XMFLOAT2 playerPos, float deltaTime);
 
 	bool CheckTile(XMFLOAT2 pos);
-
-	float Dot(XMFLOAT2 xy0, XMFLOAT2 xy1);
-
 
 private:
 	float m_speed = 6.0f;
