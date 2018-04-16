@@ -176,9 +176,7 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 
 			if (m_pMonster->GetIsSearching())
 			{
-				m_viewCone->m_isTexture2 = true;
-				m_viewCone->m_isTexture0 = false;
-				m_viewCone->m_isTexture1 = false;
+				m_viewCone->SetColour(Renderer::colour.OrangeRed);
 			}
 
 			DrawLevel(view, projection);
@@ -370,14 +368,12 @@ void GameSystem::UpdateText()
 	if (m_pMonster->GetPlayerInSight())
 	{
 		inSight = "Player in Sight: True";
-		m_viewCone->m_isTexture1 = true;
-		m_viewCone->m_isTexture0 = false;
+		m_viewCone->SetColour(Renderer::colour.Green);
 	}
 	else
 	{
 		inSight = "Player in Sight: False";
-		m_viewCone->m_isTexture1 = false;
-		m_viewCone->m_isTexture0 = true;
+		m_viewCone->SetColour(Renderer::colour.Black);
 
 	}
 

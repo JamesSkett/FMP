@@ -6,7 +6,7 @@
 Player::Player(XMFLOAT4 colour, float x, float y, float z, float scale, float width, float height)
 	: Entity(colour, x, y, z, scale, width, height)
 {
-	m_soundWave = new Asset("Assets/", x, y, z - 0.2f, 1, 0, 0);
+
 }
 
 

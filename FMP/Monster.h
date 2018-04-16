@@ -2,7 +2,6 @@
 #include "Entity.h"
 #include "Tile.h"
 #include "Pathfinding.h"
-#include "Asset.h"
 
 #include <vector>
 
@@ -43,6 +42,8 @@ public:
 	void Search(XMFLOAT2 playerPos, float deltaTime);
 
 	bool CheckTile(XMFLOAT2 pos);
+
+	float Dot(XMFLOAT2 xy0, XMFLOAT2 xy1);
 
 
 private:

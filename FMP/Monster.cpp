@@ -19,12 +19,6 @@ bool chaseStarted = false;
 void Monster::Update(XMFLOAT2 targetPos, float deltaTime)
 {
 	
-	float angle = XMConvertToDegrees(m_rotation);
-
-	if (angle == -90)
-	{
-		m_rotation = XMConvertToRadians(270);
-	}
 
 	LineOfSightCheck(targetPos);
 
@@ -110,22 +104,19 @@ void Monster::SetPathfinder(vector<Tile*> tilemap)
 
 bool Monster::LineOfSightCheck(XMFLOAT2 targetPos)
 {
-	// Make sure A is facing towards B
+	
+	//get the direction the monster is looking
+	float dirX = cosf(m_rotation + (XM_PI/2.f));
+	float dirY = sinf(m_rotation + (XM_PI/2.f));
 
-	//m_rotation = XMConvertToRadians(45);
-	float currRotation = XMConvertToDegrees(m_rotation);
+	//get the direction the player is from the monster
+	XMVECTOR dir = XMVector2Normalize(XMVectorSet(targetPos.x - m_xPos, targetPos.y - m_yPos, 0, 0));
 
-	currRotation = fabsf(currRotation);
+	//calculate the angle the angle based on the facing direction
+	float angle = (float)acos(Dot(XMFLOAT2(dirX, dirY), XMFLOAT2(XMVectorGetX(dir), XMVectorGetY(dir))));
 
-	// Get angle we'd need to look straight at B
-	float angle = -atan2f(targetPos.x - m_xPos, targetPos.y - m_yPos);
-	angle = angle * 180 / XM_PI;
-
-	angle = fabsf(angle);
-
-
-	// Now check if our rotation falls in our field of view, 60 degrees on each side
-	if (currRotation < angle - 50 || currRotation > angle + 50)
+	//if the angle is in the 50 degree cone
+	if (XMConvertToDegrees(angle) >= 50)
 	{
 		m_playerInSight = false;
 		return false;
@@ -273,4 +264,9 @@ bool Monster::CheckTile(XMFLOAT2 pos)
 	if (!currentTile->GetIsWalkable()) return true;
 
 	return false;
+}
+
+float Monster::Dot(XMFLOAT2 xy0, XMFLOAT2 xy1)
+{
+	return (xy0.x * xy1.x) + (xy0.y * xy1.y);
 }
