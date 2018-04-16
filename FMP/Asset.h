@@ -9,6 +9,8 @@
 #include <DirectXMath.h>
 using namespace DirectX;
 
+#include "Renderer.h"
+
 class Asset
 {
 public:
@@ -21,6 +23,8 @@ public:
 	void SetRotation(float rotation);
 	void UpdateRotation(float speed);
 
+	void SetColour(XMFLOAT4 colour);
+
 	struct POS_TEX_VERTEX
 	{
 		XMFLOAT3 Pos;
@@ -30,6 +34,7 @@ public:
 	struct ENTITY_CONSTANT_BUFFER
 	{
 		XMMATRIX WorldViewProjection;
+		XMFLOAT4 colour;
 	};
 
 	bool m_isTexture0 = true;
@@ -46,8 +51,6 @@ private:
 	ID3D11Buffer*			m_pConstantBuffer0;
 
 	ID3D11ShaderResourceView* m_pTexture;
-	ID3D11ShaderResourceView* m_pTexture1;
-	ID3D11ShaderResourceView* m_pTexture2;
 	ID3D11SamplerState*       m_pSampler0;
 
 	float m_xPos, m_yPos, m_zPos, m_scale;
@@ -60,6 +63,6 @@ private:
 	float m_screenSpaceX;
 	float m_screenSpaceY;
 
-	
+	XMFLOAT4 m_colour;
 };
 

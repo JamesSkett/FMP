@@ -4,6 +4,7 @@ SamplerState sampler0;
 cbuffer CBuffer0
 {
 	matrix WVP;
+	float4 colour;
 };
 
 struct VOut
@@ -26,5 +27,5 @@ VOut VShader(float4 position : POSITION, float2 texcoord : TEXCOORD)
 
 float4 PShader(float4 position : SV_POSITION, float2 texcoord : TEXCOORD) : SV_TARGET
 {
-	return texture0.Sample(sampler0, texcoord);
+	return texture0.Sample(sampler0, texcoord) * colour;
 }

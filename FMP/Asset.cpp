@@ -1,5 +1,4 @@
 #include "Asset.h"
-#include "Renderer.h"
 
 
 Asset::Asset(char* filename, float x, float y, float z, float scale, float width, float height)
@@ -11,6 +10,8 @@ Asset::Asset(char* filename, float x, float y, float z, float scale, float width
 
 	m_width = width;
 	m_height = height;
+
+	m_colour = Renderer::colour.Black;
 
 	//Create the object vertices
 	if (FAILED(CreateVertices(filename)))
@@ -55,18 +56,20 @@ void Asset::Draw(XMMATRIX view, XMMATRIX projection)
 	ENTITY_CONSTANT_BUFFER entity_cb_values;
 
 	entity_cb_values.WorldViewProjection = WVP;
+	entity_cb_values.colour = m_colour;
 
 	Renderer::pImmediateContext->UpdateSubresource(m_pConstantBuffer0, 0, 0, &entity_cb_values, 0, 0);
 
-	Renderer::pImmediateContext->VSSetConstantBuffers(0, 1, &m_pConstantBuffer0);
+	
 	Renderer::pImmediateContext->VSSetShader(m_pVertexShader, 0, 0);
 	Renderer::pImmediateContext->PSSetShader(m_pPixelShader, 0, 0);
 	Renderer::pImmediateContext->IASetInputLayout(m_pInputLayout);
+	Renderer::pImmediateContext->VSSetConstantBuffers(0, 1, &m_pConstantBuffer0);
+	Renderer::pImmediateContext->PSSetConstantBuffers(0, 1, &m_pConstantBuffer0);
 
-
-	if(m_isTexture0) Renderer::pImmediateContext->PSSetShaderResources(0, 1, &m_pTexture);
-	else if (m_isTexture1) Renderer::pImmediateContext->PSSetShaderResources(0, 1, &m_pTexture1);
-	else if (m_isTexture2) Renderer::pImmediateContext->PSSetShaderResources(0, 1, &m_pTexture2);
+	Renderer::pImmediateContext->PSSetShaderResources(0, 1, &m_pTexture);
+	//else if (m_isTexture1) Renderer::pImmediateContext->PSSetShaderResources(0, 1, &m_pTexture1);
+	//else if (m_isTexture2) Renderer::pImmediateContext->PSSetShaderResources(0, 1, &m_pTexture2);
 
 	//Set the vertex buffer //03-01
 	UINT stride = sizeof(POS_TEX_VERTEX);
@@ -96,6 +99,11 @@ void Asset::SetRotation(float rotation)
 void Asset::UpdateRotation(float speed)
 {
 	m_rotation += speed;
+}
+
+void Asset::SetColour(XMFLOAT4 colour)
+{
+	m_colour = colour;
 }
 
 HRESULT Asset::CreateVertices(char* filename)
@@ -135,7 +143,7 @@ HRESULT Asset::CreateVertices(char* filename)
 	ZeroMemory(&constant_buffer_desc, sizeof(constant_buffer_desc));
 
 	constant_buffer_desc.Usage = D3D11_USAGE_DEFAULT; //Can use UpdateSubresource() to update
-	constant_buffer_desc.ByteWidth = 64;
+	constant_buffer_desc.ByteWidth = sizeof(ENTITY_CONSTANT_BUFFER);
 	constant_buffer_desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 
 	hr = Renderer::pD3DDevice->CreateBuffer(&constant_buffer_desc, NULL, &m_pConstantBuffer0);
@@ -195,8 +203,6 @@ HRESULT Asset::CreateVertices(char* filename)
 	}
 
 	D3DX11CreateShaderResourceViewFromFile(Renderer::pD3DDevice, filename, NULL, NULL, &m_pTexture, NULL);
-	D3DX11CreateShaderResourceViewFromFile(Renderer::pD3DDevice, "Assets/viewconeSeen.png", NULL, NULL, &m_pTexture1, NULL);
-	D3DX11CreateShaderResourceViewFromFile(Renderer::pD3DDevice, "Assets/viewconeSearching.png", NULL, NULL, &m_pTexture2, NULL);
 
 	D3D11_SAMPLER_DESC sampler_desc;
 	ZeroMemory(&sampler_desc, sizeof(sampler_desc));
