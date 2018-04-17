@@ -28,6 +28,8 @@ public:
 	bool CollisionCheck(vector<Tile*> tilemap);
 	//check collisions with the monster //Returns true/false
 	bool CollisionCheck(Entity * colObject);
+	//check collisions with the doors //Returns true/false
+	bool CollisionCheck(vector <Asset*> doors);
 
 	struct POS_COL_VERTEX
 	{

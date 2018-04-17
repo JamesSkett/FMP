@@ -57,6 +57,7 @@ private:
 	//vector objects
 	vector <Tile*> m_tileMap;
 	vector <Projectile*> m_vProjectiles;
+	vector <Asset*> m_vDoors;
 
 	//frames per second
 	int m_fps = 0;

@@ -249,3 +249,32 @@ bool Entity::CollisionCheck(Entity* colObject)
 
 	return false;
 }
+
+bool Entity::CollisionCheck(vector <Asset*> doors)
+{
+	for (unsigned int i = 0; i < doors.size(); i++)
+	{
+		
+		float box1x = m_xPos - (m_width / 2);
+		float box1y = m_yPos - (m_height / 2);
+		float box1w = m_width;
+		float box1h = m_height;
+
+		float box2x, box2y;
+		float box2w, box2h;
+
+		doors[i]->GetParameters(box2x, box2y, box2w, box2h);
+
+		box2x = box2x - (box2w / 2);
+		box2y = box2y - (box2h / 2);
+
+		if ((box1x < box2x + box2w) && (box1x + box1w > box2x) && (box1y < box2y + box2h) && (box1h + box1y > box2y))
+		{
+
+			return true;
+		}
+		
+	}
+
+	return false;
+}

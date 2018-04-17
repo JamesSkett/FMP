@@ -41,7 +41,7 @@ float Time::GetDeltaTime()
 	if (tickCount < 0.0f)
 		tickCount = 0;
 
-	return float(tickCount) / countsPerSecond;
+	return float(tickCount) / (float)countsPerSecond;
 }
 
 int Time::GetFPS()

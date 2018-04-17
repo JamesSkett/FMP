@@ -38,7 +38,8 @@ public:
 	//Behaviours
 	void RandomWander(float deltaTime);
 	void Chase(float deltaTime);
-	void Search(XMFLOAT2 playerPos, float deltaTime);
+	void Search(XMFLOAT2 playerPos, float deltaTime);  
+	void Sneak(float playerPos, float deltaTime);
 
 	bool CheckTile(XMFLOAT2 pos);
 
@@ -66,9 +67,9 @@ private:
 enum State
 {
 	RANDOM_WANDER = 0,
-	CHASE = 1,
-	SEARCH = 2,
-	SNEAK = 3,
-	FLEE = 4,
-	ATTACK = 5
+	CHASE         = 1,
+	SEARCH        = 2,
+	SNEAK         = 3,
+	FLEE          = 4,
+	ATTACK        = 5
 };

@@ -2,6 +2,8 @@
 #include "Floor.h"
 #include "Wall.h"
 #include "Renderer.h"
+#include "Asset.h"
+
 #include <fstream>
 
 Level::Level()
@@ -44,7 +46,7 @@ void Level::LoadLevelData(string filePath)
 
 }
 
-void Level::SetUpLevelLayout(vector <Tile*> &tilemap, Player* &player, Monster* &monster)
+void Level::SetUpLevelLayout(vector <Tile*> &tilemap, Player* &player, Monster* &monster, vector <Asset*> &vDoors)
 {
 	char tile;
 	//loops through the _levelData vector and processes each tile
@@ -74,6 +76,14 @@ void Level::SetUpLevelLayout(vector <Tile*> &tilemap, Player* &player, Monster* 
 			case 'M':
 				tilemap.push_back(new Floor(Renderer::colour.WhiteSmoke, yPos / m_tileOffset, -xPos / m_tileOffset, 6, 0.25f, 0.29f, 0.29f));
 				monster = new Monster(Renderer::colour.Black, yPos / m_tileOffset, -xPos / m_tileOffset, 1, 0.125f, 0.245f, 0.245f);
+				break;
+			case 'd':
+				tilemap.push_back(new Floor(Renderer::colour.WhiteSmoke, yPos / m_tileOffset, -xPos / m_tileOffset, 6, 0.25f, 0.29f, 0.29f));
+				vDoors.push_back(new Asset("Assets/Door.png", yPos / m_tileOffset, -xPos / m_tileOffset, 4, 0.25f, 0.29f, 0.145f, 0.0f));
+				break;
+			case 'D':
+				tilemap.push_back(new Floor(Renderer::colour.WhiteSmoke, yPos / m_tileOffset, -xPos / m_tileOffset, 6, 0.25f, 0.29f, 0.29f));
+				vDoors.push_back(new Asset("Assets/Door.png", yPos / m_tileOffset, -xPos / m_tileOffset, 4, 0.25f, 0.29f, 0.145f, 90.0f));
 				break;
 			default: //If it gets here, tile hasnt been registered the, so print out a warning
 				printf("WARNING: Unknown tile %c at %d,%d", tile, x, y);

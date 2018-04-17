@@ -1,7 +1,7 @@
 #include "Asset.h"
 
 
-Asset::Asset(char* filename, float x, float y, float z, float scale, float width, float height)
+Asset::Asset(char* filename, float x, float y, float z, float scale, float width, float height, float rotation)
 {
 	m_xPos = x;
 	m_yPos = y;
@@ -10,6 +10,8 @@ Asset::Asset(char* filename, float x, float y, float z, float scale, float width
 
 	m_width = width;
 	m_height = height;
+
+	m_rotation = XMConvertToRadians(rotation);
 
 	m_colour = Renderer::colour.Black;
 
@@ -104,6 +106,12 @@ void Asset::UpdateRotation(float speed)
 void Asset::SetColour(XMFLOAT4 colour)
 {
 	m_colour = colour;
+}
+
+void Asset::GetParameters(float &x, float &y, float &w, float &h)
+{
+	x = m_xPos;
+	y = m_yPos;
 }
 
 HRESULT Asset::CreateVertices(char* filename)

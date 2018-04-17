@@ -14,7 +14,7 @@ using namespace DirectX;
 class Asset
 {
 public:
-	Asset(char* colour, float x, float y, float z, float scale, float width, float height);
+	Asset(char* colour, float x, float y, float z, float scale, float width, float height, float rotation);
 	~Asset();
 
 	void Draw(XMMATRIX view, XMMATRIX projection);
@@ -24,6 +24,8 @@ public:
 	void UpdateRotation(float speed);
 
 	void SetColour(XMFLOAT4 colour);
+
+	void GetParameters(float &x, float &y, float &w, float &h);
 
 	struct POS_TEX_VERTEX
 	{

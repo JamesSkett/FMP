@@ -255,6 +255,10 @@ void Monster::Search(XMFLOAT2 playerPos, float deltaTime)
 
 }
 
+void Monster::Sneak(float playerPos, float deltaTime)
+{
+}
+
 bool Monster::CheckTile(XMFLOAT2 pos)
 {
 	float currentDistance;

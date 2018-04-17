@@ -65,6 +65,13 @@ GameSystem::~GameSystem()
 
 	m_vProjectiles.clear();
 
+	for (unsigned int i = 0; i < m_vDoors.size(); i++)
+	{
+		delete m_vDoors[i];
+		m_vDoors[i] = nullptr;
+	}
+
+	m_vDoors.clear();
 }
 
 //set up the game and run the main game loop
@@ -203,11 +210,16 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 void GameSystem::SetupLevel()
 {
 	m_plevel->LoadLevelData("scripts/Level_Data.txt");
-	m_plevel->SetUpLevelLayout(m_tileMap, m_pPlayer, m_pMonster);
+	m_plevel->SetUpLevelLayout(m_tileMap, m_pPlayer, m_pMonster, m_vDoors);
 	m_plevel->LoadProjectiles(m_vProjectiles);
 	m_pMonster->SetPathfinder(m_tileMap);
 
-	m_viewCone = new Asset("Assets/viewCone2.png", 0, 0, 3, 2.0f, 0, 0);
+	for (unsigned int i = 0; i < m_vDoors.size(); i++)
+	{
+		m_vDoors[i]->SetColour(Renderer::colour.Brown);
+	}
+
+	m_viewCone = new Asset("Assets/viewCone2.png", 0, 0, 3, 2.0f, 0, 0, 0);
 
 
 	m_fpsCount = new Text2D("Assets/myFont.png", Renderer::pD3DDevice, Renderer::pImmediateContext);
@@ -342,6 +354,13 @@ void GameSystem::DrawLevel(XMMATRIX view, XMMATRIX projection)
 	{
 		m_tileMap[i]->Draw(view, projection);
 	}
+	
+	Renderer::pImmediateContext->OMSetBlendState(Renderer::pAlphaBlendEnable, 0, 0xffffffff);
+	for (unsigned int i = 0; i < m_vDoors.size(); i++)
+	{
+		m_vDoors[i]->Draw(view, projection);
+	}
+	Renderer::pImmediateContext->OMSetBlendState(Renderer::pAlphaBlendDisable, 0, 0xffffffff);
 
 	for (unsigned int i = 0; i < m_vProjectiles.size(); i++)
 	{
