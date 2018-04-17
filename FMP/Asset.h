@@ -24,8 +24,12 @@ public:
 	void UpdateRotation(float speed);
 
 	void SetColour(XMFLOAT4 colour);
+	void SetCanDraw(bool canDraw);
 
 	void GetParameters(float &x, float &y, float &w, float &h);
+	bool GetCanDraw();
+
+	XMFLOAT2 GetPos();
 
 	struct POS_TEX_VERTEX
 	{
@@ -66,5 +70,7 @@ private:
 	float m_screenSpaceY;
 
 	XMFLOAT4 m_colour;
+
+	bool m_canDraw = true;
 };
 
