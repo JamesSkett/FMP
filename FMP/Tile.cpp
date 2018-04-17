@@ -2,7 +2,7 @@
 #include "Renderer.h"
 
 
-Tile::Tile(XMFLOAT4 colour, float x, float y, float z, float scale, float width, float height) 
+Tile::Tile(XMFLOAT4 colour, float x, float y, float z, float scale, float width, float height, int index) 
 {
 	m_xPos = x;
 	m_yPos = y;
@@ -10,6 +10,7 @@ Tile::Tile(XMFLOAT4 colour, float x, float y, float z, float scale, float width,
 	m_scale = scale;
 	m_w = width;
 	m_h = height;
+	m_index = index;
 
 	if (FAILED(CreateVertices(colour)))
 	{

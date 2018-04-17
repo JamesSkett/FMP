@@ -13,6 +13,8 @@ public:
 	Player(XMFLOAT4 colour, float x, float y, float z, float scale, float width, float height);
 	~Player();
 
+	void Update();
+
 	//Set a new x position value
 	void SetXPos(float x);
 	//set a new y position value
