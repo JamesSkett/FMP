@@ -52,12 +52,12 @@ private:
 	Time m_time;
 	Player* m_pPlayer;
 	Monster* m_pMonster;
-	Asset* m_viewCone;
+	Asset* m_viewConeEnemy;
+	Asset* m_viewConePlayer;
 
 	//vector objects
 	vector <Tile*> m_tileMap;
 	vector <Projectile*> m_vProjectiles;
-	vector <Asset*> m_vDoors;
 
 	//frames per second
 	int m_fps = 0;
@@ -71,8 +71,9 @@ private:
 	const float m_cFarClip = 100.0f;
 	const float m_cOrthographicSize = 100.0f;
 
-	//Used as a toggle for the mouse
+	//Used as a toggle for the mouse and keyboard
 	bool m_isMousePressed = false;
+	bool m_isKeyPressed = false;
 
 	int m_bulletNum = 0;
 

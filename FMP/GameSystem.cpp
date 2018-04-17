@@ -13,7 +13,8 @@ GameSystem::GameSystem()
 	m_pMonster = nullptr;
 	m_fpsCount = nullptr;
 	m_monsterLOS = nullptr;
-	m_viewCone = nullptr;
+	m_viewConeEnemy = nullptr;
+	m_viewConePlayer = nullptr;
 }
 
 //clean up before exiting
@@ -43,10 +44,16 @@ GameSystem::~GameSystem()
 		m_fpsCount = nullptr;
 	}
 
-	if (m_viewCone)
+	if (m_viewConeEnemy)
 	{
-		delete m_viewCone;
-		m_viewCone = nullptr;
+		delete m_viewConeEnemy;
+		m_viewConeEnemy = nullptr;
+	}
+
+	if (m_viewConePlayer)
+	{
+		delete m_viewConePlayer;
+		m_viewConePlayer = nullptr;
 	}
 
 	for (unsigned int i = 0; i < m_tileMap.size(); i++)
@@ -64,14 +71,6 @@ GameSystem::~GameSystem()
 	}
 
 	m_vProjectiles.clear();
-
-	for (unsigned int i = 0; i < m_vDoors.size(); i++)
-	{
-		delete m_vDoors[i];
-		m_vDoors[i] = nullptr;
-	}
-
-	m_vDoors.clear();
 }
 
 //set up the game and run the main game loop
@@ -154,6 +153,7 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 			projection = XMMatrixOrthographicLH(w, h, m_cNearClip, m_cFarClip);
 			view = XMMatrixIdentity();
 
+			m_pPlayer->Update();
 			m_pMonster->Update(XMFLOAT2(m_pPlayer->GetXPos(), m_pPlayer->GetYPos()), m_deltaTime);
 
 			for (unsigned int i = 0; i < m_vProjectiles.size(); i++)
@@ -177,19 +177,6 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 				}
 			}
 
-
-			m_viewCone->SetPos(m_pMonster->GetXPos(), m_pMonster->GetYPos());
-			m_viewCone->SetRotation(m_pMonster->GetRotation());
-
-			if (m_pMonster->GetIsSearching())
-			{
-				m_viewCone->SetColour(Renderer::colour.OrangeRed);
-			}
-			else if (!m_pMonster->GetIsSearching() && !m_pMonster->GetPlayerInSight())
-			{
-				m_viewCone->SetColour(Renderer::colour.Black);
-			}
-
 			DrawLevel(view, projection);
 
 			UpdateText();
@@ -210,17 +197,15 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 void GameSystem::SetupLevel()
 {
 	m_plevel->LoadLevelData("scripts/Level_Data.txt");
-	m_plevel->SetUpLevelLayout(m_tileMap, m_pPlayer, m_pMonster, m_vDoors);
+	m_plevel->SetUpLevelLayout(m_tileMap, m_pPlayer, m_pMonster);
 	m_plevel->LoadProjectiles(m_vProjectiles);
 	m_pMonster->SetPathfinder(m_tileMap);
 
-	for (unsigned int i = 0; i < m_vDoors.size(); i++)
-	{
-		m_vDoors[i]->SetColour(Renderer::colour.Brown);
-	}
+	m_viewConeEnemy = new Asset("Assets/viewCone2.png", 0, 0, 3, 2.0f, 0, 0, 0);
+	m_viewConePlayer = new Asset("Assets/viewCone2.png", 0, 0, 3, 2.0f, 0, 0, 0);
 
-	m_viewCone = new Asset("Assets/viewCone2.png", 0, 0, 3, 2.0f, 0, 0, 0);
-
+	m_pPlayer->SetViewCone(m_viewConePlayer);
+	m_pMonster->SetViewCone(m_viewConeEnemy);
 
 	m_fpsCount = new Text2D("Assets/myFont.png", Renderer::pD3DDevice, Renderer::pImmediateContext);
 	m_monsterLOS = new Text2D("Assets/myFont.png", Renderer::pD3DDevice, Renderer::pImmediateContext);
@@ -354,13 +339,6 @@ void GameSystem::DrawLevel(XMMATRIX view, XMMATRIX projection)
 	{
 		m_tileMap[i]->Draw(view, projection);
 	}
-	
-	Renderer::pImmediateContext->OMSetBlendState(Renderer::pAlphaBlendEnable, 0, 0xffffffff);
-	for (unsigned int i = 0; i < m_vDoors.size(); i++)
-	{
-		m_vDoors[i]->Draw(view, projection);
-	}
-	Renderer::pImmediateContext->OMSetBlendState(Renderer::pAlphaBlendDisable, 0, 0xffffffff);
 
 	for (unsigned int i = 0; i < m_vProjectiles.size(); i++)
 	{
@@ -370,9 +348,7 @@ void GameSystem::DrawLevel(XMMATRIX view, XMMATRIX projection)
 		}
 	}
 
-	Renderer::pImmediateContext->OMSetBlendState(Renderer::pAlphaBlendEnable, 0, 0xffffffff);
-	m_viewCone->Draw(view, projection);
-	Renderer::pImmediateContext->OMSetBlendState(Renderer::pAlphaBlendDisable, 0, 0xffffffff);
+	
 
 
 	m_pPlayer->Draw(view, projection);
@@ -391,12 +367,10 @@ void GameSystem::UpdateText()
 	if (m_pMonster->GetPlayerInSight())
 	{
 		inSight = "Player in Sight: True";
-		m_viewCone->SetColour(Renderer::colour.Green);
 	}
 	else
 	{
 		inSight = "Player in Sight: False";
-		m_viewCone->SetColour(Renderer::colour.Black);
 
 	}
 
