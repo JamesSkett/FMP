@@ -1,5 +1,6 @@
 #include "Entity.h"
 #include "Renderer.h"
+#include "Asset.h"
 
 Entity::Entity(XMFLOAT4 colour, float x, float y, float z, float scale, float width, float height)
 {
@@ -20,6 +21,11 @@ Entity::Entity(XMFLOAT4 colour, float x, float y, float z, float scale, float wi
 
 Entity::~Entity()
 {
+	if (m_viewCone)
+	{
+		delete m_viewCone;
+		m_viewCone = nullptr;
+	}
 	if (m_pConstantBuffer0) m_pConstantBuffer0->Release();
 	if (m_pVertexBuffer) m_pVertexBuffer->Release();
 	if (m_pInputLayout)  m_pInputLayout->Release();
@@ -29,6 +35,10 @@ Entity::~Entity()
 
 void Entity::Draw(XMMATRIX view, XMMATRIX projection)
 {
+
+	Renderer::pImmediateContext->OMSetBlendState(Renderer::pAlphaBlendEnable, 0, 0xffffffff);
+	m_viewCone->Draw(view, projection);
+	Renderer::pImmediateContext->OMSetBlendState(Renderer::pAlphaBlendDisable, 0, 0xffffffff);
 
 	XMMATRIX world, WVP;
 
@@ -227,6 +237,11 @@ bool Entity::CollisionCheck(vector <Tile*> tilemap)
 	return false;
 }
 
+void Entity::SetViewCone(Asset * viewCone)
+{
+	m_viewCone = viewCone;
+}
+
 bool Entity::CollisionCheck(Entity* colObject)
 {
 	float box1x = m_xPos - (m_width / 2);
@@ -245,35 +260,6 @@ bool Entity::CollisionCheck(Entity* colObject)
 	if ((box1x < box2x + box2w) && (box1x + box1w > box2x) && (box1y < box2y + box2h) && (box1h + box1y > box2y))
 	{
 		return true;
-	}
-
-	return false;
-}
-
-bool Entity::CollisionCheck(vector <Asset*> doors)
-{
-	for (unsigned int i = 0; i < doors.size(); i++)
-	{
-		
-		float box1x = m_xPos - (m_width / 2);
-		float box1y = m_yPos - (m_height / 2);
-		float box1w = m_width;
-		float box1h = m_height;
-
-		float box2x, box2y;
-		float box2w, box2h;
-
-		doors[i]->GetParameters(box2x, box2y, box2w, box2h);
-
-		box2x = box2x - (box2w / 2);
-		box2y = box2y - (box2h / 2);
-
-		if ((box1x < box2x + box2w) && (box1x + box1w > box2x) && (box1y < box2y + box2h) && (box1h + box1y > box2y))
-		{
-
-			return true;
-		}
-		
 	}
 
 	return false;

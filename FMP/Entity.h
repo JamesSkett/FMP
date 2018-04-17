@@ -14,6 +14,7 @@ using namespace DirectX;
 using namespace std;
 
 #include "Tile.h"
+class Asset;
 
 class Entity
 {
@@ -31,6 +32,8 @@ public:
 	//check collisions with the doors //Returns true/false
 	bool CollisionCheck(vector <Asset*> doors);
 
+	void SetViewCone(Asset* viewCone);
+
 	struct POS_COL_VERTEX
 	{
 		XMFLOAT3 Pos;
@@ -44,8 +47,6 @@ public:
 	
 protected:
 	HRESULT CreateVertices(XMFLOAT4 colour);
-
-	
 
 	ID3D11Buffer*			m_pVertexBuffer;
 	ID3D11VertexShader*		m_pVertexShader;
@@ -62,6 +63,8 @@ protected:
 
 	float m_screenSpaceX;
 	float m_screenSpaceY;
+
+	Asset* m_viewCone;
 };
 
 
