@@ -11,7 +11,6 @@
 
 using namespace std;
 using namespace DirectX;
-class Asset;
 
 class Level
 {
@@ -20,7 +19,7 @@ public:
 	~Level();
 
 	void LoadLevelData(string filePath);
-	void SetUpLevelLayout(vector <Tile*> &tilemap, Player* &player, Monster* &monster, vector <Asset*> &vDoors);
+	void SetUpLevelLayout(vector <Tile*> &tilemap, Player* &player, Monster* &monster);
 	void LoadProjectiles(vector <Projectile*> &projectiles);
 
 private:

@@ -2,7 +2,6 @@
 #include "Floor.h"
 #include "Wall.h"
 #include "Renderer.h"
-#include "Asset.h"
 
 #include <fstream>
 
@@ -46,7 +45,7 @@ void Level::LoadLevelData(string filePath)
 
 }
 
-void Level::SetUpLevelLayout(vector <Tile*> &tilemap, Player* &player, Monster* &monster, vector <Asset*> &vDoors)
+void Level::SetUpLevelLayout(vector <Tile*> &tilemap, Player* &player, Monster* &monster)
 {
 	char tile;
 	//loops through the _levelData vector and processes each tile
@@ -64,30 +63,23 @@ void Level::SetUpLevelLayout(vector <Tile*> &tilemap, Player* &player, Monster* 
 			switch (tile)
 			{
 			case '#': //create a wall tile
-				tilemap.push_back(new Wall(Renderer::colour.DarkSlateGray, yPos / m_tileOffset, -xPos / m_tileOffset, 5, 0.25f, 0.34f, 0.34f));
+				tilemap.push_back(new Wall(Renderer::colour.DarkSlateGray, yPos / m_tileOffset, -xPos / m_tileOffset, 5, 0.25f, 0.34f, 0.34f, 2));
 				break;
 			case '.': //create a floor tile
-				tilemap.push_back(new Floor(Renderer::colour.WhiteSmoke, yPos / m_tileOffset, -xPos / m_tileOffset, 5, 0.25f, 0.29f, 0.29f));
+				tilemap.push_back(new Floor(Renderer::colour.WhiteSmoke, yPos / m_tileOffset, -xPos / m_tileOffset, 5, 0.25f, 0.29f, 0.29f, 1));
 				break;
 			case '@':
-				tilemap.push_back(new Floor(Renderer::colour.WhiteSmoke, yPos / m_tileOffset, -xPos / m_tileOffset, 6, 0.25f, 0.29f, 0.29f));
+				tilemap.push_back(new Floor(Renderer::colour.WhiteSmoke, yPos / m_tileOffset, -xPos / m_tileOffset, 6, 0.25f, 0.29f, 0.29f, 1));
 				player = new Player(Renderer::colour.Fuchsia, yPos / m_tileOffset, -xPos / m_tileOffset, 1, 0.125f, 0.245f, 0.245f);
 				break;
 			case 'M':
-				tilemap.push_back(new Floor(Renderer::colour.WhiteSmoke, yPos / m_tileOffset, -xPos / m_tileOffset, 6, 0.25f, 0.29f, 0.29f));
+				tilemap.push_back(new Floor(Renderer::colour.WhiteSmoke, yPos / m_tileOffset, -xPos / m_tileOffset, 6, 0.25f, 0.29f, 0.29f, 1));
 				monster = new Monster(Renderer::colour.Black, yPos / m_tileOffset, -xPos / m_tileOffset, 1, 0.125f, 0.245f, 0.245f);
 				break;
-			case 'd':
-				tilemap.push_back(new Floor(Renderer::colour.WhiteSmoke, yPos / m_tileOffset, -xPos / m_tileOffset, 6, 0.25f, 0.29f, 0.29f));
-				vDoors.push_back(new Asset("Assets/Door.png", yPos / m_tileOffset, -xPos / m_tileOffset, 4, 0.25f, 0.29f, 0.145f, 0.0f));
-				break;
-			case 'D':
-				tilemap.push_back(new Floor(Renderer::colour.WhiteSmoke, yPos / m_tileOffset, -xPos / m_tileOffset, 6, 0.25f, 0.29f, 0.29f));
-				vDoors.push_back(new Asset("Assets/Door.png", yPos / m_tileOffset, -xPos / m_tileOffset, 4, 0.25f, 0.29f, 0.145f, 90.0f));
-				break;
 			default: //If it gets here, tile hasnt been registered the, so print out a warning
-				printf("WARNING: Unknown tile %c at %d,%d", tile, x, y);
-				system("Pause");
+				char s[128];
+				sprintf_s(s, "ERROR! Unknown character on tile %d, %d", x, y);
+				OutputDebugString(s);
 				break;
 			}
 		}
