@@ -15,6 +15,12 @@ Player::~Player()
 
 }
 
+void Player::Update()
+{
+	m_viewCone->SetPos(m_xPos, m_yPos);
+	m_viewCone->SetRotation(m_rotation);
+}
+
 void Player::SetXPos(float x)
 {
 	m_xPos = x;

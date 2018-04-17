@@ -21,7 +21,8 @@ Monster::~Monster()
 bool chaseStarted = false;
 void Monster::Update(XMFLOAT2 targetPos, float deltaTime)
 {
-	
+	m_viewCone->SetPos(m_xPos, m_yPos);
+	m_viewCone->SetRotation(m_rotation);
 
 	LineOfSightCheck(targetPos);
 
@@ -189,6 +190,7 @@ void Monster::RandomWander(float deltaTime)
 {
 	int randTileNum = rand() % 901;
 
+	m_viewCone->SetColour(Renderer::colour.Black);
 
 	if (pathfinder->GetIsPathFound())
 	{
@@ -213,6 +215,7 @@ void Monster::Chase(float deltaTime)
 {
 	if (m_playerInSight)
 	{
+		m_viewCone->SetColour(Renderer::colour.Green);
 		m_speed = 12.0f;
 		MoveTo(lastPlayerPos.x, lastPlayerPos.y, deltaTime);
 	}
@@ -224,6 +227,7 @@ void Monster::Search(XMFLOAT2 playerPos, float deltaTime)
 {
 	int randTileNum = rand() % 901;
 
+	m_viewCone->SetColour(Renderer::colour.Orange);
 
 	if (pathfinder->GetIsPathFound())
 	{
