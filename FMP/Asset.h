@@ -43,10 +43,6 @@ public:
 		XMFLOAT4 colour;
 	};
 
-	bool m_isTexture0 = true;
-	bool m_isTexture1 = false;
-	bool m_isTexture2 = false;
-
 private:
 	HRESULT CreateVertices(char* filename);
 

@@ -44,18 +44,6 @@ GameSystem::~GameSystem()
 		m_fpsCount = nullptr;
 	}
 
-	if (m_viewConeEnemy)
-	{
-		delete m_viewConeEnemy;
-		m_viewConeEnemy = nullptr;
-	}
-
-	if (m_viewConePlayer)
-	{
-		delete m_viewConePlayer;
-		m_viewConePlayer = nullptr;
-	}
-
 	for (unsigned int i = 0; i < m_tileMap.size(); i++)
 	{
 		delete m_tileMap[i];
@@ -153,8 +141,8 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 			projection = XMMatrixOrthographicLH(w, h, m_cNearClip, m_cFarClip);
 			view = XMMatrixIdentity();
 
-			m_pPlayer->Update();
-			m_pMonster->Update(XMFLOAT2(m_pPlayer->GetXPos(), m_pPlayer->GetYPos()), m_deltaTime);
+			m_pPlayer->Update(XMFLOAT2(m_pMonster->GetXPos(), m_pMonster->GetYPos()), m_tileMap, m_deltaTime);
+			m_pMonster->Update(m_pPlayer, m_deltaTime);
 
 			for (unsigned int i = 0; i < m_vProjectiles.size(); i++)
 			{

@@ -13,7 +13,7 @@ public:
 	Player(XMFLOAT4 colour, float x, float y, float z, float scale, float width, float height);
 	~Player();
 
-	void Update();
+	void Update(XMFLOAT2 enemyPos, vector <Tile*> tilemap, float deltaTime);
 
 	//Set a new x position value
 	void SetXPos(float x);
@@ -23,6 +23,7 @@ public:
 	void SetZPos(float z);
 	//Set a new scale value
 	void SetScale(float scale);
+
 
 	//Get the current x position value
 	float GetXPos();
@@ -38,6 +39,8 @@ public:
 	float GetDirectionX();
 	//Get the current y direction value
 	float GetDirectionY();
+	//Get the value of m_enemyInSight
+	bool GetEnemyInSight();
 
 	//Update the x position value
 	void UpdateXPos(vector <Tile*> colObject, bool isRight, float deltaTime);
@@ -54,9 +57,16 @@ public:
 	void SprintOn();
 	void SprintOff();
 
+	bool LineOfSightCheck(XMFLOAT2 targetPos, vector <Tile*> tilemap);
+
+	bool CheckTile(XMFLOAT2 pos, vector <Tile*> tilemap);
+
 private:
 	//Player move speed
 	float m_velocity = 10.0f;
 
+	bool m_enemyInSight = false;
+
+	float m_timer = 1.f;
 };
 

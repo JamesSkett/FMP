@@ -24,13 +24,18 @@ public:
 
 	void Draw(XMMATRIX view, XMMATRIX projection);
 
+	//Set the value of m_walkedThroughDoor
+	void SetWalkedThroughDoor(bool value);
+
 	void GetColBoxParameters(float &x, float &y, float &w, float &h);
+	//Get the value of m_walkedThroughDoor
+	bool GetWalkedThroughDoor();
+	//Get the value of m_doorPos which is set in CollisionCheck()
+	XMFLOAT2 GetDoorPos();
 	//Check collitions with the walls //Returns true/false
 	bool CollisionCheck(vector<Tile*> tilemap);
 	//check collisions with the monster //Returns true/false
 	bool CollisionCheck(Entity * colObject);
-	//check collisions with the doors //Returns true/false
-	bool CollisionCheck(vector <Asset*> doors);
 
 	void SetViewCone(Asset* viewCone);
 
@@ -65,6 +70,10 @@ protected:
 	float m_screenSpaceY;
 
 	Asset* m_viewCone;
+
+	bool m_walkedThroughDoor = false;
+	XMFLOAT2 m_doorPos;
+
 };
 
 

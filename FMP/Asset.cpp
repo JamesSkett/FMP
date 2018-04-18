@@ -72,8 +72,6 @@ void Asset::Draw(XMMATRIX view, XMMATRIX projection)
 		Renderer::pImmediateContext->PSSetConstantBuffers(0, 1, &m_pConstantBuffer0);
 
 		Renderer::pImmediateContext->PSSetShaderResources(0, 1, &m_pTexture);
-		//else if (m_isTexture1) Renderer::pImmediateContext->PSSetShaderResources(0, 1, &m_pTexture1);
-		//else if (m_isTexture2) Renderer::pImmediateContext->PSSetShaderResources(0, 1, &m_pTexture2);
 
 		//Set the vertex buffer //03-01
 		UINT stride = sizeof(POS_TEX_VERTEX);

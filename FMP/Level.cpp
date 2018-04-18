@@ -68,6 +68,9 @@ void Level::SetUpLevelLayout(vector <Tile*> &tilemap, Player* &player, Monster* 
 			case '.': //create a floor tile
 				tilemap.push_back(new Floor(Renderer::colour.WhiteSmoke, yPos / m_tileOffset, -xPos / m_tileOffset, 5, 0.25f, 0.29f, 0.29f, 1));
 				break;
+			case 'd': //create a floor tile
+				tilemap.push_back(new Floor(Renderer::colour.WhiteSmoke, yPos / m_tileOffset, -xPos / m_tileOffset, 5, 0.25f, 0.29f, 0.29f, 3));
+				break;
 			case '@':
 				tilemap.push_back(new Floor(Renderer::colour.WhiteSmoke, yPos / m_tileOffset, -xPos / m_tileOffset, 6, 0.25f, 0.29f, 0.29f, 1));
 				player = new Player(Renderer::colour.Fuchsia, yPos / m_tileOffset, -xPos / m_tileOffset, 1, 0.125f, 0.245f, 0.245f);

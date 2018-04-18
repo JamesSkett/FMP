@@ -14,6 +14,8 @@ public:
 	//Moves the projectile if fired
 	void Update(float deltaTime);
 
+	void Draw(XMMATRIX view, XMMATRIX projection);
+
 	//Get the value of m_isFired
 	bool GetIsFired();
 

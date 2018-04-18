@@ -14,7 +14,7 @@ public:
 	~Monster();
 
 	//Updates the monster 
-	void Update(XMFLOAT2 targetPos, float deltaTime);
+	void Update(Player* player, float deltaTime);
 
 	//Gets the current x position value
 	float GetXPos();
@@ -39,9 +39,11 @@ public:
 	void RandomWander(float deltaTime);
 	void Chase(float deltaTime);
 	void Search(XMFLOAT2 playerPos, float deltaTime);  
-	void Sneak(float playerPos, float deltaTime);
+	void Sneak(Player* player, float deltaTime);
 
 	bool CheckTile(XMFLOAT2 pos);
+
+	XMFLOAT2 GetClosestDoorPos();
 
 private:
 	float m_speed = 6.0f;
@@ -58,6 +60,7 @@ private:
 
 	bool m_playerInSight = false;
 	bool m_isSearching = false;
+	bool m_isSneaking = false;
 
 	float m_timer = 3.0f;
 

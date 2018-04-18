@@ -1,6 +1,7 @@
 #include "Entity.h"
 #include "Renderer.h"
 #include "Asset.h"
+#include "Math.h"
 
 Entity::Entity(XMFLOAT4 colour, float x, float y, float z, float scale, float width, float height)
 {
@@ -82,6 +83,11 @@ void Entity::Draw(XMMATRIX view, XMMATRIX projection)
 	Renderer::pImmediateContext->Draw(6, 0);
 }
 
+void Entity::SetWalkedThroughDoor(bool value)
+{
+	m_walkedThroughDoor = value;
+}
+
 void Entity::GetColBoxParameters(float &x, float &y, float &w, float &h)
 {
 	x = m_xPos;
@@ -90,6 +96,15 @@ void Entity::GetColBoxParameters(float &x, float &y, float &w, float &h)
 	h = m_height;
 }
 
+bool Entity::GetWalkedThroughDoor()
+{
+	return m_walkedThroughDoor;
+}
+
+XMFLOAT2 Entity::GetDoorPos()
+{
+	return m_doorPos;
+}
 
 HRESULT Entity::CreateVertices(XMFLOAT4 colour)
 {
@@ -232,6 +247,27 @@ bool Entity::CollisionCheck(vector <Tile*> tilemap)
 				return true;
 			}
 		}
+		else if (tilemap[i]->GetIndex() == 3)
+		{
+			float box1x = m_xPos - (m_width / 2);
+			float box1y = m_yPos - (m_height / 2);
+			float box1w = m_width;
+			float box1h = m_height;
+
+			float box2x, box2y;
+			float box2w, box2h;
+
+			tilemap[i]->GetParameters(box2x, box2y, box2w, box2h);
+
+			box2x = box2x - (box2w / 2);
+			box2y = box2y - (box2h / 2);
+
+			if ((box1x < box2x + box2w) && (box1x + box1w > box2x) && (box1y < box2y + box2h) && (box1h + box1y > box2y))
+			{
+				SetWalkedThroughDoor(true);
+				m_doorPos = XMFLOAT2(tilemap[i]->GetXPos(), tilemap[i]->GetYPos());
+			}
+		}
 	}
 
 	return false;
@@ -264,3 +300,4 @@ bool Entity::CollisionCheck(Entity* colObject)
 
 	return false;
 }
+

@@ -1,6 +1,7 @@
 #include "Player.h"
 #include "Tile.h"
 #include "GameSystem.h"
+#include "Math.h"
 #include <math.h>
 
 Player::Player(XMFLOAT4 colour, float x, float y, float z, float scale, float width, float height)
@@ -15,10 +16,29 @@ Player::~Player()
 
 }
 
-void Player::Update()
+void Player::Update(XMFLOAT2 enemyPos, vector <Tile*> tilemap, float deltaTime)
 {
 	m_viewCone->SetPos(m_xPos, m_yPos);
 	m_viewCone->SetRotation(m_rotation);
+
+	if (LineOfSightCheck(enemyPos, tilemap))
+	{
+		m_viewCone->SetColour(Renderer::colour.Green);
+	}
+	else
+	{
+		m_viewCone->SetColour(Renderer::colour.Black);
+	}
+
+	if (m_walkedThroughDoor)
+	{
+		if (m_timer <= 0)
+		{
+			m_walkedThroughDoor = false;
+		}
+
+		m_timer -= deltaTime;
+	}
 }
 
 void Player::SetXPos(float x)
@@ -75,6 +95,13 @@ float Player::GetDirectionY()
 {
 	return m_dirY;
 }
+
+bool Player::GetEnemyInSight()
+{
+	return m_enemyInSight;
+}
+
+
 
 void Player::UpdateXPos(vector <Tile*> tilemap, bool isRight, float deltaTime)
 {
@@ -154,4 +181,89 @@ void Player::SprintOff()
 }
 
 
+bool Player::LineOfSightCheck(XMFLOAT2 targetPos, vector <Tile*> tilemap)
+{
 
+	//get the direction the monster is looking
+	float dirX = cosf(m_rotation + (XM_PI / 2.f));
+	float dirY = sinf(m_rotation + (XM_PI / 2.f));
+
+	//get the direction the player is from the monster
+	XMVECTOR dir = XMVector2Normalize(XMVectorSet(targetPos.x - m_xPos, targetPos.y - m_yPos, 0, 0));
+
+	//calculate the angle the angle based on the facing direction
+	float angle = (float)acos(Math::Dot(XMFLOAT2(dirX, dirY), XMFLOAT2(XMVectorGetX(dir), XMVectorGetY(dir))));
+
+	//if the angle is in the 50 degree cone
+	if (XMConvertToDegrees(angle) >= 50)
+	{
+		m_enemyInSight = false;
+		return false;
+	}
+
+	float x = targetPos.x - m_xPos;
+	float y = targetPos.y - m_yPos;
+	float length = Math::Distance(XMFLOAT2(m_xPos, m_yPos), targetPos);
+
+	if (!length)
+	{
+		m_enemyInSight = true;
+		return true;
+	}
+	if (length > 4)
+	{
+		m_enemyInSight = false;
+		return false;
+	}
+
+	float unitX = x / length;
+	float unitY = y / length;
+
+	x = m_xPos;
+	y = m_yPos;
+
+	while (length > 0.1f)
+	{
+		if (CheckTile(XMFLOAT2(x, y), tilemap))
+		{
+			m_enemyInSight = false;
+			return false;
+		}
+
+		x += unitX * 0.2f;
+		y += unitY * 0.2f;
+
+		length = sqrt((targetPos.x - x) * (targetPos.x - x) + (targetPos.y - y) * (targetPos.y - y));
+
+	}
+
+	m_enemyInSight = true;
+
+	return true;
+}
+
+bool Player::CheckTile(XMFLOAT2 pos, vector <Tile*> tilemap)
+{
+	float currentDistance;
+	float minDistance = pow(tilemap[0]->GetXPos() - pos.x, 2) + pow(tilemap[0]->GetYPos() - pos.y, 2);
+	Tile* currentTile = tilemap[0];
+	for (unsigned int i = 0; i < tilemap.size(); i++)
+	{
+		float startPosX = pos.x;
+		float startPosY = pos.y;
+		float nodePosX = tilemap[i]->GetXPos();
+		float nodePosY = tilemap[i]->GetYPos();
+
+		currentDistance = Math::Distance(XMFLOAT2(startPosX, startPosY), XMFLOAT2(nodePosX, nodePosY));
+
+		if (currentDistance < minDistance)
+		{
+			minDistance = currentDistance;
+			currentTile = tilemap[i];
+		}
+	}
+
+	if (!currentTile->GetIsWalkable()) return true;
+
+	return false;
+}
