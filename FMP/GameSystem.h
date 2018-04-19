@@ -17,6 +17,7 @@ using namespace DirectX;
 #include "Monster.h"
 #include "Projectile.h"
 #include "Asset.h"
+#include "StateMachine.h"
 
 class GameSystem
 {
@@ -54,6 +55,7 @@ private:
 	Monster* m_pMonster;
 	Asset* m_viewConeEnemy;
 	Asset* m_viewConePlayer;
+	StateMachine* m_stateMachine;
 
 	//vector objects
 	vector <Tile*> m_tileMap;

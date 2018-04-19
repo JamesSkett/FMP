@@ -15,6 +15,7 @@ GameSystem::GameSystem()
 	m_monsterLOS = nullptr;
 	m_viewConeEnemy = nullptr;
 	m_viewConePlayer = nullptr;
+	m_stateMachine = nullptr;
 }
 
 //clean up before exiting
@@ -24,6 +25,12 @@ GameSystem::~GameSystem()
 	{
 		delete renderer;
 		renderer = nullptr;
+	}
+
+	if (m_plevel)
+	{
+		delete m_plevel;
+		m_plevel = nullptr;
 	}
 
 	if (m_pMonster)
@@ -44,6 +51,12 @@ GameSystem::~GameSystem()
 		m_fpsCount = nullptr;
 	}
 
+	if (m_monsterLOS)
+	{
+		delete m_monsterLOS;
+		m_monsterLOS = nullptr;
+	}
+
 	for (unsigned int i = 0; i < m_tileMap.size(); i++)
 	{
 		delete m_tileMap[i];
@@ -59,6 +72,12 @@ GameSystem::~GameSystem()
 	}
 
 	m_vProjectiles.clear();
+
+	if (m_stateMachine)
+	{
+		delete m_stateMachine;
+		m_stateMachine = nullptr;
+	}
 }
 
 //set up the game and run the main game loop
@@ -144,6 +163,8 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 			m_pPlayer->Update(XMFLOAT2(m_pMonster->GetXPos(), m_pMonster->GetYPos()), m_tileMap, m_deltaTime);
 			m_pMonster->Update(m_pPlayer, m_deltaTime);
 
+			m_stateMachine->RunStateMachine(m_pPlayer, m_pMonster, m_deltaTime);
+
 			for (unsigned int i = 0; i < m_vProjectiles.size(); i++)
 			{
 				if (m_vProjectiles[i]->GetIsFired())
@@ -197,6 +218,8 @@ void GameSystem::SetupLevel()
 
 	m_fpsCount = new Text2D("Assets/myFont.png", Renderer::pD3DDevice, Renderer::pImmediateContext);
 	m_monsterLOS = new Text2D("Assets/myFont.png", Renderer::pD3DDevice, Renderer::pImmediateContext);
+
+	m_stateMachine = new StateMachine();
 }
 
 bool sprinting = false;

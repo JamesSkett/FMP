@@ -32,7 +32,10 @@ public:
 
 	//Creates the pathfinder object and gives it the tilemap
 	void SetPathfinder(vector <Tile*> tilemap);
-	
+	//Set the value of m_speed
+	void SetSpeed(float value);
+
+	//Check to see if the player is in sight
 	bool LineOfSightCheck(XMFLOAT2 targetPos);
 
 	//Behaviours
