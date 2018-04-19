@@ -57,6 +57,7 @@
     <ClCompile Include="Math.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="StateMachine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Time.h">
@@ -110,6 +111,7 @@
     <ClInclude Include="Math.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="StateMachine.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">

@@ -148,6 +148,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="StateMachine.cpp" />
     <ClCompile Include="text2D.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="Time.cpp" />
@@ -167,6 +168,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="StateMachine.h" />
     <ClInclude Include="text2D.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="Time.h" />

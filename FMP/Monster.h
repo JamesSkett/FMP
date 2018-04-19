@@ -40,6 +40,7 @@ public:
 	void Chase(float deltaTime);
 	void Search(XMFLOAT2 playerPos, float deltaTime);  
 	void Sneak(Player* player, float deltaTime);
+	void Flee(Player* player, float deltaTime);
 
 	bool CheckTile(XMFLOAT2 pos);
 
@@ -61,18 +62,12 @@ private:
 	bool m_playerInSight = false;
 	bool m_isSearching = false;
 	bool m_isSneaking = false;
+	bool m_isFleeing = false;
 
-	float m_timer = 3.0f;
+	float m_searchTimer = 3.0f;
+	float m_sneakTimer = 3.0f;
+	float m_fleeTimer = 2.0f;
 
 	XMFLOAT2 lastPlayerPos;
 };
 
-enum State
-{
-	RANDOM_WANDER = 0,
-	CHASE         = 1,
-	SEARCH        = 2,
-	SNEAK         = 3,
-	FLEE          = 4,
-	ATTACK        = 5
-};
