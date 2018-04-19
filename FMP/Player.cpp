@@ -35,6 +35,7 @@ void Player::Update(XMFLOAT2 enemyPos, vector <Tile*> tilemap, float deltaTime)
 		if (m_timer <= 0)
 		{
 			m_walkedThroughDoor = false;
+			m_timer = 0.3f;
 		}
 
 		m_timer -= deltaTime;
