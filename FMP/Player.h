@@ -54,11 +54,15 @@ public:
 	//Rotate the player to look at a specified point targetX & targetY
 	void LookAt(float targetX, float targetY);
 
+	//Increases the player speed
 	void SprintOn();
+	//Resets the player speed to normal
 	void SprintOff();
 
+	//Checks to see if the player is in sight
 	bool LineOfSightCheck(XMFLOAT2 targetPos, vector <Tile*> tilemap);
 
+	//Checks if the tile at 'pos' is walkable
 	bool CheckTile(XMFLOAT2 pos, vector <Tile*> tilemap);
 
 private:
