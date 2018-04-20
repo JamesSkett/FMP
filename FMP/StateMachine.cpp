@@ -1,7 +1,6 @@
 #include "StateMachine.h"
 #include "Math.h"
 
-
 StateMachine::StateMachine()
 {
 }
@@ -32,7 +31,10 @@ void StateMachine::RunStateMachine(Player* player, Monster* monster, float delta
 		break;
 	case FLEE:
 		monster->Flee(player, deltaTime);
-		m_currentState = IsFleeing(player, monster);
+		m_currentState = IsFleeing(player, monster, deltaTime);
+		break;
+	case ATTACK:
+
 		break;
 	}
 }
@@ -41,11 +43,30 @@ State StateMachine::IsRandomWander(Player* player, Monster* monster)
 {
 	if (monster->GetPlayerInSight() && !player->GetEnemyInSight())
 	{
-		return SNEAK;
+		int weight = rand() % WEIGHTING_MAX + WEIGHTING_MIN;
+
+		if (weight <= WEIGHTING_MAX && weight > WEIGHTING_MAX - Monster::s_sneakWeighting)
+		{
+			monster->SetPathFound(false);
+			return SNEAK;
+		}
+		else if (weight <= WEIGHTING_MIN + Monster::s_chaseWeighting && weight >= WEIGHTING_MIN)
+		{
+			return CHASE;
+		}
 	}
-	else if (monster->GetPlayerInSight())
+	else if (monster->GetPlayerInSight() && player->GetEnemyInSight())
 	{
-		return CHASE;
+		int weight = rand() % 100 + 1;
+
+		if (weight <= WEIGHTING_MIN + Monster::s_chaseWeighting && weight >= WEIGHTING_MIN)
+		{
+			return CHASE;
+		}
+		else if (weight <= WEIGHTING_MAX && weight > WEIGHTING_MAX - Monster::s_fleeWeighting)
+		{
+			return FLEE;
+		}
 	}
 
 	return RANDOM_WANDER;
@@ -69,15 +90,29 @@ State StateMachine::IsSearching(Player* player, Monster* monster)
 {
 	if (monster->GetPlayerInSight() && !player->GetEnemyInSight())
 	{
-		return SNEAK;
+		int weight = rand() % WEIGHTING_MAX + WEIGHTING_MIN;
+
+		if (weight <= WEIGHTING_MAX && weight > 15)
+		{
+			return SNEAK;
+		}
+		else if (weight <= 15 && weight >= WEIGHTING_MIN)
+		{
+			return CHASE;
+		}
 	}
 	else if (monster->GetPlayerInSight() && player->GetEnemyInSight())
 	{
-		return FLEE;
-	}
-	else if (monster->GetPlayerInSight())
-	{
-		return CHASE;
+		int weight = rand() % 100 + 1;
+
+		if (weight <= 30 && weight >= WEIGHTING_MIN)
+		{
+			return CHASE;
+		}
+		else if (weight <= WEIGHTING_MAX && weight > 30)
+		{
+			return FLEE;
+		}
 	}
 
 	return SEARCH;
@@ -93,17 +128,23 @@ State StateMachine::IsSneaking(Player* player, Monster* monster)
 	return SNEAK;
 }
 
-State StateMachine::IsFleeing(Player* player, Monster* monster)
+State StateMachine::IsFleeing(Player* player, Monster* monster, float deltaTime)
 {
 	if (!player->GetEnemyInSight() || Math::Distance(XMFLOAT2(monster->GetXPos(), monster->GetYPos()), XMFLOAT2(player->GetXPos(), player->GetYPos())) > 8)
 	{
 		if (m_fleeTimer <= 0)
 		{
-			m_fleeTimer = 2.0f;
+			m_fleeTimer = 1.0f;
 			return RANDOM_WANDER;
 		}
+		m_fleeTimer -= deltaTime;
 	}
 	else m_fleeTimer = 2.0f;
 
 	return FLEE;
+}
+
+State StateMachine::IsAttacking(Player * player, Monster * monster)
+{
+	return ATTACK;
 }

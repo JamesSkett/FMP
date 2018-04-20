@@ -25,10 +25,22 @@ private:
 	State IsChasing			(Player* player, Monster* monster);
 	State IsSearching		(Player* player, Monster* monster);
 	State IsSneaking		(Player* player, Monster* monster);
-	State IsFleeing			(Player* player, Monster* monster);
+	State IsFleeing			(Player* player, Monster* monster, float deltaTime);
+	State IsAttacking       (Player* player, Monster* monster);
 
 	State m_currentState = RANDOM_WANDER;
 
-	float m_fleeTimer = 2.0f;
+	float m_searchTimer  = 3.0f;
+	float m_sneakTimer   = 3.0f;
+	float m_fleeTimer    = 2.0f;
+
+	int WEIGHTING_MIN = 1;
+	int WEIGHTING_MAX = 100;
+
+	//random to chase
+	//random to sneak
+	//sneak to chase
+	//chase to flee
+	//chase to attack
 };
 
