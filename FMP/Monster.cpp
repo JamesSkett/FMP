@@ -5,11 +5,16 @@
 
 #include "Math.h"
 
+int Monster::s_chaseWeighting = 15;
+int Monster::s_fleeWeighting = 85;
+int Monster::s_searchWeighting = 0;
+int Monster::s_sneakWeighting = 85;
+
 
 Monster::Monster(XMFLOAT4 colour, float x, float y, float z, float scale, float width, float height) :
 	Entity(colour, x, y, z, scale, width, height)
 {
-	m_rotation = XMConvertToRadians(-90);
+
 }
 
 
@@ -18,7 +23,7 @@ Monster::~Monster()
 	
 
 }
-bool chaseStarted = false;
+
 void Monster::Update(Player* player, float deltaTime)
 {
 	m_viewCone->SetPos(m_xPos, m_yPos);
@@ -26,50 +31,10 @@ void Monster::Update(Player* player, float deltaTime)
 
 	LineOfSightCheck(XMFLOAT2(player->GetXPos(), player->GetYPos()));
 
-	/*if (m_playerInSight && !player->GetEnemyInSight())
-	{
-		m_isSneaking = true;
-	}
+	/*char s[128];
+	sprintf_s(s, "Speed = %f\n", m_speed);
+	OutputDebugString(s);*/
 
-	if (m_playerInSight && player->GetEnemyInSight())
-	{
-		m_isFleeing = true;
-	}
-
-	if (m_isFleeing)
-	{
-		Flee(player, deltaTime);
-	}*/
-
-
-	/*if (m_isSneaking)
-	{
-		Sneak(player, deltaTime);
-	}
-	else if (m_playerInSight)
-	{
-		Chase(deltaTime);
-		chaseStarted = true;
-		waypoints.clear();
-	}
-	else if (chaseStarted)
-	{
-		m_isSearching = true;
-
-		if (MoveTo(lastPlayerPos.x, lastPlayerPos.y, deltaTime))
-		{
-			chaseStarted = false;
-			m_speed = 8.0f;
-		}
-	}
-	else if (!m_playerInSight && m_isSearching)
-	{
-		Search(XMFLOAT2(player->GetXPos(), player->GetYPos()), deltaTime);
-	}
-	else if (!m_playerInSight)
-	{
-		RandomWander(deltaTime);
-	}*/
 }
 
 float Monster::GetXPos()
@@ -107,7 +72,7 @@ bool Monster::MoveTo(float x, float y, float deltaTime)
 	m_dirX = x - m_xPos;
 	m_dirY = y - m_yPos;
 
-	float distance = sqrt(m_dirX * m_dirX + m_dirY * m_dirY);
+	float distance = Math::Distance(XMFLOAT2(m_xPos, m_yPos), XMFLOAT2(x, y));
 
 	if (distance < 0.1) return true;
 
@@ -198,9 +163,6 @@ bool Monster::LineOfSightCheck(XMFLOAT2 targetPos)
 
 	}
 
-	char s[128];
-	sprintf_s(s, "In sight %d", num++);
-	OutputDebugString(s);
 
 	m_playerInSight = true;
 	lastPlayerPos = targetPos;
@@ -213,27 +175,31 @@ void Monster::RandomWander(float deltaTime)
 {
 	int randTileNum = rand() % 901;
 
+	m_speed = 6.0f;
+
 	m_viewCone->SetColour(Renderer::colour.Black);
 
-	if (m_tileMap[randTileNum]->GetIsWalkable())
+	if (pathfinder->GetIsPathFound())
 	{
-		if (pathfinder->GetIsPathFound())
+		if (waypointNum >= waypoints.size())
 		{
-			if (waypointNum >= waypoints.size())
-			{
-				pathfinder->SetIsPathFound(false);
-				waypointNum = 0;
-			}
-			else if (MoveTo(waypoints[waypointNum].x, waypoints[waypointNum].y, deltaTime))
-			{
-				waypointNum++;
-			}
+			pathfinder->SetIsPathFound(false);
+			waypointNum = 0;
 		}
-		else
+		else if (MoveTo(waypoints[waypointNum].x, waypoints[waypointNum].y, deltaTime))
 		{
+			waypointNum++;
+		}
+	}
+	else
+	{
+		if (m_tileMap[randTileNum]->GetIsWalkable())
+		{
+			waypoints.clear();
 			waypoints = pathfinder->FindPath(XMFLOAT2(m_xPos, m_yPos), XMFLOAT2(m_tileMap[randTileNum]->GetXPos(), m_tileMap[randTileNum]->GetYPos()));
 		}
 	}
+	
 }
 
 void Monster::Chase(float deltaTime)
@@ -278,106 +244,46 @@ void Monster::Search(XMFLOAT2 playerPos, float deltaTime)
 		}
 	}
 
-	if (m_searchTimer <= 0)
-	{
-		m_isSearching = false;
-		m_searchTimer = 3.0f;
-	}
-
-	m_searchTimer -= deltaTime;
-
 }
 
 void Monster::Sneak(Player* player, float deltaTime)
 {
-	m_viewCone->SetColour(Renderer::colour.DarkKhaki);
+	m_viewCone->SetColour(Renderer::colour.Blue);
 	float distance = Math::Distance(XMFLOAT2(m_xPos, m_yPos), XMFLOAT2(player->GetXPos(), player->GetYPos()));
 
-	m_speed = 10;
-
-	if (!m_playerInSight)
+	
+	if (pathfinder->GetIsPathFound())
 	{
-		if (m_sneakTimer <= 0)
+		if (waypointNum >= waypoints.size())
 		{
-			m_isSneaking = false;
-			m_speed = 6.0f;
-			m_sneakTimer = 3.0f;
+			pathfinder->SetIsPathFound(false);
+			waypointNum = 0;
 		}
-		m_sneakTimer -= deltaTime;
+		else if (MoveTo(waypoints[waypointNum].x, waypoints[waypointNum].y, deltaTime))
+		{
+			waypointNum++;
+		}
 	}
-	
-
-	
-	if (player->GetWalkedThroughDoor() && !m_playerInSight)
+	else
 	{
-		if (pathfinder->GetIsPathFound())
+		if (player->GetWalkedThroughDoor() && !m_playerInSight)
 		{
-			if (waypointNum >= waypoints.size())
-			{
-				pathfinder->SetIsPathFound(false);
-				waypointNum = 0;
-			}
-			else if (MoveTo(waypoints[waypointNum].x, waypoints[waypointNum].y, deltaTime))
-			{
-				waypointNum++;
-			}
-		}
-		else
-		{
+			m_speed = 14;
 			waypoints.clear();
 			waypoints = pathfinder->FindPath(XMFLOAT2(m_xPos, m_yPos), player->GetDoorPos());
+
 		}
-	}
-	else if (distance < 2 && distance > 1 && m_playerInSight)
-	{
-		waypoints.clear();
-		MoveTo(player->GetXPos(), player->GetYPos(), deltaTime);
-	}
-	else if (distance < 1 && m_playerInSight)
-	{
-		waypoints.clear();
-	}
-	else if(!m_playerInSight || (m_playerInSight && distance > 2))
-	{
-		if (pathfinder->GetIsPathFound())
+		else if (distance < 2 && distance > 1 && m_playerInSight)
 		{
-			if (waypointNum >= waypoints.size())
-			{
-				pathfinder->SetIsPathFound(false);
-				waypointNum = 0;
-			}
-			else if (MoveTo(waypoints[waypointNum].x, waypoints[waypointNum].y, deltaTime))
-			{
-				waypointNum++;
-			}
+			m_speed = 10;
+			waypoints.clear();
+			MoveTo(player->GetXPos(), player->GetYPos(), deltaTime);
 		}
-		else
+		else if (distance < 1 && m_playerInSight)
 		{
 			waypoints.clear();
-			waypoints = pathfinder->FindPath(XMFLOAT2(m_xPos, m_yPos), XMFLOAT2(player->GetXPos(), player->GetYPos()));
 		}
-	}
-	
-}
-
-void Monster::Flee(Player* player, float deltaTime)
-{
-	int randTileNum = rand() % 901;
-
-	m_speed = 15.0f;
-
-	float currentDistance;
-
-	if (m_tileMap[randTileNum]->GetIsWalkable())
-	{
-		float startPosX = player->GetXPos();
-		float startPosY = player->GetYPos();
-		float nodePosX = m_tileMap[randTileNum]->GetXPos();
-		float nodePosY = m_tileMap[randTileNum]->GetYPos();
-
-		currentDistance = Math::Distance(XMFLOAT2(startPosX, startPosY), XMFLOAT2(nodePosX, nodePosY));
-
-		if (currentDistance > 6)
+		else if (!m_playerInSight || (m_playerInSight && distance > 2))
 		{
 			if (pathfinder->GetIsPathFound())
 			{
@@ -393,13 +299,66 @@ void Monster::Flee(Player* player, float deltaTime)
 			}
 			else
 			{
+				m_speed = 14;
+				waypoints.clear();
+				waypoints = pathfinder->FindPath(XMFLOAT2(m_xPos, m_yPos), XMFLOAT2(player->GetXPos(), player->GetYPos()));
+			}
+		}
+	}
+	
+}
+
+void Monster::Flee(Player* player, float deltaTime)
+{
+	m_viewCone->SetColour(Renderer::colour.DimGray);
+	int randTileNum = rand() % 901;
+
+	m_speed = 20.0f;
+
+	float currentDistance;
+
+	
+	if (pathfinder->GetIsPathFound())
+	{
+		if (waypointNum >= waypoints.size())
+		{
+			pathfinder->SetIsPathFound(false);
+			waypointNum = 0;
+		}
+		else if (MoveTo(waypoints[waypointNum].x, waypoints[waypointNum].y, deltaTime))
+		{
+			waypointNum++;
+		}
+	}
+	else
+	{
+		if (m_tileMap[randTileNum]->GetIsWalkable())
+		{
+			float startPosX = player->GetXPos();
+			float startPosY = player->GetYPos();
+			float tilePosX = m_tileMap[randTileNum]->GetXPos();
+			float tilePosY = m_tileMap[randTileNum]->GetYPos();
+
+			currentDistance = Math::Distance(XMFLOAT2(startPosX, startPosY), XMFLOAT2(tilePosX, tilePosY));
+
+			//get the direction the player is looking
+			float dirX = cosf(player->GetRotation() + (XM_PI / 2.f));
+			float dirY = sinf(player->GetRotation() + (XM_PI / 2.f));
+
+			//get the direction the tile is from the player
+			XMVECTOR dir = XMVector2Normalize(XMVectorSet(tilePosX - startPosX, tilePosY - startPosY, 0, 0));
+
+			//calculate the angle the angle based on the facing direction
+			float angle = (float)acos(Math::Dot(XMFLOAT2(dirX, dirY), XMFLOAT2(XMVectorGetX(dir), XMVectorGetY(dir))));
+
+			if (currentDistance > 6 && XMConvertToDegrees(angle) >= 60)
+			{
 				waypoints.clear();
 				waypoints = pathfinder->FindPath(XMFLOAT2(m_xPos, m_yPos), XMFLOAT2(m_tileMap[randTileNum]->GetXPos(), m_tileMap[randTileNum]->GetYPos()));
 			}
 		}
 	}
-
-
+		
 	
 }
 
@@ -449,4 +408,9 @@ XMFLOAT2 Monster::GetClosestDoorPos()
 	}
 
 	return XMFLOAT2(currentTile->GetXPos(), currentTile->GetYPos());
+}
+
+void Monster::SetPathFound(bool value)
+{
+	pathfinder->SetIsPathFound(value);
 }

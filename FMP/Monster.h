@@ -49,6 +49,13 @@ public:
 
 	XMFLOAT2 GetClosestDoorPos();
 
+	void SetPathFound(bool value);
+
+	static int s_chaseWeighting;
+	static int s_searchWeighting;
+	static int s_sneakWeighting;
+	static int s_fleeWeighting;
+
 private:
 	float m_speed = 6.0f;
 	Pathfinding* pathfinder;
@@ -66,10 +73,6 @@ private:
 	bool m_isSearching = false;
 	bool m_isSneaking = false;
 	bool m_isFleeing = false;
-
-	float m_searchTimer = 3.0f;
-	float m_sneakTimer = 3.0f;
-	float m_fleeTimer = 2.0f;
 
 	XMFLOAT2 lastPlayerPos;
 };
