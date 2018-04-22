@@ -58,6 +58,8 @@ public:
 
 private:
 	float m_speed = 6.0f;
+
+
 	Pathfinding* pathfinder;
 
 

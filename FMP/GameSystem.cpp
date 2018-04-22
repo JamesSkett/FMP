@@ -11,8 +11,9 @@ GameSystem::GameSystem()
 	m_plevel = new Level;
 	m_pPlayer = nullptr;
 	m_pMonster = nullptr;
-	m_fpsCount = nullptr;
-	m_monsterLOS = nullptr;
+	m_text_fpsCount = nullptr;
+	m_text_monsterLOS = nullptr;
+	m_text_currentState = nullptr;
 	m_viewConeEnemy = nullptr;
 	m_viewConePlayer = nullptr;
 	m_stateMachine = nullptr;
@@ -45,16 +46,22 @@ GameSystem::~GameSystem()
 		m_pPlayer = nullptr;
 	}
 
-	if (m_fpsCount)
+	if (m_text_fpsCount)
 	{
-		delete m_fpsCount;
-		m_fpsCount = nullptr;
+		delete m_text_fpsCount;
+		m_text_fpsCount = nullptr;
 	}
 
-	if (m_monsterLOS)
+	if (m_text_monsterLOS)
 	{
-		delete m_monsterLOS;
-		m_monsterLOS = nullptr;
+		delete m_text_monsterLOS;
+		m_text_monsterLOS = nullptr;
+	}
+
+	if (m_text_currentState)
+	{
+		delete m_text_currentState;
+		m_text_currentState = nullptr;
 	}
 
 	for (unsigned int i = 0; i < m_tileMap.size(); i++)
@@ -216,8 +223,9 @@ void GameSystem::SetupLevel()
 	m_pPlayer->SetViewCone(m_viewConePlayer);
 	m_pMonster->SetViewCone(m_viewConeEnemy);
 
-	m_fpsCount = new Text2D("Assets/myFont.png", Renderer::pD3DDevice, Renderer::pImmediateContext);
-	m_monsterLOS = new Text2D("Assets/myFont.png", Renderer::pD3DDevice, Renderer::pImmediateContext);
+	m_text_fpsCount = new Text2D("Assets/myFont.png", Renderer::pD3DDevice, Renderer::pImmediateContext);
+	m_text_monsterLOS = new Text2D("Assets/myFont.png", Renderer::pD3DDevice, Renderer::pImmediateContext);
+	m_text_currentState = new Text2D("Assets/myFont.png", Renderer::pD3DDevice, Renderer::pImmediateContext);
 
 	m_stateMachine = new StateMachine();
 }
@@ -372,7 +380,7 @@ void GameSystem::UpdateText()
 	m_fps = m_time.GetFPS();
 	string fps = "FPS:";
 	fps = fps + to_string(m_fps);
-	m_fpsCount->AddText(fps, -0.99f, 0.99f, 0.02f);
+	m_text_fpsCount->AddText(fps, -0.99f, -0.95f, 0.03f);
 
 	string inSight;
 	if (m_pMonster->GetPlayerInSight())
@@ -385,12 +393,17 @@ void GameSystem::UpdateText()
 
 	}
 
-	m_monsterLOS->AddText(inSight, 0.5f, 0.99f, 0.02f);
+	m_text_monsterLOS->AddText(inSight, -0.99f, 0.99f, 0.033f);
+
+	string currentState = "Current State: ";
+	currentState = currentState + m_stateMachine->GetCurrentState();
+	m_text_currentState->AddText(currentState, 0.0f, 0.99f, 0.033f);
 
 	Renderer::pImmediateContext->OMSetBlendState(Renderer::pAlphaBlendEnable, 0, 0xffffffff);
 
-	m_fpsCount->RenderText();
-	m_monsterLOS->RenderText();
+	m_text_fpsCount->RenderText();
+	m_text_monsterLOS->RenderText();
+	m_text_currentState->RenderText();
 
 	Renderer::pImmediateContext->OMSetBlendState(Renderer::pAlphaBlendDisable, 0, 0xffffffff);
 }

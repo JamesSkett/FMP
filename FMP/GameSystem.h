@@ -48,14 +48,17 @@ private:
 	//Level objects
 	Renderer* renderer;
 	Level* m_plevel;
-	Text2D* m_fpsCount;
-	Text2D* m_monsterLOS;
 	Time m_time;
 	Player* m_pPlayer;
 	Monster* m_pMonster;
 	Asset* m_viewConeEnemy;
 	Asset* m_viewConePlayer;
 	StateMachine* m_stateMachine;
+
+	Text2D* m_text_fpsCount;
+	Text2D* m_text_monsterLOS;
+	Text2D* m_text_currentState;
+	
 
 	//vector objects
 	vector <Tile*> m_tileMap;

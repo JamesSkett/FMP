@@ -20,6 +20,8 @@ public:
 
 	void RunStateMachine	(Player* player, Monster* monster, float deltaTime);
 
+	string GetCurrentState();
+
 private:
 	State IsRandomWander	(Player* player, Monster* monster);
 	State IsChasing			(Player* player, Monster* monster);
@@ -29,6 +31,7 @@ private:
 	State IsAttacking       (Player* player, Monster* monster);
 
 	State m_currentState = RANDOM_WANDER;
+	string m_currentStateText;
 
 	float m_searchTimer  = 3.0f;
 	float m_sneakTimer   = 3.0f;

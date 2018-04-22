@@ -14,22 +14,27 @@ void StateMachine::RunStateMachine(Player* player, Monster* monster, float delta
 	switch (m_currentState)
 	{
 	case RANDOM_WANDER:
+		m_currentStateText = "Random Wander";
 		monster->RandomWander(deltaTime);
 		m_currentState = IsRandomWander(player, monster);
 		break;
 	case CHASE:
+		m_currentStateText = "Chase";
 		monster->Chase(deltaTime);
 		m_currentState = IsChasing(player, monster);
 		break;
 	case SEARCH:
+		m_currentStateText = "Search";
 		monster->Search(XMFLOAT2(player->GetXPos(), player->GetYPos()), deltaTime);
 		m_currentState = IsSearching(player, monster);
 		break;
 	case SNEAK:
+		m_currentStateText = "Sneak";
 		monster->Sneak(player, deltaTime);
 		m_currentState = IsSneaking(player, monster);
 		break;
 	case FLEE:
+		m_currentStateText = "Flee";
 		monster->Flee(player, deltaTime);
 		m_currentState = IsFleeing(player, monster, deltaTime);
 		break;
@@ -37,6 +42,11 @@ void StateMachine::RunStateMachine(Player* player, Monster* monster, float delta
 
 		break;
 	}
+}
+
+string StateMachine::GetCurrentState()
+{
+	return m_currentStateText;
 }
 
 State StateMachine::IsRandomWander(Player* player, Monster* monster)
