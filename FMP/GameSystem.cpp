@@ -16,7 +16,8 @@ GameSystem::GameSystem()
 	m_text_currentState = nullptr;
 	m_viewConeEnemy = nullptr;
 	m_viewConePlayer = nullptr;
-	m_soundWave = nullptr;
+	m_soundWaveWalk = nullptr;
+	m_soundWaveSprint = nullptr;
 	m_stateMachine = nullptr;
 }
 
@@ -65,10 +66,16 @@ GameSystem::~GameSystem()
 		m_text_currentState = nullptr;
 	}
 
-	if (m_soundWave)
+	if (m_soundWaveWalk)
 	{
-		delete m_soundWave;
-		m_soundWave = nullptr;
+		delete m_soundWaveWalk;
+		m_soundWaveWalk = nullptr;
+	}
+
+	if (m_soundWaveSprint)
+	{
+		delete m_soundWaveSprint;
+		m_soundWaveSprint = nullptr;
 	}
 
 	for (unsigned int i = 0; i < m_tileMap.size(); i++)
@@ -179,7 +186,8 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 
 			m_stateMachine->RunStateMachine(m_pPlayer, m_pMonster, m_deltaTime);
 
-			m_soundWave->SetPos(m_pPlayer->GetXPos(), m_pPlayer->GetYPos());
+			m_soundWaveWalk->SetPos(m_pPlayer->GetXPos(), m_pPlayer->GetYPos());
+			m_soundWaveSprint->SetPos(m_pPlayer->GetXPos(), m_pPlayer->GetYPos());
 
 
 
@@ -230,7 +238,8 @@ void GameSystem::SetupLevel()
 
 	m_viewConeEnemy = new Asset("Assets/viewCone2.png", 0, 0, 3, 2.0f, 0, 0, 0);
 	m_viewConePlayer = new Asset("Assets/viewCone2.png", 0, 0, 3, 2.0f, 0, 0, 0);
-	m_soundWave = new Asset("Assets/soundWave.png", m_pPlayer->GetXPos(), m_pPlayer->GetYPos(), 3, 0.0f, 0, 0, 0);
+	m_soundWaveWalk = new Asset("Assets/soundWave.png", m_pPlayer->GetXPos(), m_pPlayer->GetYPos(), 3, 0.0f, 0, 0, 0);
+	m_soundWaveSprint = new Asset("Assets/soundWave.png", m_pPlayer->GetXPos(), m_pPlayer->GetYPos(), 3, 0.0f, 0, 0, 0);
 	m_pPlayer->SetViewCone(m_viewConePlayer);
 	m_pMonster->SetViewCone(m_viewConeEnemy);
 
@@ -247,11 +256,8 @@ void GameSystem::GetKeyboardInput()
 {
 	if (renderer->IsKeyPressed(DIK_LSHIFT))
 	{
-		if (!sprinting)
-		{
-			m_pPlayer->SprintOn();
-			sprinting = true;
-		}
+		m_pPlayer->SprintOn();
+		sprinting = true;
 	}
 
 	if (!renderer->IsKeyPressed(DIK_LSHIFT))
@@ -266,43 +272,11 @@ void GameSystem::GetKeyboardInput()
 
 		if (!sprinting)
 		{
-			if (m_soundWave->GetScale() < m_soundWalkScale && !m_lerpDown)
-			{
-				m_soundWave->SetScale(m_soundWave->GetScale() + m_soundWalkSpeed * m_deltaTime);
-
-				if (m_soundWave->GetScale() > m_soundWalkScale)
-				{
-					m_lerpDown = true;
-				}
-			}
-			else if(m_lerpDown)
-			{
-				m_soundWave->SetScale(m_soundWave->GetScale() - m_soundWalkSpeed * m_deltaTime);
-				if (m_soundWave->GetScale() < m_soundZeroScale)
-				{
-					m_lerpDown = false;
-				}
-			}
+			SoundWaveWalk();
 		}
 		else
 		{
-			if (m_soundWave->GetScale() < m_soundSprintScale && !m_lerpDown)
-			{
-				m_soundWave->SetScale(m_soundWave->GetScale() + m_soundSprintSpeed * m_deltaTime);
-
-				if (m_soundWave->GetScale() > m_soundSprintScale)
-				{
-					m_lerpDown = true;
-				}
-			}
-			else if (m_lerpDown)
-			{
-				m_soundWave->SetScale(m_soundWave->GetScale() - m_soundSprintSpeed * m_deltaTime);
-				if (m_soundWave->GetScale() < m_soundZeroScale)
-				{
-					m_lerpDown = false;
-				}
-			}
+			SoundWaveSprint();
 		}
 
 	}
@@ -313,43 +287,11 @@ void GameSystem::GetKeyboardInput()
 
 		if (!sprinting)
 		{
-			if (m_soundWave->GetScale() < m_soundWalkScale && !m_lerpDown)
-			{
-				m_soundWave->SetScale(m_soundWave->GetScale() + m_soundWalkSpeed * m_deltaTime);
-
-				if (m_soundWave->GetScale() > m_soundWalkScale)
-				{
-					m_lerpDown = true;
-				}
-			}
-			else if (m_lerpDown)
-			{
-				m_soundWave->SetScale(m_soundWave->GetScale() - m_soundWalkSpeed * m_deltaTime);
-				if (m_soundWave->GetScale() < m_soundZeroScale)
-				{
-					m_lerpDown = false;
-				}
-			}
+			SoundWaveWalk();
 		}
 		else
 		{
-			if (m_soundWave->GetScale() < m_soundSprintScale && !m_lerpDown)
-			{
-				m_soundWave->SetScale(m_soundWave->GetScale() + m_soundSprintSpeed * m_deltaTime);
-
-				if (m_soundWave->GetScale() > m_soundSprintScale)
-				{
-					m_lerpDown = true;
-				}
-			}
-			else if (m_lerpDown)
-			{
-				m_soundWave->SetScale(m_soundWave->GetScale() - m_soundSprintSpeed * m_deltaTime);
-				if (m_soundWave->GetScale() < m_soundZeroScale)
-				{
-					m_lerpDown = false;
-				}
-			}
+			SoundWaveSprint();
 		}
 	}
 
@@ -359,43 +301,11 @@ void GameSystem::GetKeyboardInput()
 
 		if (!sprinting)
 		{
-			if (m_soundWave->GetScale() < m_soundWalkScale && !m_lerpDown)
-			{
-				m_soundWave->SetScale(m_soundWave->GetScale() + m_soundWalkSpeed * m_deltaTime);
-
-				if (m_soundWave->GetScale() > m_soundWalkScale)
-				{
-					m_lerpDown = true;
-				}
-			}
-			else if (m_lerpDown)
-			{
-				m_soundWave->SetScale(m_soundWave->GetScale() - m_soundWalkSpeed * m_deltaTime);
-				if (m_soundWave->GetScale() < m_soundZeroScale)
-				{
-					m_lerpDown = false;
-				}
-			}
+			SoundWaveWalk();
 		}
 		else
 		{
-			if (m_soundWave->GetScale() < m_soundSprintScale && !m_lerpDown)
-			{
-				m_soundWave->SetScale(m_soundWave->GetScale() + m_soundSprintSpeed * m_deltaTime);
-
-				if (m_soundWave->GetScale() > m_soundSprintScale)
-				{
-					m_lerpDown = true;
-				}
-			}
-			else if (m_lerpDown)
-			{
-				m_soundWave->SetScale(m_soundWave->GetScale() - m_soundSprintSpeed * m_deltaTime);
-				if (m_soundWave->GetScale() < m_soundZeroScale)
-				{
-					m_lerpDown = false;
-				}
-			}
+			SoundWaveSprint();
 		}
 	}
 
@@ -405,44 +315,17 @@ void GameSystem::GetKeyboardInput()
 
 		if (!sprinting)
 		{
-			if (m_soundWave->GetScale() < m_soundWalkScale && !m_lerpDown)
-			{
-				m_soundWave->SetScale(m_soundWave->GetScale() + m_soundWalkSpeed * m_deltaTime);
-
-				if (m_soundWave->GetScale() > m_soundWalkScale)
-				{
-					m_lerpDown = true;
-				}
-			}
-			else if (m_lerpDown)
-			{
-				m_soundWave->SetScale(m_soundWave->GetScale() - m_soundWalkSpeed * m_deltaTime);
-				if (m_soundWave->GetScale() < 0.001f)
-				{
-					m_lerpDown = false;
-				}
-			}
+			SoundWaveWalk();
 		}
 		else
 		{
-			if (m_soundWave->GetScale() < m_soundSprintScale && !m_lerpDown)
-			{
-				m_soundWave->SetScale(m_soundWave->GetScale() + m_soundSprintSpeed * m_deltaTime);
-
-				if (m_soundWave->GetScale() > m_soundSprintScale)
-				{
-					m_lerpDown = true;
-				}
-			}
-			else if (m_lerpDown)
-			{
-				m_soundWave->SetScale(m_soundWave->GetScale() - m_soundSprintSpeed * m_deltaTime);
-				if (m_soundWave->GetScale() < 0.0f)
-				{
-					m_lerpDown = false;
-				}
-			}
+			SoundWaveSprint();
 		}
+	}
+	else
+	{
+		m_soundWaveWalk->SetScale(0.0f);
+		m_soundWaveSprint->SetScale(0.0f);
 	}
 
 
@@ -528,6 +411,19 @@ void GameSystem::GetControllerInput()
 	}
 }
 
+void GameSystem::GetMousePos()
+{
+	POINT cursorPos;
+	GetCursorPos(&cursorPos);
+
+	mouseX = (float)cursorPos.x;
+	mouseY = (float)cursorPos.y;
+
+	mouseX = ((mouseX / m_screenWidth) * 2.0f) - 1.0f;
+	mouseY = ((mouseY / m_screenHeight) * 2.0f) - 1.0f;
+}
+
+
 void GameSystem::DrawLevel(XMMATRIX view, XMMATRIX projection)
 {
 	for (unsigned int i = 0; i < m_tileMap.size(); i++)
@@ -544,7 +440,8 @@ void GameSystem::DrawLevel(XMMATRIX view, XMMATRIX projection)
 	}
 
 	Renderer::pImmediateContext->OMSetBlendState(Renderer::pAlphaBlendEnable, 0, 0xffffffff);
-	m_soundWave->Draw(view, projection);
+	m_soundWaveWalk->Draw(view, projection);
+	m_soundWaveSprint->Draw(view, projection);
 	Renderer::pImmediateContext->OMSetBlendState(Renderer::pAlphaBlendEnable, 0, 0xffffffff);
 
 
@@ -586,14 +483,53 @@ void GameSystem::UpdateText()
 	Renderer::pImmediateContext->OMSetBlendState(Renderer::pAlphaBlendDisable, 0, 0xffffffff);
 }
 
-void GameSystem::GetMousePos()
+void GameSystem::SoundWaveWalk()
 {
-	POINT cursorPos;
-	GetCursorPos(&cursorPos);
+	m_soundWaveSprint->SetScale(0.0f);
 
-	mouseX = (float)cursorPos.x;
-	mouseY = (float)cursorPos.y;
+	if (m_soundWaveWalk->GetScale() < m_soundWalkScale && !m_lerpDown)
+	{
+		m_soundWaveWalk->SetScale(m_soundWaveWalk->GetScale() + m_soundWalkSpeed * m_deltaTime);
 
-	mouseX = ((mouseX / m_screenWidth) * 2.0f) - 1.0f;
-	mouseY = ((mouseY / m_screenHeight) * 2.0f) - 1.0f;
+		if (m_soundWaveWalk->GetScale() > m_soundWalkScale)
+		{
+			m_lerpDown = true;
+		}
+	}
+	else if (m_lerpDown)
+	{
+		m_soundWaveWalk->SetScale(m_soundWaveWalk->GetScale() - m_soundWalkSpeed * m_deltaTime);
+		if (m_soundWaveWalk->GetScale() < 0.001f)
+		{
+			m_lerpDown = false;
+		}
+	}
 }
+
+void GameSystem::SoundWaveSprint()
+{
+	m_soundWaveWalk->SetScale(0.0f);
+
+	if (m_soundWaveSprint->GetScale() < m_soundSprintScale && !m_lerpDown)
+	{
+		m_soundWaveSprint->SetScale(m_soundWaveSprint->GetScale() + m_soundSprintSpeed * m_deltaTime);
+
+		if (m_soundWaveSprint->GetScale() > m_soundSprintScale)
+		{
+			m_lerpDown = true;
+		}
+	}
+	else if (m_lerpDown)
+	{
+		m_soundWaveSprint->SetScale(m_soundWaveSprint->GetScale() - m_soundSprintSpeed * m_deltaTime);
+		if (m_soundWaveSprint->GetScale() < 0.0f)
+		{
+			m_lerpDown = false;
+		}
+	}
+}
+
+void GameSystem::SoundWaveDoorOpen()
+{
+}
+

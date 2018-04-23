@@ -44,6 +44,10 @@ public:
 	void DrawLevel(XMMATRIX view, XMMATRIX projection);
 	void UpdateText();
 
+	void SoundWaveWalk();
+	void SoundWaveSprint();
+	void SoundWaveDoorOpen();
+
 private:
 	//Level objects
 	Renderer* renderer;
@@ -51,16 +55,19 @@ private:
 	Time m_time;
 	Player* m_pPlayer;
 	Monster* m_pMonster;
+
 	Asset* m_viewConeEnemy;
 	Asset* m_viewConePlayer;
-	Asset* m_soundWave;
+	Asset* m_soundWaveWalk;
+	Asset* m_soundWaveSprint;
+	//Asset* m_soundWaveDoorOpen;
+
 	StateMachine* m_stateMachine;
 
 	Text2D* m_text_fpsCount;
 	Text2D* m_text_monsterLOS;
 	Text2D* m_text_currentState;
 	
-
 	//vector objects
 	vector <Tile*> m_tileMap;
 	vector <Projectile*> m_vProjectiles;
@@ -77,10 +84,10 @@ private:
 	const float m_cFarClip = 100.0f;
 	const float m_cOrthographicSize = 100.0f;
 
-	const float m_soundWalkScale = 0.6f;
-	const float m_soundWalkSpeed = 20.0f;
-	const float m_soundSprintScale = 1.5f;
-	const float m_soundSprintSpeed = 30.0f;
+	const float m_soundWalkScale = 1.0f;
+	const float m_soundWalkSpeed = 25.0f;
+	const float m_soundSprintScale = 2.0f;
+	const float m_soundSprintSpeed = 45.0f;
 	const float m_soundZeroScale = 0.0f;
 
 	//Used as a toggle for the mouse and keyboard

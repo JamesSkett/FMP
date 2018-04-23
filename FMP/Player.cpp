@@ -173,7 +173,7 @@ void Player::LookAt(float targetX, float targetY)
 
 void Player::SprintOn()
 {
-	m_velocity = m_velocity * 2.0f;
+	m_velocity = 20.0f;
 }
 
 void Player::SprintOff()
