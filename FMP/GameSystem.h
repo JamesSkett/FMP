@@ -53,6 +53,7 @@ private:
 	Monster* m_pMonster;
 	Asset* m_viewConeEnemy;
 	Asset* m_viewConePlayer;
+	Asset* m_soundWave;
 	StateMachine* m_stateMachine;
 
 	Text2D* m_text_fpsCount;
@@ -76,9 +77,16 @@ private:
 	const float m_cFarClip = 100.0f;
 	const float m_cOrthographicSize = 100.0f;
 
+	const float m_soundWalkScale = 0.6f;
+	const float m_soundWalkSpeed = 20.0f;
+	const float m_soundSprintScale = 1.5f;
+	const float m_soundSprintSpeed = 30.0f;
+	const float m_soundZeroScale = 0.0f;
+
 	//Used as a toggle for the mouse and keyboard
 	bool m_isMousePressed = false;
 	bool m_isKeyPressed = false;
+	bool m_lerpDown = false;
 
 	int m_bulletNum = 0;
 

@@ -19,15 +19,24 @@ public:
 
 	void Draw(XMMATRIX view, XMMATRIX projection);
 
+	//Set the position of the asset
 	void SetPos(float x, float y);
+	//Set the rotation value for the asset
 	void SetRotation(float rotation);
-	void UpdateRotation(float speed);
-
+	//Set the scale of the asset
+	void SetScale(float value);
+	//Set the colour values for the asset
 	void SetColour(XMFLOAT4 colour);
+	//Set whether the asset can be drawn or not
 	void SetCanDraw(bool canDraw);
+
+
+	void UpdateRotation(float speed);
+	void UpdateScale(float speed);
 
 	void GetParameters(float &x, float &y, float &w, float &h);
 	bool GetCanDraw();
+	float GetScale();
 
 	XMFLOAT2 GetPos();
 

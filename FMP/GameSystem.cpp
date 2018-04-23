@@ -16,6 +16,7 @@ GameSystem::GameSystem()
 	m_text_currentState = nullptr;
 	m_viewConeEnemy = nullptr;
 	m_viewConePlayer = nullptr;
+	m_soundWave = nullptr;
 	m_stateMachine = nullptr;
 }
 
@@ -62,6 +63,12 @@ GameSystem::~GameSystem()
 	{
 		delete m_text_currentState;
 		m_text_currentState = nullptr;
+	}
+
+	if (m_soundWave)
+	{
+		delete m_soundWave;
+		m_soundWave = nullptr;
 	}
 
 	for (unsigned int i = 0; i < m_tileMap.size(); i++)
@@ -125,7 +132,7 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 
 	/*Pathfinding* pathfinder = new Pathfinding(m_tileMap);
 
-	
+
 	vector <XMFLOAT2> waypoints;
 	int waypontNum = 0;*/
 
@@ -147,7 +154,7 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 			//get the deltatime
 			m_deltaTime = currentTime - previousTime;
 
-			
+
 
 			//Get the controller and keyboard input
 			//GetControllerInput();
@@ -171,6 +178,10 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 			m_pMonster->Update(m_pPlayer, m_deltaTime);
 
 			m_stateMachine->RunStateMachine(m_pPlayer, m_pMonster, m_deltaTime);
+
+			m_soundWave->SetPos(m_pPlayer->GetXPos(), m_pPlayer->GetYPos());
+
+
 
 			for (unsigned int i = 0; i < m_vProjectiles.size(); i++)
 			{
@@ -219,7 +230,7 @@ void GameSystem::SetupLevel()
 
 	m_viewConeEnemy = new Asset("Assets/viewCone2.png", 0, 0, 3, 2.0f, 0, 0, 0);
 	m_viewConePlayer = new Asset("Assets/viewCone2.png", 0, 0, 3, 2.0f, 0, 0, 0);
-
+	m_soundWave = new Asset("Assets/soundWave.png", m_pPlayer->GetXPos(), m_pPlayer->GetYPos(), 3, 0.0f, 0, 0, 0);
 	m_pPlayer->SetViewCone(m_viewConePlayer);
 	m_pMonster->SetViewCone(m_viewConeEnemy);
 
@@ -252,21 +263,186 @@ void GameSystem::GetKeyboardInput()
 	if (renderer->IsKeyPressed(DIK_W))
 	{
 		m_pPlayer->UpdateYPos(m_tileMap, true, m_deltaTime);
+
+		if (!sprinting)
+		{
+			if (m_soundWave->GetScale() < m_soundWalkScale && !m_lerpDown)
+			{
+				m_soundWave->SetScale(m_soundWave->GetScale() + m_soundWalkSpeed * m_deltaTime);
+
+				if (m_soundWave->GetScale() > m_soundWalkScale)
+				{
+					m_lerpDown = true;
+				}
+			}
+			else if(m_lerpDown)
+			{
+				m_soundWave->SetScale(m_soundWave->GetScale() - m_soundWalkSpeed * m_deltaTime);
+				if (m_soundWave->GetScale() < m_soundZeroScale)
+				{
+					m_lerpDown = false;
+				}
+			}
+		}
+		else
+		{
+			if (m_soundWave->GetScale() < m_soundSprintScale && !m_lerpDown)
+			{
+				m_soundWave->SetScale(m_soundWave->GetScale() + m_soundSprintSpeed * m_deltaTime);
+
+				if (m_soundWave->GetScale() > m_soundSprintScale)
+				{
+					m_lerpDown = true;
+				}
+			}
+			else if (m_lerpDown)
+			{
+				m_soundWave->SetScale(m_soundWave->GetScale() - m_soundSprintSpeed * m_deltaTime);
+				if (m_soundWave->GetScale() < m_soundZeroScale)
+				{
+					m_lerpDown = false;
+				}
+			}
+		}
+
 	}
 
-	if (renderer->IsKeyPressed(DIK_S))
+	else if (renderer->IsKeyPressed(DIK_S))
 	{
 		m_pPlayer->UpdateYPos(m_tileMap, false, m_deltaTime);
+
+		if (!sprinting)
+		{
+			if (m_soundWave->GetScale() < m_soundWalkScale && !m_lerpDown)
+			{
+				m_soundWave->SetScale(m_soundWave->GetScale() + m_soundWalkSpeed * m_deltaTime);
+
+				if (m_soundWave->GetScale() > m_soundWalkScale)
+				{
+					m_lerpDown = true;
+				}
+			}
+			else if (m_lerpDown)
+			{
+				m_soundWave->SetScale(m_soundWave->GetScale() - m_soundWalkSpeed * m_deltaTime);
+				if (m_soundWave->GetScale() < m_soundZeroScale)
+				{
+					m_lerpDown = false;
+				}
+			}
+		}
+		else
+		{
+			if (m_soundWave->GetScale() < m_soundSprintScale && !m_lerpDown)
+			{
+				m_soundWave->SetScale(m_soundWave->GetScale() + m_soundSprintSpeed * m_deltaTime);
+
+				if (m_soundWave->GetScale() > m_soundSprintScale)
+				{
+					m_lerpDown = true;
+				}
+			}
+			else if (m_lerpDown)
+			{
+				m_soundWave->SetScale(m_soundWave->GetScale() - m_soundSprintSpeed * m_deltaTime);
+				if (m_soundWave->GetScale() < m_soundZeroScale)
+				{
+					m_lerpDown = false;
+				}
+			}
+		}
 	}
 
-	if (renderer->IsKeyPressed(DIK_D))
+	else if (renderer->IsKeyPressed(DIK_D))
 	{
 		m_pPlayer->UpdateXPos(m_tileMap, true, m_deltaTime);
+
+		if (!sprinting)
+		{
+			if (m_soundWave->GetScale() < m_soundWalkScale && !m_lerpDown)
+			{
+				m_soundWave->SetScale(m_soundWave->GetScale() + m_soundWalkSpeed * m_deltaTime);
+
+				if (m_soundWave->GetScale() > m_soundWalkScale)
+				{
+					m_lerpDown = true;
+				}
+			}
+			else if (m_lerpDown)
+			{
+				m_soundWave->SetScale(m_soundWave->GetScale() - m_soundWalkSpeed * m_deltaTime);
+				if (m_soundWave->GetScale() < m_soundZeroScale)
+				{
+					m_lerpDown = false;
+				}
+			}
+		}
+		else
+		{
+			if (m_soundWave->GetScale() < m_soundSprintScale && !m_lerpDown)
+			{
+				m_soundWave->SetScale(m_soundWave->GetScale() + m_soundSprintSpeed * m_deltaTime);
+
+				if (m_soundWave->GetScale() > m_soundSprintScale)
+				{
+					m_lerpDown = true;
+				}
+			}
+			else if (m_lerpDown)
+			{
+				m_soundWave->SetScale(m_soundWave->GetScale() - m_soundSprintSpeed * m_deltaTime);
+				if (m_soundWave->GetScale() < m_soundZeroScale)
+				{
+					m_lerpDown = false;
+				}
+			}
+		}
 	}
 
-	if (renderer->IsKeyPressed(DIK_A))
+	else if (renderer->IsKeyPressed(DIK_A))
 	{
 		m_pPlayer->UpdateXPos(m_tileMap, false, m_deltaTime);
+
+		if (!sprinting)
+		{
+			if (m_soundWave->GetScale() < m_soundWalkScale && !m_lerpDown)
+			{
+				m_soundWave->SetScale(m_soundWave->GetScale() + m_soundWalkSpeed * m_deltaTime);
+
+				if (m_soundWave->GetScale() > m_soundWalkScale)
+				{
+					m_lerpDown = true;
+				}
+			}
+			else if (m_lerpDown)
+			{
+				m_soundWave->SetScale(m_soundWave->GetScale() - m_soundWalkSpeed * m_deltaTime);
+				if (m_soundWave->GetScale() < 0.001f)
+				{
+					m_lerpDown = false;
+				}
+			}
+		}
+		else
+		{
+			if (m_soundWave->GetScale() < m_soundSprintScale && !m_lerpDown)
+			{
+				m_soundWave->SetScale(m_soundWave->GetScale() + m_soundSprintSpeed * m_deltaTime);
+
+				if (m_soundWave->GetScale() > m_soundSprintScale)
+				{
+					m_lerpDown = true;
+				}
+			}
+			else if (m_lerpDown)
+			{
+				m_soundWave->SetScale(m_soundWave->GetScale() - m_soundSprintSpeed * m_deltaTime);
+				if (m_soundWave->GetScale() < 0.0f)
+				{
+					m_lerpDown = false;
+				}
+			}
+		}
 	}
 
 
@@ -367,7 +543,9 @@ void GameSystem::DrawLevel(XMMATRIX view, XMMATRIX projection)
 		}
 	}
 
-	
+	Renderer::pImmediateContext->OMSetBlendState(Renderer::pAlphaBlendEnable, 0, 0xffffffff);
+	m_soundWave->Draw(view, projection);
+	Renderer::pImmediateContext->OMSetBlendState(Renderer::pAlphaBlendEnable, 0, 0xffffffff);
 
 
 	m_pPlayer->Draw(view, projection);

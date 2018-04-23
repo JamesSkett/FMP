@@ -100,9 +100,19 @@ void Asset::SetRotation(float rotation)
 	m_rotation = rotation;
 }
 
+void Asset::SetScale(float value)
+{
+	m_scale = value;
+}
+
 void Asset::UpdateRotation(float speed)
 {
 	m_rotation += speed;
+}
+
+void Asset::UpdateScale(float speed)
+{
+	m_scale += speed;
 }
 
 void Asset::SetColour(XMFLOAT4 colour)
@@ -126,6 +136,11 @@ void Asset::GetParameters(float &x, float &y, float &w, float &h)
 bool Asset::GetCanDraw()
 {
 	return m_canDraw;
+}
+
+float Asset::GetScale()
+{
+	return m_scale;
 }
 
 XMFLOAT2 Asset::GetPos()
