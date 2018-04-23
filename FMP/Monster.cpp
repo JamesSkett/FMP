@@ -5,11 +5,13 @@
 
 #include "Math.h"
 
-int Monster::s_chaseWeighting = 15;
-int Monster::s_fleeWeighting = 85;
-int Monster::s_searchWeighting = 0;
-int Monster::s_sneakWeighting = 85;
 
+int Monster::s_random_to_chase_or_sneak[2] = { 85, 15 };
+int Monster::s_random_to_chase_or_flee[2] = { 85, 15 };
+int Monster::s_chase_to_search_or_random[2] = { 20, 80 };
+int Monster::s_search_to_sneak_or_chase[2] = { 25, 75 };
+int Monster::s_search_to_chase_or_flee[2] = { 75, 25 };
+int Monster::s_sneak_to_chase_or_flee[2] = { 85, 15 };
 
 Monster::Monster(XMFLOAT4 colour, float x, float y, float z, float scale, float width, float height) :
 	Entity(colour, x, y, z, scale, width, height)
@@ -30,10 +32,6 @@ void Monster::Update(Player* player, float deltaTime)
 	m_viewCone->SetRotation(m_rotation);
 
 	LineOfSightCheck(XMFLOAT2(player->GetXPos(), player->GetYPos()));
-
-	/*char s[128];
-	sprintf_s(s, "Speed = %f\n", m_speed);
-	OutputDebugString(s);*/
 
 }
 

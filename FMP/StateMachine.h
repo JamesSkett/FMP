@@ -35,15 +35,10 @@ private:
 
 	float m_searchTimer  = 3.0f;
 	float m_sneakTimer   = 3.0f;
-	float m_fleeTimer    = 2.0f;
+	float m_fleeTimer    = 1.0f;
 
-	int WEIGHTING_MIN = 1;
-	int WEIGHTING_MAX = 100;
+	const int WEIGHTING_MIN = 1;
+	const int WEIGHTING_MAX = 100;
 
-	//random to chase
-	//random to sneak
-	//sneak to chase
-	//chase to flee
-	//chase to attack
 };
 

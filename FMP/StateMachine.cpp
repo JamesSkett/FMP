@@ -53,28 +53,35 @@ State StateMachine::IsRandomWander(Player* player, Monster* monster)
 {
 	if (monster->GetPlayerInSight() && !player->GetEnemyInSight())
 	{
+		float chaseProbability = ((float)Monster::s_random_to_chase_or_sneak[0] / (float)WEIGHTING_MAX) * 100;
+		float sneakProbability = ((float)Monster::s_random_to_chase_or_sneak[1] / (float)WEIGHTING_MAX) * 100;
+
 		int weight = rand() % WEIGHTING_MAX + WEIGHTING_MIN;
 
-		if (weight <= WEIGHTING_MAX && weight > WEIGHTING_MAX - Monster::s_sneakWeighting)
+		if (weight <= WEIGHTING_MAX && weight > WEIGHTING_MAX - sneakProbability)
 		{
 			monster->SetPathFound(false);
 			return SNEAK;
 		}
-		else if (weight <= WEIGHTING_MIN + Monster::s_chaseWeighting && weight >= WEIGHTING_MIN)
+		else if (weight <= (WEIGHTING_MIN + chaseProbability - 1) && weight >= WEIGHTING_MIN)
 		{
 			return CHASE;
 		}
 	}
 	else if (monster->GetPlayerInSight() && player->GetEnemyInSight())
 	{
-		int weight = rand() % 100 + 1;
+		float chaseProbability = ((float)Monster::s_random_to_chase_or_flee[0] / (float)WEIGHTING_MAX) * 100;
+		float fleeProbability = ((float)Monster::s_random_to_chase_or_flee[1] / (float)WEIGHTING_MAX) * 100;
 
-		if (weight <= WEIGHTING_MIN + Monster::s_chaseWeighting && weight >= WEIGHTING_MIN)
+		int weight = rand() % WEIGHTING_MAX + WEIGHTING_MIN;
+
+		if (weight <= WEIGHTING_MIN + (chaseProbability - 1) && weight >= WEIGHTING_MIN)
 		{
 			return CHASE;
 		}
-		else if (weight <= WEIGHTING_MAX && weight > WEIGHTING_MAX - Monster::s_fleeWeighting)
+		else if (weight <= WEIGHTING_MAX && weight > WEIGHTING_MAX - fleeProbability)
 		{
+			monster->SetPathFound(false);
 			return FLEE;
 		}
 	}
@@ -87,10 +94,15 @@ State StateMachine::IsChasing(Player* player, Monster* monster)
 	if (!monster->GetPlayerInSight())
 	{
 		return SEARCH;
+
+		//or random wander
 	}
 	else if (monster->GetPlayerInSight() && player->GetEnemyInSight())
 	{
+		monster->SetPathFound(false);
 		return FLEE;
+
+		//or chase
 	}
 
 	return CHASE;
@@ -104,6 +116,7 @@ State StateMachine::IsSearching(Player* player, Monster* monster)
 
 		if (weight <= WEIGHTING_MAX && weight > 15)
 		{
+			monster->SetPathFound(false);
 			return SNEAK;
 		}
 		else if (weight <= 15 && weight >= WEIGHTING_MIN)
@@ -121,9 +134,15 @@ State StateMachine::IsSearching(Player* player, Monster* monster)
 		}
 		else if (weight <= WEIGHTING_MAX && weight > 30)
 		{
+			monster->SetPathFound(false);
 			return FLEE;
 		}
 	}
+	else if (!monster->GetPlayerInSight())
+	{
+
+	}
+
 
 	return SEARCH;
 }
@@ -132,7 +151,10 @@ State StateMachine::IsSneaking(Player* player, Monster* monster)
 {
 	if (monster->GetPlayerInSight() && player->GetEnemyInSight())
 	{
+		monster->SetPathFound(false);
 		return FLEE;
+
+		//or chase
 	}
 
 	return SNEAK;
@@ -145,11 +167,12 @@ State StateMachine::IsFleeing(Player* player, Monster* monster, float deltaTime)
 		if (m_fleeTimer <= 0)
 		{
 			m_fleeTimer = 1.0f;
+			monster->SetPathFound(false);
 			return RANDOM_WANDER;
 		}
 		m_fleeTimer -= deltaTime;
 	}
-	else m_fleeTimer = 2.0f;
+	else m_fleeTimer = 1.0f;
 
 	return FLEE;
 }

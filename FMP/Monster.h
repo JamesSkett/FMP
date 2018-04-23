@@ -51,10 +51,13 @@ public:
 
 	void SetPathFound(bool value);
 
-	static int s_chaseWeighting;
-	static int s_searchWeighting;
-	static int s_sneakWeighting;
-	static int s_fleeWeighting;
+	static int s_random_to_chase_or_sneak[2];
+	static int s_random_to_chase_or_flee[2];
+	static int s_chase_to_search_or_random[2];
+	static int s_search_to_sneak_or_chase[2];
+	static int s_search_to_chase_or_flee[2];
+	static int s_sneak_to_chase_or_flee[2];
+	
 
 private:
 	float m_speed = 6.0f;
