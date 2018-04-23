@@ -33,8 +33,6 @@ public:
 
 	//Get the keyboard input
 	void GetKeyboardInput();
-	//Get the controller input
-	void GetControllerInput();
 	void GetMousePos();
 
 	//player 1 controller
@@ -84,10 +82,11 @@ private:
 	const float m_cFarClip = 100.0f;
 	const float m_cOrthographicSize = 100.0f;
 
+	//For the sound waves
 	const float m_soundWalkScale = 1.0f;
-	const float m_soundWalkSpeed = 25.0f;
+	const float m_soundWalkSpeed = 40.0f;
 	const float m_soundSprintScale = 2.0f;
-	const float m_soundSprintSpeed = 45.0f;
+	const float m_soundSprintSpeed = 75.0f;
 	const float m_soundZeroScale = 0.0f;
 
 	//Used as a toggle for the mouse and keyboard

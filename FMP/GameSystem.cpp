@@ -362,55 +362,6 @@ void GameSystem::GetKeyboardInput()
 
 }
 
-void GameSystem::GetControllerInput()
-{
-	//gets the x and y values for the controller thumbsticks
-	float leftSticValY = player1->GetState().Gamepad.sThumbLY / 10000.0f;
-	float leftSticValX = player1->GetState().Gamepad.sThumbLX / 10000.0f;
-
-	float rightSticValY = player1->GetState().Gamepad.sThumbRY / 10000.0f;
-	float rightSticValX = player1->GetState().Gamepad.sThumbRX / 10000.0f;
-
-
-	if (player1->IsConnected())
-	{
-		if ((leftSticValY > 10) || (leftSticValY))
-		{
-
-		}
-
-		if ((leftSticValX > 10) || (leftSticValX < -10))
-		{
-
-		}
-
-		if ((rightSticValY > 10) || (rightSticValY < -10))
-		{
-
-		}
-
-		if ((rightSticValX > 10) || (rightSticValX < -10))
-		{
-
-		}
-
-		if (player1->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_A)
-		{
-		}
-
-		if (player1->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_B)
-		{
-		}
-	}
-	else
-	{
-		printf("\n\tERROR! PLAYER 1 - XBOX 360 Controller Not Found!\n");
-		//std::cout << "Press Any Key To Exit.";
-		//std::cin.get();
-
-	}
-}
-
 void GameSystem::GetMousePos()
 {
 	POINT cursorPos;
