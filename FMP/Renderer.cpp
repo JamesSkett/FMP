@@ -14,6 +14,7 @@ Colour                   Renderer::colour;
 
 Time Renderer::time;
 
+int Renderer::s_FogOfWar = 0;
 
 Renderer::Renderer()
 {

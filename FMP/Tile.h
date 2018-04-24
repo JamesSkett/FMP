@@ -38,12 +38,14 @@ public:
 		XMFLOAT4 Col;
 	};
 
-	struct ENTITY_CONSTANT_BUFFER
+	struct TILE_CONSTANT_BUFFER
 	{
 		XMMATRIX WorldViewProjection;
 		XMFLOAT2 playerPos;
 		float playerRotation;
 		float range;
+		int fog;
+		XMFLOAT3 packingBytes;
 	};
 
 protected:

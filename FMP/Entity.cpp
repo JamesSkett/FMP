@@ -71,6 +71,7 @@ void Entity::Draw(XMMATRIX view, XMMATRIX projection)
 	entity_cb_values.playerPos = XMFLOAT2(x, y);
 	entity_cb_values.playerRotation = Player::s_rotation;
 	entity_cb_values.range = 1.0f;
+	entity_cb_values.fog = Renderer::s_FogOfWar;
 
 	Renderer::pImmediateContext->UpdateSubresource(m_pConstantBuffer0, 0, 0, &entity_cb_values, 0, 0);
 

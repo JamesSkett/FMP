@@ -44,9 +44,9 @@ void Tile::Draw(XMMATRIX view, XMMATRIX projection)
 
 	WVP = world * view * projection;
 
-	ENTITY_CONSTANT_BUFFER entity_cb_values;
+	TILE_CONSTANT_BUFFER tile_cb_values;
 
-	entity_cb_values.WorldViewProjection = WVP;
+	tile_cb_values.WorldViewProjection = WVP;
 
 
 	float x = (Player::s_playerPos.x + 1.0f) / 2.0f;
@@ -55,11 +55,12 @@ void Tile::Draw(XMMATRIX view, XMMATRIX projection)
 	x *= 1920.f;
 	y *= 1080.f;
 
-	entity_cb_values.playerPos = XMFLOAT2(x, y);
-	entity_cb_values.playerRotation = Player::s_rotation;
-	entity_cb_values.range = 1.0f;
+	tile_cb_values.playerPos = XMFLOAT2(x, y);
+	tile_cb_values.playerRotation = Player::s_rotation;
+	tile_cb_values.range = 1.0f;
+	tile_cb_values.fog = Renderer::s_FogOfWar;
 
-	Renderer::pImmediateContext->UpdateSubresource(m_pConstantBuffer0, 0, 0, &entity_cb_values, 0, 0);
+	Renderer::pImmediateContext->UpdateSubresource(m_pConstantBuffer0, 0, 0, &tile_cb_values, 0, 0);
 
 	Renderer::pImmediateContext->VSSetConstantBuffers(0, 1, &m_pConstantBuffer0);
 	Renderer::pImmediateContext->PSSetConstantBuffers(0, 1, &m_pConstantBuffer0);
@@ -177,7 +178,7 @@ HRESULT Tile::CreateVertices(XMFLOAT4 colour)
 	ZeroMemory(&constant_buffer_desc, sizeof(constant_buffer_desc));
 
 	constant_buffer_desc.Usage = D3D11_USAGE_DEFAULT; //Can use UpdateSubresource() to update
-	constant_buffer_desc.ByteWidth = sizeof(ENTITY_CONSTANT_BUFFER);
+	constant_buffer_desc.ByteWidth = sizeof(TILE_CONSTANT_BUFFER);
 	constant_buffer_desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 
 	hr = Renderer::pD3DDevice->CreateBuffer(&constant_buffer_desc, NULL, &m_pConstantBuffer0);

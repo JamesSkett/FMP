@@ -61,6 +61,7 @@ public:
 	static ID3D11BlendState*       pAlphaBlendEnable;
 	static ID3D11BlendState*       pAlphaBlendDisable;
 	static Colour colour;
+	static int s_FogOfWar;
 	
 	//matrices for object transforms
 	XMMATRIX identity, projection, view;

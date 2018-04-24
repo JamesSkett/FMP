@@ -347,6 +347,22 @@ void GameSystem::GetKeyboardInput()
 		m_soundWaveSprint->SetScale(0.0f);
 	}
 
+	if (renderer->IsKeyPressed(DIK_1))
+	{
+		Renderer::s_FogOfWar = 0;
+		m_soundWaveWalk->SetCanDraw(true);
+		m_soundWaveSprint->SetCanDraw(true);
+		m_soundWaveDoorOpen->SetCanDraw(true);
+	}
+
+	if (renderer->IsKeyPressed(DIK_2))
+	{
+		Renderer::s_FogOfWar = 1;
+		m_soundWaveWalk->SetCanDraw(false);
+		m_soundWaveSprint->SetCanDraw(false);
+		m_soundWaveDoorOpen->SetCanDraw(false);
+	}
+
 
 	if (renderer->mouseCurrState.rgbButtons[0])
 	{

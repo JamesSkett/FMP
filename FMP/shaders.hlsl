@@ -4,6 +4,8 @@ cbuffer CBuffer0
 	float2 playerPos;
 	float playerRotation;
 	float range;
+	int fog;
+	float3 packingBytes;
 };
 
 struct VOut
@@ -35,13 +37,18 @@ float4 PShader(float4 position : SV_POSITION, float4 color : COLOR) : SV_TARGET
 	//	return float4(0, 1, 0, 1);
 	//}
 
-	float x = pow((position.x - playerPos.x),2);
-	float y = pow((position.y - playerPos.y),2);
+	if (fog == 1)
+	{
+		float x = pow((position.x - playerPos.x), 2);
+		float y = pow((position.y - playerPos.y), 2);
 
 
-	float dist = sqrt(x + y);
+		float dist = sqrt(x + y);
 
-	return color  - float4(dist / 300.f, dist / 300.f, dist / 300.f, 1);
+		return color - float4(dist / 300.f, dist / 300.f, dist / 300.f, 1);
+	}
+
+	
 	
 
 	return color;

@@ -51,6 +51,8 @@ public:
 		XMFLOAT2 playerPos;
 		float playerRotation;
 		float range;
+		int fog;
+		XMFLOAT3 packingBytes;
 	};
 	
 protected:
