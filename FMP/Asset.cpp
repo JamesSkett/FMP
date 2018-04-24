@@ -1,7 +1,7 @@
 #include "Asset.h"
 
 
-Asset::Asset(char* filename, float x, float y, float z, float scale, float width, float height, float rotation)
+Asset::Asset(const char* filename, float x, float y, float z, float scale, float width, float height, float rotation)
 {
 	m_xPos = x;
 	m_yPos = y;
@@ -148,7 +148,7 @@ XMFLOAT2 Asset::GetPos()
 	return XMFLOAT2(m_xPos, m_yPos);
 }
 
-HRESULT Asset::CreateVertices(char* filename)
+HRESULT Asset::CreateVertices(const char* filename)
 {
 	HRESULT hr = S_OK;
 

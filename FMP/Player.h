@@ -71,6 +71,6 @@ private:
 
 	bool m_enemyInSight = false;
 
-	float m_timer = 0.3f;
+	float m_timer = 0.02f;
 };
 

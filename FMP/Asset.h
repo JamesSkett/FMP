@@ -14,7 +14,7 @@ using namespace DirectX;
 class Asset
 {
 public:
-	Asset(char* colour, float x, float y, float z, float scale, float width, float height, float rotation);
+	Asset(const char* filename, float x, float y, float z, float scale, float width, float height, float rotation);
 	~Asset();
 
 	void Draw(XMMATRIX view, XMMATRIX projection);
@@ -53,7 +53,7 @@ public:
 	};
 
 private:
-	HRESULT CreateVertices(char* filename);
+	HRESULT CreateVertices(const char* filename);
 
 	ID3D11Buffer*			m_pVertexBuffer;
 	ID3D11VertexShader*		m_pVertexShader;

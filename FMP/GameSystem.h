@@ -58,7 +58,7 @@ private:
 	Asset* m_viewConePlayer;
 	Asset* m_soundWaveWalk;
 	Asset* m_soundWaveSprint;
-	//Asset* m_soundWaveDoorOpen;
+	Asset* m_soundWaveDoorOpen;
 
 	StateMachine* m_stateMachine;
 
@@ -88,14 +88,20 @@ private:
 	const float m_soundSprintScale = 2.0f;
 	const float m_soundSprintSpeed = 75.0f;
 	const float m_soundZeroScale = 0.0f;
+	const float m_soundDoorScale = 3.0f;
+	const float m_soundDoorSpeed = 70.0f;
 
 	//Used as a toggle for the mouse and keyboard
 	bool m_isMousePressed = false;
 	bool m_isKeyPressed = false;
 	bool m_lerpDown = false;
+	bool m_lerpDownDoor = false;
+	bool m_doorSound = false;
 
 	int m_bulletNum = 0;
 
 	float mouseX;
 	float mouseY;
+
+	const char* SOUND_WAVE_FILE_PATH = "Assets/soundWave.png";
 };

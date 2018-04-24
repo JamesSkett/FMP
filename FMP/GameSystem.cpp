@@ -2,8 +2,6 @@
 #include "Pathfinding.h"
 #include <thread>
 
-
-
 //set up the renderer and main menu
 GameSystem::GameSystem()
 {
@@ -18,6 +16,7 @@ GameSystem::GameSystem()
 	m_viewConePlayer = nullptr;
 	m_soundWaveWalk = nullptr;
 	m_soundWaveSprint = nullptr;
+	m_soundWaveDoorOpen = nullptr;
 	m_stateMachine = nullptr;
 }
 
@@ -76,6 +75,12 @@ GameSystem::~GameSystem()
 	{
 		delete m_soundWaveSprint;
 		m_soundWaveSprint = nullptr;
+	}
+
+	if (m_soundWaveDoorOpen)
+	{
+		delete m_soundWaveDoorOpen;
+		m_soundWaveDoorOpen = nullptr;
 	}
 
 	for (unsigned int i = 0; i < m_tileMap.size(); i++)
@@ -184,6 +189,14 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 			m_pPlayer->Update(XMFLOAT2(m_pMonster->GetXPos(), m_pMonster->GetYPos()), m_tileMap, m_deltaTime);
 			m_pMonster->Update(m_pPlayer, m_deltaTime);
 
+			if (m_pPlayer->GetWalkedThroughDoor())
+			{
+				m_doorSound = true;
+				m_soundWaveDoorOpen->SetPos(m_pPlayer->GetDoorPos().x, m_pPlayer->GetDoorPos().y);
+			}
+
+			SoundWaveDoorOpen();
+
 			m_stateMachine->RunStateMachine(m_pPlayer, m_pMonster, m_deltaTime);
 
 			m_soundWaveWalk->SetPos(m_pPlayer->GetXPos(), m_pPlayer->GetYPos());
@@ -238,8 +251,14 @@ void GameSystem::SetupLevel()
 
 	m_viewConeEnemy = new Asset("Assets/viewCone2.png", 0, 0, 3, 2.0f, 0, 0, 0);
 	m_viewConePlayer = new Asset("Assets/viewCone2.png", 0, 0, 3, 2.0f, 0, 0, 0);
-	m_soundWaveWalk = new Asset("Assets/soundWave.png", m_pPlayer->GetXPos(), m_pPlayer->GetYPos(), 3, 0.0f, 0, 0, 0);
-	m_soundWaveSprint = new Asset("Assets/soundWave.png", m_pPlayer->GetXPos(), m_pPlayer->GetYPos(), 3, 0.0f, 0, 0, 0);
+	m_soundWaveWalk = new Asset(SOUND_WAVE_FILE_PATH, m_pPlayer->GetXPos(), m_pPlayer->GetYPos(), 3, 0.0f, 0, 0, 0);
+	m_soundWaveSprint = new Asset(SOUND_WAVE_FILE_PATH, m_pPlayer->GetXPos(), m_pPlayer->GetYPos(), 3, 0.0f, 0, 0, 0);
+	m_soundWaveDoorOpen = new Asset(SOUND_WAVE_FILE_PATH, m_pPlayer->GetXPos(), m_pPlayer->GetYPos(), 3, 0.0f, 0, 0, 0);
+	
+	m_soundWaveWalk->SetColour(Renderer::colour.Aqua);
+	m_soundWaveSprint->SetColour(Renderer::colour.Aqua);
+	m_soundWaveDoorOpen->SetColour(Renderer::colour.Aqua);
+	
 	m_pPlayer->SetViewCone(m_viewConePlayer);
 	m_pMonster->SetViewCone(m_viewConeEnemy);
 
@@ -393,6 +412,7 @@ void GameSystem::DrawLevel(XMMATRIX view, XMMATRIX projection)
 	Renderer::pImmediateContext->OMSetBlendState(Renderer::pAlphaBlendEnable, 0, 0xffffffff);
 	m_soundWaveWalk->Draw(view, projection);
 	m_soundWaveSprint->Draw(view, projection);
+	m_soundWaveDoorOpen->Draw(view, projection);
 	Renderer::pImmediateContext->OMSetBlendState(Renderer::pAlphaBlendEnable, 0, 0xffffffff);
 
 
@@ -482,5 +502,27 @@ void GameSystem::SoundWaveSprint()
 
 void GameSystem::SoundWaveDoorOpen()
 {
+	if (m_doorSound)
+	{
+		if (m_soundWaveDoorOpen->GetScale() < m_soundDoorScale && !m_lerpDownDoor)
+		{
+			m_soundWaveDoorOpen->SetScale(m_soundWaveDoorOpen->GetScale() + m_soundDoorSpeed * m_deltaTime);
+
+			if (m_soundWaveDoorOpen->GetScale() > m_soundDoorScale)
+			{
+				m_lerpDownDoor = true;
+			}
+		}
+		else if (m_lerpDownDoor)
+		{
+			m_soundWaveDoorOpen->SetScale(m_soundWaveDoorOpen->GetScale() - m_soundDoorSpeed * m_deltaTime);
+			if (m_soundWaveDoorOpen->GetScale() < 0.0f)
+			{
+				m_lerpDownDoor = false;
+				m_doorSound = false;
+				m_soundWaveDoorOpen->SetScale(0.0f);
+			}
+		}
+	}
 }
 
