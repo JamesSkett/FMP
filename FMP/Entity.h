@@ -48,6 +48,9 @@ public:
 	struct ENTITY_CONSTANT_BUFFER
 	{
 		XMMATRIX WorldViewProjection;
+		XMFLOAT2 playerPos;
+		float playerRotation;
+		float range;
 	};
 	
 protected:

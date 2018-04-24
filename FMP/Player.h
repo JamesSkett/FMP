@@ -65,6 +65,9 @@ public:
 	//Checks if the tile at 'pos' is walkable
 	bool CheckTile(XMFLOAT2 pos, vector <Tile*> tilemap);
 
+	static float s_rotation;
+	static XMFLOAT2 s_playerPos;
+
 private:
 	//Player move speed
 	float m_velocity = 10.0f;

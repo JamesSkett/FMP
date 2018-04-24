@@ -62,9 +62,20 @@ void Entity::Draw(XMMATRIX view, XMMATRIX projection)
 
 	entity_cb_values.WorldViewProjection = WVP;
 
+	float x = (Player::s_playerPos.x + 1) / 2.0f;
+	float y = 1 - (Player::s_playerPos.y + 1) / 2.0f;
+	
+	x *= 1920.f;
+	y *= 1080.f;
+	
+	entity_cb_values.playerPos = XMFLOAT2(x, y);
+	entity_cb_values.playerRotation = Player::s_rotation;
+	entity_cb_values.range = 1.0f;
+
 	Renderer::pImmediateContext->UpdateSubresource(m_pConstantBuffer0, 0, 0, &entity_cb_values, 0, 0);
 
 	Renderer::pImmediateContext->VSSetConstantBuffers(0, 1, &m_pConstantBuffer0);
+	Renderer::pImmediateContext->PSSetConstantBuffers(0, 1, &m_pConstantBuffer0);
 	Renderer::pImmediateContext->VSSetShader(m_pVertexShader, 0, 0);
 	Renderer::pImmediateContext->PSSetShader(m_pPixelShader, 0, 0);
 	Renderer::pImmediateContext->IASetInputLayout(m_pInputLayout);
@@ -140,7 +151,7 @@ HRESULT Entity::CreateVertices(XMFLOAT4 colour)
 	ZeroMemory(&constant_buffer_desc, sizeof(constant_buffer_desc));
 
 	constant_buffer_desc.Usage = D3D11_USAGE_DEFAULT; //Can use UpdateSubresource() to update
-	constant_buffer_desc.ByteWidth = 64;
+	constant_buffer_desc.ByteWidth = sizeof(ENTITY_CONSTANT_BUFFER);
 	constant_buffer_desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 
 	hr = Renderer::pD3DDevice->CreateBuffer(&constant_buffer_desc, NULL, &m_pConstantBuffer0);

@@ -4,6 +4,9 @@
 #include "Math.h"
 #include <math.h>
 
+float Player::s_rotation;
+XMFLOAT2 Player::s_playerPos;
+
 Player::Player(XMFLOAT4 colour, float x, float y, float z, float scale, float width, float height)
 	: Entity(colour, x, y, z, scale, width, height)
 {
@@ -40,6 +43,8 @@ void Player::Update(XMFLOAT2 enemyPos, vector <Tile*> tilemap, float deltaTime)
 
 		m_timer -= deltaTime;
 	}
+
+	s_playerPos = { m_screenSpaceX, m_screenSpaceY };
 }
 
 void Player::SetXPos(float x)
@@ -194,6 +199,8 @@ bool Player::LineOfSightCheck(XMFLOAT2 targetPos, vector <Tile*> tilemap)
 
 	//calculate the angle the angle based on the facing direction
 	float angle = (float)acos(Math::Dot(XMFLOAT2(dirX, dirY), XMFLOAT2(XMVectorGetX(dir), XMVectorGetY(dir))));
+
+	s_rotation = m_rotation;
 
 	//if the angle is in the 50 degree cone
 	if (XMConvertToDegrees(angle) >= 50)
