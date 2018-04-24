@@ -25,7 +25,7 @@ public:
 private:
 	State IsRandomWander	(Player* player, Monster* monster);
 	State IsChasing			(Player* player, Monster* monster);
-	State IsSearching		(Player* player, Monster* monster);
+	State IsSearching		(Player* player, Monster* monster, float deltaTime);
 	State IsSneaking		(Player* player, Monster* monster);
 	State IsFleeing			(Player* player, Monster* monster, float deltaTime);
 	State IsAttacking       (Player* player, Monster* monster);
@@ -33,8 +33,8 @@ private:
 	State m_currentState = RANDOM_WANDER;
 	string m_currentStateText;
 
-	float m_searchTimer  = 3.0f;
-	float m_sneakTimer   = 3.0f;
+	float m_searchTimer  = 1.0f;
+	float m_sneakTimer   = 1.0f;
 	float m_fleeTimer    = 1.0f;
 
 	const int WEIGHTING_MIN = 1;

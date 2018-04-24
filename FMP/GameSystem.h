@@ -89,7 +89,7 @@ private:
 	const float m_soundSprintSpeed = 75.0f;
 	const float m_soundZeroScale = 0.0f;
 	const float m_soundDoorScale = 3.0f;
-	const float m_soundDoorSpeed = 70.0f;
+	const float m_soundDoorSpeed = 80.0f;
 
 	//Used as a toggle for the mouse and keyboard
 	bool m_isMousePressed = false;
@@ -104,4 +104,5 @@ private:
 	float mouseY;
 
 	const char* SOUND_WAVE_FILE_PATH = "Assets/soundWave.png";
+	const char* VIEW_CONE_FILE_PATH = "Assets/viewCone2.png";
 };

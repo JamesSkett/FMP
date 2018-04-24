@@ -24,8 +24,10 @@ public:
 	bool GetPlayerInSight();
 	//Get the value of m_isSearching
 	bool GetIsSearching();
-
+	//Gets the current rotation of the monster
 	float GetRotation();
+	//Gets the value of m_soundHeard
+	bool GetSoundHeard();
 
 	//Moves to a specified point
 	bool MoveTo(float x, float y, float deltaTime);
@@ -37,6 +39,8 @@ public:
 
 	//Check to see if the player is in sight
 	bool LineOfSightCheck(XMFLOAT2 targetPos);
+	//Checks if the monster has heard a sound
+	void CheckHearing(XMFLOAT2 sourcePos, float radius);
 
 	//Behaviours
 	void RandomWander(float deltaTime);
@@ -78,7 +82,9 @@ private:
 	bool m_isSearching = false;
 	bool m_isSneaking = false;
 	bool m_isFleeing = false;
+	bool m_soundHeard = false;
 
 	XMFLOAT2 lastPlayerPos;
+	XMFLOAT2 m_soundLocation;
 };
 

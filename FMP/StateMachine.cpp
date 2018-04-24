@@ -26,7 +26,7 @@ void StateMachine::RunStateMachine(Player* player, Monster* monster, float delta
 	case SEARCH:
 		m_currentStateText = "Search";
 		monster->Search(XMFLOAT2(player->GetXPos(), player->GetYPos()), deltaTime);
-		m_currentState = IsSearching(player, monster);
+		m_currentState = IsSearching(player, monster, deltaTime);
 		break;
 	case SNEAK:
 		m_currentStateText = "Sneak";
@@ -85,6 +85,12 @@ State StateMachine::IsRandomWander(Player* player, Monster* monster)
 			return FLEE;
 		}
 	}
+	
+
+	if (monster->GetSoundHeard())
+	{
+		return SEARCH;
+	}
 
 	return RANDOM_WANDER;
 }
@@ -108,7 +114,7 @@ State StateMachine::IsChasing(Player* player, Monster* monster)
 	return CHASE;
 }
 
-State StateMachine::IsSearching(Player* player, Monster* monster)
+State StateMachine::IsSearching(Player* player, Monster* monster, float deltaTime)
 {
 	if (monster->GetPlayerInSight() && !player->GetEnemyInSight())
 	{
@@ -140,7 +146,12 @@ State StateMachine::IsSearching(Player* player, Monster* monster)
 	}
 	else if (!monster->GetPlayerInSight())
 	{
-
+		if (m_searchTimer <= 0)
+		{
+			m_searchTimer = 1.0f;
+			return RANDOM_WANDER;
+		}
+		m_searchTimer -= deltaTime;
 	}
 
 

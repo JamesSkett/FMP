@@ -249,15 +249,15 @@ void GameSystem::SetupLevel()
 	m_plevel->LoadProjectiles(m_vProjectiles);
 	m_pMonster->SetPathfinder(m_tileMap);
 
-	m_viewConeEnemy = new Asset("Assets/viewCone2.png", 0, 0, 3, 2.0f, 0, 0, 0);
-	m_viewConePlayer = new Asset("Assets/viewCone2.png", 0, 0, 3, 2.0f, 0, 0, 0);
+	m_viewConeEnemy = new Asset(VIEW_CONE_FILE_PATH, 0, 0, 3, 2.0f, 0, 0, 0);
+	m_viewConePlayer = new Asset(VIEW_CONE_FILE_PATH, 0, 0, 3, 2.0f, 0, 0, 0);
 	m_soundWaveWalk = new Asset(SOUND_WAVE_FILE_PATH, m_pPlayer->GetXPos(), m_pPlayer->GetYPos(), 3, 0.0f, 0, 0, 0);
 	m_soundWaveSprint = new Asset(SOUND_WAVE_FILE_PATH, m_pPlayer->GetXPos(), m_pPlayer->GetYPos(), 3, 0.0f, 0, 0, 0);
 	m_soundWaveDoorOpen = new Asset(SOUND_WAVE_FILE_PATH, m_pPlayer->GetXPos(), m_pPlayer->GetYPos(), 3, 0.0f, 0, 0, 0);
 	
-	m_soundWaveWalk->SetColour(Renderer::colour.Aqua);
+	m_soundWaveWalk->SetColour(Renderer::colour.MediumAquamarine);
 	m_soundWaveSprint->SetColour(Renderer::colour.Aqua);
-	m_soundWaveDoorOpen->SetColour(Renderer::colour.Aqua);
+	m_soundWaveDoorOpen->SetColour(Renderer::colour.CadetBlue);
 	
 	m_pPlayer->SetViewCone(m_viewConePlayer);
 	m_pMonster->SetViewCone(m_viewConeEnemy);
@@ -465,6 +465,7 @@ void GameSystem::SoundWaveWalk()
 		if (m_soundWaveWalk->GetScale() > m_soundWalkScale)
 		{
 			m_lerpDown = true;
+			m_pMonster->CheckHearing(m_soundWaveWalk->GetPos(), 1.0f);
 		}
 	}
 	else if (m_lerpDown)
@@ -488,6 +489,7 @@ void GameSystem::SoundWaveSprint()
 		if (m_soundWaveSprint->GetScale() > m_soundSprintScale)
 		{
 			m_lerpDown = true;
+			m_pMonster->CheckHearing(m_soundWaveWalk->GetPos(), 2.0f);
 		}
 	}
 	else if (m_lerpDown)
@@ -511,6 +513,7 @@ void GameSystem::SoundWaveDoorOpen()
 			if (m_soundWaveDoorOpen->GetScale() > m_soundDoorScale)
 			{
 				m_lerpDownDoor = true;
+				m_pMonster->CheckHearing(m_soundWaveWalk->GetPos(), 3.0f);
 			}
 		}
 		else if (m_lerpDownDoor)

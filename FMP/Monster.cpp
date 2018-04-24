@@ -60,6 +60,11 @@ float Monster::GetRotation()
 	return m_rotation;
 }
 
+bool Monster::GetSoundHeard()
+{
+	return m_soundHeard;
+}
+
 
 bool Monster::MoveTo(float x, float y, float deltaTime)
 {
@@ -168,6 +173,17 @@ bool Monster::LineOfSightCheck(XMFLOAT2 targetPos)
 	return true;
 }
 
+void Monster::CheckHearing(XMFLOAT2 sourcePos, float radius)
+{
+	float distance = Math::Distance(XMFLOAT2(m_xPos, m_yPos), sourcePos);
+
+	if (distance < radius)
+	{
+		m_soundLocation = sourcePos;
+		m_soundHeard = true;
+	}
+}
+
 
 void Monster::RandomWander(float deltaTime)
 {
@@ -217,6 +233,8 @@ void Monster::Search(XMFLOAT2 playerPos, float deltaTime)
 {
 	int randTileNum = rand() % 901;
 
+	m_speed = 15.0f;
+
 	m_viewCone->SetColour(Renderer::colour.Orange);
 
 	if (pathfinder->GetIsPathFound())
@@ -225,6 +243,7 @@ void Monster::Search(XMFLOAT2 playerPos, float deltaTime)
 		{
 			pathfinder->SetIsPathFound(false);
 			waypointNum = 0;
+			m_soundHeard = false;
 		}
 		else if (MoveTo(waypoints[waypointNum].x, waypoints[waypointNum].y, deltaTime))
 		{
