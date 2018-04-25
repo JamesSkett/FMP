@@ -101,10 +101,21 @@ State StateMachine::IsChasing(Player* player, Monster* monster)
 {
 	if (!monster->GetPlayerInSight())
 	{
-		monster->SetPathFound(false);
-		return SEARCH;
+		float searchProbability = ((float)Monster::s_chase_to_search_or_random[0] / (float)WEIGHTING_MAX) * 100;
+		float randomWandProbability = ((float)Monster::s_chase_to_search_or_random[1] / (float)WEIGHTING_MAX) * 100;
 
-		//or random wander
+		int weight = rand() % WEIGHTING_MAX + WEIGHTING_MIN;
+
+		if (weight <= WEIGHTING_MIN + (searchProbability - 1) && weight >= WEIGHTING_MIN)
+		{
+			monster->SetPathFound(false);
+			return SEARCH;
+		}
+		else if (weight <= WEIGHTING_MAX && weight > WEIGHTING_MAX - randomWandProbability)
+		{
+			monster->SetPathFound(false);
+			return RANDOM_WANDER;
+		}
 	}
 	else if (monster->GetPlayerInSight() && player->GetEnemyInSight())
 	{
