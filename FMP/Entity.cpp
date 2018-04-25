@@ -36,7 +36,7 @@ Entity::~Entity()
 
 void Entity::Draw(XMMATRIX view, XMMATRIX projection)
 {
-
+	
 	Renderer::pImmediateContext->OMSetBlendState(Renderer::pAlphaBlendEnable, 0, 0xffffffff);
 	m_viewCone->Draw(view, projection);
 	Renderer::pImmediateContext->OMSetBlendState(Renderer::pAlphaBlendDisable, 0, 0xffffffff);

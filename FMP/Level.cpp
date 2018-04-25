@@ -66,17 +66,17 @@ void Level::SetUpLevelLayout(vector <Tile*> &tilemap, Player* &player, Monster* 
 				tilemap.push_back(new Wall(Renderer::colour.DarkSlateGray, yPos / m_tileOffset, -xPos / m_tileOffset, 5, 0.25f, 0.34f, 0.34f, 2));
 				break;
 			case '.': //create a floor tile
-				tilemap.push_back(new Floor(Renderer::colour.WhiteSmoke, yPos / m_tileOffset, -xPos / m_tileOffset, 5, 0.25f, 0.29f, 0.29f, 1));
+				tilemap.push_back(new Floor(Renderer::colour.LightGray, yPos / m_tileOffset, -xPos / m_tileOffset, 5, 0.25f, 0.29f, 0.29f, 1));
 				break;
 			case 'd': //create a floor tile
 				tilemap.push_back(new Floor(Renderer::colour.Firebrick, yPos / m_tileOffset, -xPos / m_tileOffset, 5, 0.25f, 0.29f, 0.29f, 3));
 				break;
 			case '@':
-				tilemap.push_back(new Floor(Renderer::colour.WhiteSmoke, yPos / m_tileOffset, -xPos / m_tileOffset, 6, 0.25f, 0.29f, 0.29f, 1));
+				tilemap.push_back(new Floor(Renderer::colour.LightGray, yPos / m_tileOffset, -xPos / m_tileOffset, 6, 0.25f, 0.29f, 0.29f, 1));
 				player = new Player(Renderer::colour.Fuchsia, yPos / m_tileOffset, -xPos / m_tileOffset, 1, 0.125f, 0.245f, 0.245f);
 				break;
 			case 'M':
-				tilemap.push_back(new Floor(Renderer::colour.WhiteSmoke, yPos / m_tileOffset, -xPos / m_tileOffset, 6, 0.25f, 0.29f, 0.29f, 1));
+				tilemap.push_back(new Floor(Renderer::colour.LightGray, yPos / m_tileOffset, -xPos / m_tileOffset, 6, 0.25f, 0.29f, 0.29f, 1));
 				monster = new Monster(Renderer::colour.Black, yPos / m_tileOffset, -xPos / m_tileOffset, 1, 0.125f, 0.245f, 0.245f);
 				break;
 			default: //If it gets here, tile hasnt been registered the, so print out a warning

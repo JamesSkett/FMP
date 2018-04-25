@@ -65,6 +65,7 @@ State StateMachine::IsRandomWander(Player* player, Monster* monster)
 		}
 		else if (weight <= (WEIGHTING_MIN + chaseProbability - 1) && weight >= WEIGHTING_MIN)
 		{
+			monster->SetPathFound(false);
 			return CHASE;
 		}
 	}
@@ -77,6 +78,7 @@ State StateMachine::IsRandomWander(Player* player, Monster* monster)
 
 		if (weight <= WEIGHTING_MIN + (chaseProbability - 1) && weight >= WEIGHTING_MIN)
 		{
+			monster->SetPathFound(false);
 			return CHASE;
 		}
 		else if (weight <= WEIGHTING_MAX && weight > WEIGHTING_MAX - fleeProbability)
@@ -85,10 +87,10 @@ State StateMachine::IsRandomWander(Player* player, Monster* monster)
 			return FLEE;
 		}
 	}
-	
-
-	if (monster->GetSoundHeard())
+	else if (monster->GetSoundHeard())
 	{
+		monster->SetPathFound(false);
+		monster->SetSoundHeard(false);
 		return SEARCH;
 	}
 
@@ -99,6 +101,7 @@ State StateMachine::IsChasing(Player* player, Monster* monster)
 {
 	if (!monster->GetPlayerInSight())
 	{
+		monster->SetPathFound(false);
 		return SEARCH;
 
 		//or random wander
@@ -127,6 +130,7 @@ State StateMachine::IsSearching(Player* player, Monster* monster, float deltaTim
 		}
 		else if (weight <= 15 && weight >= WEIGHTING_MIN)
 		{
+			monster->SetPathFound(false);
 			return CHASE;
 		}
 	}
@@ -136,6 +140,7 @@ State StateMachine::IsSearching(Player* player, Monster* monster, float deltaTim
 
 		if (weight <= 30 && weight >= WEIGHTING_MIN)
 		{
+			monster->SetPathFound(false);
 			return CHASE;
 		}
 		else if (weight <= WEIGHTING_MAX && weight > 30)
@@ -149,6 +154,7 @@ State StateMachine::IsSearching(Player* player, Monster* monster, float deltaTim
 		if (m_searchTimer <= 0)
 		{
 			m_searchTimer = 1.0f;
+			monster->SetPathFound(false);
 			return RANDOM_WANDER;
 		}
 		m_searchTimer -= deltaTime;

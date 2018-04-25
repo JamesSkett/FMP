@@ -1,12 +1,12 @@
 cbuffer CBuffer0
 {
-	matrix WVP;
-	float2 playerPos;
-	float playerRotation;
-	float range;
-	int fog;
-	float3 packingBytes;
-};
+	matrix WVP;           //64 bytes |
+	float2 playerPos;     //8 bytes  |
+	float playerRotation; //4 bytes  |
+	float range;          //4 bytes  | //96 bytes
+	int fog;              //4 bytes  |
+	float3 packingBytes;  //12 bytes |
+}; 
 
 struct VOut
 {
@@ -26,17 +26,6 @@ VOut VShader(float4 position : POSITION, float4 color : COLOR)
 
 float4 PShader(float4 position : SV_POSITION, float4 color : COLOR) : SV_TARGET
 {
-	//float2 dir = float2(position.x, position.y) - playerPos;
-
-	//float2 playerDir = float2(cos(playerRotation), sin(playerRotation));
-
-	//float angle = acos(dot(playerDir, dir));
-
-	//if (angle >= 50)
-	//{
-	//	return float4(0, 1, 0, 1);
-	//}
-
 	if (fog == 1)
 	{
 		float x = pow((position.x - playerPos.x), 2);
@@ -45,11 +34,8 @@ float4 PShader(float4 position : SV_POSITION, float4 color : COLOR) : SV_TARGET
 
 		float dist = sqrt(x + y);
 
-		return color - float4(dist / 300.f, dist / 300.f, dist / 300.f, 1);
+		return color - float4(dist / 250.f, dist / 250.f, dist / 250.f, 1);
 	}
-
-	
-	
 
 	return color;
 }

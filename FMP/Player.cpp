@@ -21,6 +21,12 @@ Player::~Player()
 
 void Player::Update(XMFLOAT2 enemyPos, vector <Tile*> tilemap, float deltaTime)
 {
+	if (Renderer::s_FogOfWar == 0)
+	{
+		m_viewCone->SetCanDraw(true);
+	}
+	else m_viewCone->SetCanDraw(false);
+
 	m_viewCone->SetPos(m_xPos, m_yPos);
 	m_viewCone->SetRotation(m_rotation);
 
@@ -218,7 +224,7 @@ bool Player::LineOfSightCheck(XMFLOAT2 targetPos, vector <Tile*> tilemap)
 		m_enemyInSight = true;
 		return true;
 	}
-	if (length > 4)
+	if (length > 2)
 	{
 		m_enemyInSight = false;
 		return false;

@@ -36,6 +36,8 @@ public:
 	void SetPathfinder(vector <Tile*> tilemap);
 	//Set the value of m_speed
 	void SetSpeed(float value);
+	//Set the value of m_soundheard
+	void SetSoundHeard(bool value);
 
 	//Check to see if the player is in sight
 	bool LineOfSightCheck(XMFLOAT2 targetPos);
@@ -70,7 +72,7 @@ private:
 	Pathfinding* pathfinder;
 
 
-	vector <XMFLOAT2> waypoints;
+	vector <XMFLOAT2*> waypoints;
 
 	vector <Tile*> m_tileMap;
 

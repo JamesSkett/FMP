@@ -452,7 +452,6 @@ void GameSystem::UpdateText()
 	else
 	{
 		inSight = "Player in Sight: False";
-
 	}
 
 	m_text_monsterLOS->AddText(inSight, -0.99f, 0.99f, 0.033f);
@@ -464,9 +463,11 @@ void GameSystem::UpdateText()
 	Renderer::pImmediateContext->OMSetBlendState(Renderer::pAlphaBlendEnable, 0, 0xffffffff);
 
 	m_text_fpsCount->RenderText();
-	m_text_monsterLOS->RenderText();
-	m_text_currentState->RenderText();
-
+	if (Renderer::s_FogOfWar == 0)
+	{
+		m_text_monsterLOS->RenderText();
+		m_text_currentState->RenderText();
+	}
 	Renderer::pImmediateContext->OMSetBlendState(Renderer::pAlphaBlendDisable, 0, 0xffffffff);
 }
 

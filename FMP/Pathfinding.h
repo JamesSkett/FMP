@@ -46,8 +46,8 @@ public:
 	Pathfinding(vector <Tile*> tilemap);
 	~Pathfinding();
 
-	vector <XMFLOAT2> FindPath(XMFLOAT2 startPos, XMFLOAT2 targetPos);
-	vector <XMFLOAT2> RetracePath(Node* startNode, Node* endNode);
+	vector <XMFLOAT2*> FindPath(XMFLOAT2 startPos, XMFLOAT2 targetPos);
+	vector <XMFLOAT2*> RetracePath(Node* startNode, Node* endNode);
 
 	void AddToOpenList(Node* node);
 	void AddToClosedList(Node* node);

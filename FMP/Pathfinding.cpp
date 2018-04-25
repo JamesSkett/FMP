@@ -38,10 +38,10 @@ Pathfinding::~Pathfinding()
 	m_nodeList.clear();
 }
 
-vector <XMFLOAT2> Pathfinding::FindPath(XMFLOAT2 startPos, XMFLOAT2 targetPos)
+vector <XMFLOAT2*> Pathfinding::FindPath(XMFLOAT2 startPos, XMFLOAT2 targetPos)
 {
 	//list of nodes that form the path
-	vector <XMFLOAT2> waypoints;
+	vector <XMFLOAT2*> waypoints;
 	//lets us know if we found a path
 	bool pathSuccess = false;
 
@@ -116,18 +116,18 @@ vector <XMFLOAT2> Pathfinding::FindPath(XMFLOAT2 startPos, XMFLOAT2 targetPos)
 		return waypoints;
 	}
 
-	return vector<XMFLOAT2>();
+	return vector<XMFLOAT2*>();
 }
 
-vector<XMFLOAT2> Pathfinding::RetracePath(Node * startNode, Node * endNode)
+vector<XMFLOAT2*> Pathfinding::RetracePath(Node * startNode, Node * endNode)
 {
-	vector <XMFLOAT2> waypoints;
+	vector <XMFLOAT2*> waypoints;
 
 	Node* currentNode = endNode;
 
 	while (currentNode != startNode)
 	{
-		waypoints.push_back(XMFLOAT2(currentNode->xPos, currentNode->yPos));
+		waypoints.push_back(new XMFLOAT2(currentNode->xPos, currentNode->yPos));
 		currentNode = currentNode->parent;
 	}
 
