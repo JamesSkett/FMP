@@ -53,6 +53,7 @@ private:
 	ID3D11DepthStencilState* pDepthEnabledStencilState;		// state to turn on Z buffer
 	ID3D11DepthStencilState* pDepthDisabledStencilState;	// state to turn off Z buffer
 
+
 public:
 	Text2D(char* filename, ID3D11Device* device, ID3D11DeviceContext* context); // pass in filename of font, device and context
 	~Text2D(void);
@@ -64,6 +65,8 @@ public:
 
 	// render all strings at once
 	void RenderText();
+	
+	bool m_draw = true;
 
 };
 	

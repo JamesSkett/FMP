@@ -1,6 +1,8 @@
 #include "StateMachine.h"
 #include "Math.h"
 
+bool StateMachine::s_chasing = false;
+
 StateMachine::StateMachine()
 {
 }
@@ -21,7 +23,7 @@ void StateMachine::RunStateMachine(Player* player, Monster* monster, float delta
 	case CHASE:
 		m_currentStateText = "Chase";
 		monster->Chase(deltaTime);
-		m_currentState = IsChasing(player, monster);
+		m_currentState = IsChasing(player, monster, deltaTime);
 		break;
 	case SEARCH:
 		m_currentStateText = "Search";
@@ -66,6 +68,7 @@ State StateMachine::IsRandomWander(Player* player, Monster* monster)
 		else if (weight <= (WEIGHTING_MIN + chaseProbability - 1) && weight >= WEIGHTING_MIN)
 		{
 			monster->SetPathFound(false);
+			s_chasing = true;
 			return CHASE;
 		}
 	}
@@ -79,6 +82,7 @@ State StateMachine::IsRandomWander(Player* player, Monster* monster)
 		if (weight <= WEIGHTING_MIN + (chaseProbability - 1) && weight >= WEIGHTING_MIN)
 		{
 			monster->SetPathFound(false);
+			s_chasing = true;
 			return CHASE;
 		}
 		else if (weight <= WEIGHTING_MAX && weight > WEIGHTING_MAX - fleeProbability)
@@ -97,10 +101,20 @@ State StateMachine::IsRandomWander(Player* player, Monster* monster)
 	return RANDOM_WANDER;
 }
 
-State StateMachine::IsChasing(Player* player, Monster* monster)
+State StateMachine::IsChasing(Player* player, Monster* monster, float deltaTime)
 {
 	if (!monster->GetPlayerInSight())
 	{
+		if (s_chasing)
+		{
+			if (monster->MoveTo(monster->GetLastPlayerPos().x, monster->GetLastPlayerPos().y, deltaTime))
+			{
+				s_chasing = false;
+				return CHASE;
+			}
+			return CHASE;
+		}
+
 		float searchProbability = ((float)Monster::s_chase_to_search_or_random[0] / (float)WEIGHTING_MAX) * 100;
 		float randomWandProbability = ((float)Monster::s_chase_to_search_or_random[1] / (float)WEIGHTING_MAX) * 100;
 

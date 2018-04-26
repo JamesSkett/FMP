@@ -174,7 +174,7 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 			GetKeyboardInput();
 			GetMousePos();
 
-			// Clear the back buffer - choose a colour you like
+			// Clear the back buffer - sets a background colour
 			float rgba_clear_colour[4] = { 0.1f, 0.1f, 0.1f, 1.0f };
 			Renderer::pImmediateContext->ClearRenderTargetView(Renderer::pBackBufferRTView, rgba_clear_colour);
 
@@ -255,9 +255,9 @@ void GameSystem::SetupLevel()
 	m_soundWaveSprint = new Asset(SOUND_WAVE_FILE_PATH, m_pPlayer->GetXPos(), m_pPlayer->GetYPos(), 3, 0.0f, 0, 0, 0);
 	m_soundWaveDoorOpen = new Asset(SOUND_WAVE_FILE_PATH, m_pPlayer->GetXPos(), m_pPlayer->GetYPos(), 3, 0.0f, 0, 0, 0);
 	
-	m_soundWaveWalk->SetColour(Renderer::colour.MediumAquamarine);
-	m_soundWaveSprint->SetColour(Renderer::colour.Aqua);
-	m_soundWaveDoorOpen->SetColour(Renderer::colour.CadetBlue);
+	m_soundWaveWalk->SetColour(Renderer::colour.IndianRed);
+	m_soundWaveSprint->SetColour(Renderer::colour.IndianRed);
+	m_soundWaveDoorOpen->SetColour(Renderer::colour.IndianRed);
 	
 	m_pPlayer->SetViewCone(m_viewConePlayer);
 	m_pMonster->SetViewCone(m_viewConeEnemy);
@@ -358,9 +358,9 @@ void GameSystem::GetKeyboardInput()
 	if (renderer->IsKeyPressed(DIK_2))
 	{
 		Renderer::s_FogOfWar = 1;
-		m_soundWaveWalk->SetCanDraw(false);
+		/*m_soundWaveWalk->SetCanDraw(false);
 		m_soundWaveSprint->SetCanDraw(false);
-		m_soundWaveDoorOpen->SetCanDraw(false);
+		m_soundWaveDoorOpen->SetCanDraw(false);*/
 	}
 
 
@@ -460,14 +460,23 @@ void GameSystem::UpdateText()
 	currentState = currentState + m_stateMachine->GetCurrentState();
 	m_text_currentState->AddText(currentState, 0.0f, 0.99f, 0.033f);
 
+	if (Renderer::s_FogOfWar == 1)
+	{
+		m_text_currentState->m_draw = false;
+		m_text_monsterLOS->m_draw = false;
+	}
+	else
+	{
+		m_text_currentState->m_draw = true;
+		m_text_monsterLOS->m_draw = true;
+	}
+
 	Renderer::pImmediateContext->OMSetBlendState(Renderer::pAlphaBlendEnable, 0, 0xffffffff);
 
 	m_text_fpsCount->RenderText();
-	if (Renderer::s_FogOfWar == 0)
-	{
-		m_text_monsterLOS->RenderText();
-		m_text_currentState->RenderText();
-	}
+
+	m_text_monsterLOS->RenderText();
+	m_text_currentState->RenderText();
 	Renderer::pImmediateContext->OMSetBlendState(Renderer::pAlphaBlendDisable, 0, 0xffffffff);
 }
 

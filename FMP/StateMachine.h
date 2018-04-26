@@ -22,9 +22,12 @@ public:
 
 	string GetCurrentState();
 
+	static bool s_chasing;
+	
+
 private:
 	State IsRandomWander	(Player* player, Monster* monster);
-	State IsChasing			(Player* player, Monster* monster);
+	State IsChasing			(Player* player, Monster* monster, float deltaTime);
 	State IsSearching		(Player* player, Monster* monster, float deltaTime);
 	State IsSneaking		(Player* player, Monster* monster);
 	State IsFleeing			(Player* player, Monster* monster, float deltaTime);
@@ -39,6 +42,7 @@ private:
 
 	const int WEIGHTING_MIN = 1;
 	const int WEIGHTING_MAX = 100;
+
 
 };
 

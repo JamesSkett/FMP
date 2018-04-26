@@ -28,6 +28,8 @@ public:
 	float GetRotation();
 	//Gets the value of m_soundHeard
 	bool GetSoundHeard();
+	//Gets the last location the player was seen.
+	XMFLOAT2 GetLastPlayerPos();
 
 	//Moves to a specified point
 	bool MoveTo(float x, float y, float deltaTime);
@@ -50,6 +52,7 @@ public:
 	void Search(XMFLOAT2 playerPos, float deltaTime);  
 	void Sneak(Player* player, float deltaTime);
 	void Flee(Player* player, float deltaTime);
+	bool LookAround(float deltaTime);
 
 	bool CheckTile(XMFLOAT2 pos);
 
@@ -68,16 +71,16 @@ public:
 
 private:
 	float m_speed = 6.0f;
+	float m_timer = 0.05;
+
+	Pathfinding* m_pathfinder;
 
 
-	Pathfinding* pathfinder;
-
-
-	vector <XMFLOAT2*> waypoints;
+	vector <XMFLOAT2*> m_waypoints;
 
 	vector <Tile*> m_tileMap;
 
-	unsigned int waypointNum = 0;
+	unsigned int m_waypointNum = 0;
 
 	int num = 0;
 
@@ -87,7 +90,7 @@ private:
 	bool m_isFleeing = false;
 	bool m_soundHeard = false;
 
-	XMFLOAT2 lastPlayerPos;
+	XMFLOAT2 m_lastPlayerPos;
 	XMFLOAT2 m_soundLocation;
 };
 
