@@ -71,25 +71,8 @@ public:
 	static Colour colour;
 	static int s_FogOfWar;
 
-	//matrices for object transforms
-	XMMATRIX identity, projection, view;
-
 	//Destroys the program window
 	void DestroyWin();
-
-	struct POS_COL_VERTEX
-	{
-		XMFLOAT3 Pos;
-		XMFLOAT4 Col;
-	};
-
-	struct CONSTANT_BUFFER0
-	{
-		XMMATRIX WorldViewProjection;
-		float RedAmount;  //4 bytes
-						  //float scale;
-		XMFLOAT3 packing_bytes; // 3x4 bytes = 12 bytes
-	};
 
 private:
 
@@ -101,7 +84,7 @@ private:
 	const float m_cOrthographicSize = 100.0f;
 
 	//Name of the Game
-	char		m_GameName[100] = "FMP\0";
+	char		m_GameName[100] = "Adaptive Monster AI\0";
 
 	HINSTANCE	m_hInst = NULL;
 
@@ -129,12 +112,6 @@ private:
 	IDirectInputDevice8* m_keyboard_device;
 	IDirectInputDevice8* m_mouse_device;
 	unsigned char m_keyboard_keys_state[256];
-
-	//Frame counter variables
-	Text2D* m_FPSCount;
-	int m_fps = 0;
-
-	//Entity* entity1;
 
 };
 
