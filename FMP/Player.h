@@ -1,3 +1,12 @@
+/*
+	Class:		Player
+	Parent:		Entity
+	Project:	Adaptive Monster AI for a Horror Game (Final Major Project)
+	Author:		James Skett
+	Purpose:	Controls all the player actions like movement and used the CollisionCheck()
+				function from its parent class Entity
+*/
+
 #pragma once
 
 #include "Entity.h"

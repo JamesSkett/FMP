@@ -1,3 +1,10 @@
+/*
+	Class:		CXBOXController
+	Project:	Adaptive Monster AI for a Horror Game (Final Major Project)
+	Author:		James Skett
+	Purpose:	Used for creating a device that uses an Xbox controller for input
+*/
+
 #pragma once
 
 #ifndef _XBOX_CONTROLLER_H_

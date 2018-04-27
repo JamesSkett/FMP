@@ -1,3 +1,10 @@
+/*
+		Class:		Asset
+		Project:	Adaptive Monster AI for a Horror Game (Final Major Project)
+		Author:		James Skett
+		Purpose:	Creates in game assets that have textures applied to them also supports transparent images
+*/
+
 #pragma once
 
 #include <d3d11.h>

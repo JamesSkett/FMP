@@ -1,3 +1,11 @@
+/*		
+		Class:		Renderer
+		Project:	Adaptive Monster AI for a Horror Game (Final Major Project)
+		Author:		James Skett
+		Purpose:	Sets up the main directX 11 window and creates the keyboard and mouse devices
+*/
+
+
 #pragma once
 #include <d3d11.h>
 #include <d3dx11.h>
@@ -62,7 +70,7 @@ public:
 	static ID3D11BlendState*       pAlphaBlendDisable;
 	static Colour colour;
 	static int s_FogOfWar;
-	
+
 	//matrices for object transforms
 	XMMATRIX identity, projection, view;
 
@@ -84,7 +92,7 @@ public:
 	};
 
 private:
-	
+
 	//screen properties
 	const float m_screenWidth = 1920.0f;
 	const float m_screenHeight = 1080.0f;
@@ -113,7 +121,7 @@ private:
 	ID3D11DepthStencilView* m_pzBuffer;
 	ID3D11ShaderResourceView* m_pTexture0;
 	ID3D11SamplerState* m_pSampler0;
-	
+
 
 
 	//keyboard and mouse variables

@@ -1,3 +1,10 @@
+/*
+	Class:		GameSystem
+	Project:	Adaptive Monster AI for a Horror Game (Final Major Project)
+	Author:		James Skett
+	Purpose:	This is where the main object creation takes place. The main game loop can also be found in this class
+*/
+
 #pragma once
 
 #include <d3d11.h>

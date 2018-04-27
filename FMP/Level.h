@@ -1,3 +1,10 @@
+/*
+	Class:		Level
+	Project:	Adaptive Monster AI for a Horror Game (Final Major Project)
+	Author:		James Skett
+	Purpose:	This loads in the level data from a text file then sets up the level placing tiles in the order it is in the text file
+*/
+
 #pragma once
 #include <string>
 #include <vector>

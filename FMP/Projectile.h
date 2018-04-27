@@ -1,3 +1,10 @@
+/*
+	Class:		Projectile
+	Parent:		Entity
+	Project:	Adaptive Monster AI for a Horror Game (Final Major Project)
+	Author:		James Skett
+*/
+
 #pragma once
 #include "Entity.h"
 #include "Tile.h"

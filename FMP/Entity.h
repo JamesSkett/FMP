@@ -1,3 +1,10 @@
+/*
+	Class:		Entity
+	Project:	Adaptive Monster AI for a Horror Game (Final Major Project)
+	Author:		James Skett
+	Purpose:	Used for creating the verticies for the entities in the game and hold the collision detection algorithm
+*/
+
 #pragma once
 
 #include <d3d11.h>

@@ -1,3 +1,10 @@
+/*
+	Class:		Time
+	Project:	Adaptive Monster AI for a Horror Game (Final Major Project)
+	Author:		James Skett
+	Purpose:	Used to calculate the numbers of frames per second in runtime
+*/
+
 #pragma once
 #include <time.h>
 #include <d3d11.h>

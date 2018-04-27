@@ -1,3 +1,10 @@
+/*
+	Class:		Floor
+	Project:	Adaptive Monster AI for a Horror Game (Final Major Project)
+	Author:		James Skett
+	Purpose:	Controls the AI state transitions
+*/
+
 #pragma once
 #include "Monster.h"
 #include "Player.h"

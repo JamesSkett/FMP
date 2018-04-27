@@ -1,3 +1,10 @@
+/*
+	Class:		Tile
+	Project:	Adaptive Monster AI for a Horror Game (Final Major Project)
+	Author:		James Skett
+	Purpose:	Creates and draws the vertices for all the tiles
+*/
+
 #pragma once
 #include <d3d11.h>
 #include <d3dx11.h>
@@ -23,14 +30,6 @@ public:
 	float GetYPos();
 
 	bool GetIsWalkable();
-
-	void SetGValue(int value);
-	void SetHValue(int value);
-	void SetFValue(int value);
-
-	int Get_G_Value();
-	int Get_H_Value();
-	int Get_F_Value();
 
 	struct POS_COL_VERTEX
 	{

@@ -1,3 +1,11 @@
+/*
+	Class:		Monster
+	Parent:		Entity
+	Project:	Adaptive Monster AI for a Horror Game (Final Major Project)
+	Author:		James Skett
+	Purpose:	This is where the main AI behaviours are and where the pathfinding object is created
+*/
+
 #pragma once
 #include "Entity.h"
 #include "Tile.h"

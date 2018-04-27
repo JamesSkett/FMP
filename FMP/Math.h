@@ -1,3 +1,10 @@
+/*
+	Class:		Math
+	Project:	Adaptive Monster AI for a Horror Game (Final Major Project)
+	Author:		James Skett
+	Purpose:	Holds calculations that are done in mulitiple locations in the code reducing repeted code
+*/
+
 #pragma once
 
 #include <d3d11.h>

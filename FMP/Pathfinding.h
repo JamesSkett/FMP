@@ -1,3 +1,11 @@
+/*
+	Class:		Node
+	Project:	Adaptive Monster AI for a Horror Game (Final Major Project)
+	Author:		James Skett
+	Purpose:	Node class is used for the open and closed lists in the pathfinding algorithm
+				it stores the F, H and G values for each tile checked
+*/
+
 #pragma once
 #include "Tile.h"
 #include "Player.h"
@@ -39,6 +47,13 @@ public:
 
 	
 };
+
+/*
+	Class:		Pathfinding
+	Project:	Adaptive Monster AI for a Horror Game (Final Major Project)
+	Author:		James Skett
+	Purpose:	This uses the A* pathfinding algorithm to find the optimal path to take to a specified location
+*/
 
 class Pathfinding
 {

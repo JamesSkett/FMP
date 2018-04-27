@@ -1,3 +1,11 @@
+/*
+	Header File:	Colours
+	Project:		Adaptive Monster AI for a Horror Game (Final Major Project)
+	Author:			James Skett
+	Purpose:		Holds values for a wide range of colours that can be used throughout the program
+	Source:			https://github.com/Microsoft/DirectXMath/blob/master/Inc/DirectXColors.h
+*/
+
 #include <DirectXMath.h>
 using namespace DirectX;
 

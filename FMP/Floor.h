@@ -1,3 +1,11 @@
+/*
+	Class:		Floor
+	Parent:		Tile
+	Project:	Adaptive Monster AI for a Horror Game (Final Major Project)
+	Author:		James Skett
+	Purpose:	Used to differenciate between the walls by using the index value
+*/
+
 #pragma once
 #include "Tile.h"
 class Floor :
