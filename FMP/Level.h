@@ -18,7 +18,7 @@ public:
 	Level();
 	~Level();
 
-	void LoadLevelData(string filePath);
+	void LoadLevelData(const char* filePath);
 	void SetUpLevelLayout(vector <Tile*> &tilemap, Player* &player, Monster* &monster);
 	void LoadProjectiles(vector <Projectile*> &projectiles);
 

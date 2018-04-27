@@ -17,7 +17,7 @@ Level::~Level()
 	m_vlevelData.clear();
 }
 
-void Level::LoadLevelData(string filePath)
+void Level::LoadLevelData(const char* filePath)
 {
 	//Loads the level
 	ifstream file;
@@ -26,7 +26,7 @@ void Level::LoadLevelData(string filePath)
 	file.open(filePath);
 	if (file.fail()) 
 	{
-		perror(filePath.c_str());
+		perror(filePath);
 		system("PAUSE");
 		exit(1);
 	}
