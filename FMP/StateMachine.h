@@ -19,6 +19,7 @@ public:
 	~StateMachine();
 
 	void RunStateMachine	(Player* player, Monster* monster, float deltaTime);
+	void SetCurrentState(State state);
 
 	string GetCurrentState();
 
@@ -40,6 +41,7 @@ private:
 	float m_sneakTimer   = 1.0f;
 	float m_fleeTimer    = 1.0f;
 
+	const int weightChange = 1;
 	const int WEIGHTING_MIN = 1;
 	const int WEIGHTING_MAX = 100;
 

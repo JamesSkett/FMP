@@ -46,6 +46,11 @@ void StateMachine::RunStateMachine(Player* player, Monster* monster, float delta
 	}
 }
 
+void StateMachine::SetCurrentState(State state)
+{
+	m_currentState = state;
+}
+
 string StateMachine::GetCurrentState()
 {
 	return m_currentStateText;
@@ -55,27 +60,48 @@ State StateMachine::IsRandomWander(Player* player, Monster* monster)
 {
 	if (monster->GetPlayerInSight() && !player->GetEnemyInSight())
 	{
-		float chaseProbability = ((float)Monster::s_random_to_chase_or_sneak[0] / (float)WEIGHTING_MAX) * 100;
-		float sneakProbability = ((float)Monster::s_random_to_chase_or_sneak[1] / (float)WEIGHTING_MAX) * 100;
+		int chaseProbability = Monster::s_random_to_chase_or_sneak[0];
+		int sneakProbability = Monster::s_random_to_chase_or_sneak[1];
 
 		int weight = rand() % WEIGHTING_MAX + WEIGHTING_MIN;
 
 		if (weight <= WEIGHTING_MAX && weight > WEIGHTING_MAX - sneakProbability)
 		{
 			monster->SetPathFound(false);
+			if (Monster::s_random_to_chase_or_sneak[1] >= WEIGHTING_MIN)
+			{
+				Monster::s_random_to_chase_or_sneak[1]--;
+			}
+
+			if (Monster::s_random_to_chase_or_sneak[0] <= WEIGHTING_MAX)
+			{
+				Monster::s_random_to_chase_or_sneak[0]++;
+			}
+
 			return SNEAK;
 		}
 		else if (weight <= (WEIGHTING_MIN + chaseProbability - 1) && weight >= WEIGHTING_MIN)
 		{
 			monster->SetPathFound(false);
 			s_chasing = true;
+
+			if (Monster::s_random_to_chase_or_sneak[1] >= WEIGHTING_MIN)
+			{
+				Monster::s_random_to_chase_or_sneak[1]--;
+			}
+
+			if (Monster::s_random_to_chase_or_sneak[0] <= WEIGHTING_MAX)
+			{
+				Monster::s_random_to_chase_or_sneak[0]++;
+			}
+
 			return CHASE;
 		}
 	}
 	else if (monster->GetPlayerInSight() && player->GetEnemyInSight())
 	{
-		float chaseProbability = ((float)Monster::s_random_to_chase_or_flee[0] / (float)WEIGHTING_MAX) * 100;
-		float fleeProbability = ((float)Monster::s_random_to_chase_or_flee[1] / (float)WEIGHTING_MAX) * 100;
+		int chaseProbability = Monster::s_random_to_chase_or_flee[0];
+		int fleeProbability = Monster::s_random_to_chase_or_flee[1];
 
 		int weight = rand() % WEIGHTING_MAX + WEIGHTING_MIN;
 
@@ -83,11 +109,33 @@ State StateMachine::IsRandomWander(Player* player, Monster* monster)
 		{
 			monster->SetPathFound(false);
 			s_chasing = true;
+
+			if (Monster::s_random_to_chase_or_flee[1] >= WEIGHTING_MIN)
+			{
+				Monster::s_random_to_chase_or_flee[1]--;
+			}
+
+			if (Monster::s_random_to_chase_or_flee[0] <= WEIGHTING_MAX)
+			{
+				Monster::s_random_to_chase_or_flee[0]++;
+			}
+
 			return CHASE;
 		}
 		else if (weight <= WEIGHTING_MAX && weight > WEIGHTING_MAX - fleeProbability)
 		{
 			monster->SetPathFound(false);
+
+			if (Monster::s_random_to_chase_or_flee[1] >= WEIGHTING_MIN)
+			{
+				Monster::s_random_to_chase_or_flee[1]--;
+			}
+
+			if (Monster::s_random_to_chase_or_flee[0] <= WEIGHTING_MAX)
+			{
+				Monster::s_random_to_chase_or_flee[0]++;
+			}
+
 			return FLEE;
 		}
 	}
@@ -105,38 +153,92 @@ State StateMachine::IsChasing(Player* player, Monster* monster, float deltaTime)
 {
 	if (!monster->GetPlayerInSight())
 	{
-		if (s_chasing)
+		if (!monster->MoveTo(monster->GetLastPlayerPos().x, monster->GetLastPlayerPos().y, deltaTime))
 		{
-			if (monster->MoveTo(monster->GetLastPlayerPos().x, monster->GetLastPlayerPos().y, deltaTime))
-			{
-				s_chasing = false;
-				return CHASE;
-			}
 			return CHASE;
 		}
 
-		float searchProbability = ((float)Monster::s_chase_to_search_or_random[0] / (float)WEIGHTING_MAX) * 100;
-		float randomWandProbability = ((float)Monster::s_chase_to_search_or_random[1] / (float)WEIGHTING_MAX) * 100;
+		if (monster->LookAround(deltaTime))
+		{
+			s_chasing = false;
+		}
+		else return CHASE;
+
+		int searchProbability = Monster::s_chase_to_search_or_random[0];
+		int randomWandProbability = Monster::s_chase_to_search_or_random[1];
 
 		int weight = rand() % WEIGHTING_MAX + WEIGHTING_MIN;
 
 		if (weight <= WEIGHTING_MIN + (searchProbability - 1) && weight >= WEIGHTING_MIN)
 		{
 			monster->SetPathFound(false);
+
+			if (Monster::s_chase_to_search_or_random[1] >= WEIGHTING_MIN)
+			{
+				Monster::s_chase_to_search_or_random[1]--;
+			}
+
+			if (Monster::s_chase_to_search_or_random[0] <= WEIGHTING_MAX)
+			{
+				Monster::s_chase_to_search_or_random[0]++;
+			}
+
 			return SEARCH;
 		}
 		else if (weight <= WEIGHTING_MAX && weight > WEIGHTING_MAX - randomWandProbability)
 		{
 			monster->SetPathFound(false);
+
+			if (Monster::s_chase_to_search_or_random[1] >= WEIGHTING_MIN)
+			{
+				Monster::s_chase_to_search_or_random[1]--;
+			}
+
+			if (Monster::s_chase_to_search_or_random[0] <= WEIGHTING_MAX)
+			{
+				Monster::s_chase_to_search_or_random[0]++;
+			}
+
 			return RANDOM_WANDER;
 		}
 	}
 	else if (monster->GetPlayerInSight() && player->GetEnemyInSight())
 	{
-		monster->SetPathFound(false);
-		return FLEE;
+		int fleeProbability = Monster::s_chase_to_flee_or_chase[0];
+		int chaseProbability = Monster::s_chase_to_flee_or_chase[1];
 
-		//or chase
+		int weight = rand() % WEIGHTING_MAX + WEIGHTING_MIN;
+
+		if (weight <= WEIGHTING_MAX && weight > WEIGHTING_MAX - fleeProbability)
+		{
+			monster->SetPathFound(false);
+
+			if (Monster::s_chase_to_flee_or_chase[0] >= WEIGHTING_MIN)
+			{
+				Monster::s_chase_to_flee_or_chase[0]--;
+			}
+
+			if (Monster::s_chase_to_flee_or_chase[1] <= WEIGHTING_MAX)
+			{
+				Monster::s_chase_to_flee_or_chase[1]++;
+			}
+
+			return FLEE;
+		}
+		else if (weight > WEIGHTING_MIN + (chaseProbability - 1) && weight < WEIGHTING_MIN)
+		{
+			if (Monster::s_chase_to_flee_or_chase[0] >= WEIGHTING_MIN)
+			{
+				Monster::s_chase_to_flee_or_chase[0]--;
+			}
+
+			if (Monster::s_chase_to_flee_or_chase[1] <= WEIGHTING_MAX)
+			{
+				Monster::s_chase_to_flee_or_chase[1]++;
+			}
+
+			return CHASE;
+		}
 	}
 
 	return CHASE;
@@ -146,31 +248,81 @@ State StateMachine::IsSearching(Player* player, Monster* monster, float deltaTim
 {
 	if (monster->GetPlayerInSight() && !player->GetEnemyInSight())
 	{
+		int sneakProbability = Monster::s_search_to_sneak_or_chase[0];
+		int chaseProbability = Monster::s_search_to_sneak_or_chase[1];
+
 		int weight = rand() % WEIGHTING_MAX + WEIGHTING_MIN;
 
-		if (weight <= WEIGHTING_MAX && weight > 15)
+		if (weight <= WEIGHTING_MAX && weight > WEIGHTING_MAX - sneakProbability)
 		{
 			monster->SetPathFound(false);
+
+			if (Monster::s_search_to_sneak_or_chase[0] >= WEIGHTING_MIN)
+			{
+				Monster::s_search_to_sneak_or_chase[0]--;
+			}
+
+			if (Monster::s_search_to_sneak_or_chase[1] <= WEIGHTING_MAX)
+			{
+				Monster::s_search_to_sneak_or_chase[1]++;
+			}
+
 			return SNEAK;
 		}
-		else if (weight <= 15 && weight >= WEIGHTING_MIN)
+		else if (weight <= WEIGHTING_MIN + (chaseProbability - 1) && weight >= WEIGHTING_MIN)
 		{
 			monster->SetPathFound(false);
+
+			if (Monster::s_search_to_sneak_or_chase[0] >= WEIGHTING_MIN)
+			{
+				Monster::s_search_to_sneak_or_chase[0]--;
+			}
+
+			if (Monster::s_search_to_sneak_or_chase[1] <= WEIGHTING_MAX)
+			{
+				Monster::s_search_to_sneak_or_chase[1]++;
+			}
+
 			return CHASE;
 		}
 	}
 	else if (monster->GetPlayerInSight() && player->GetEnemyInSight())
 	{
+		int chaseProbability = Monster::s_search_to_chase_or_flee[0];
+		int fleeProbability = Monster::s_search_to_chase_or_flee[1];
+
 		int weight = rand() % 100 + 1;
 
-		if (weight <= 30 && weight >= WEIGHTING_MIN)
+		if (weight <= WEIGHTING_MIN + (chaseProbability - 1) && weight >= WEIGHTING_MIN)
 		{
 			monster->SetPathFound(false);
+
+			if (Monster::s_search_to_chase_or_flee[1] >= WEIGHTING_MIN)
+			{
+				Monster::s_search_to_chase_or_flee[1]--;
+			}
+
+			if (Monster::s_search_to_chase_or_flee[0] <= WEIGHTING_MAX)
+			{
+				Monster::s_search_to_chase_or_flee[0]++;
+			}
+
 			return CHASE;
 		}
-		else if (weight <= WEIGHTING_MAX && weight > 30)
+		else if (weight <= WEIGHTING_MAX && weight > WEIGHTING_MAX - fleeProbability)
 		{
 			monster->SetPathFound(false);
+
+			if (Monster::s_search_to_chase_or_flee[1] >= WEIGHTING_MIN)
+			{
+				Monster::s_search_to_chase_or_flee[1]--;
+			}
+
+			if (Monster::s_search_to_chase_or_flee[0] <= WEIGHTING_MAX)
+			{
+				Monster::s_search_to_chase_or_flee[0]++;
+			}
+
 			return FLEE;
 		}
 	}
@@ -191,12 +343,47 @@ State StateMachine::IsSearching(Player* player, Monster* monster, float deltaTim
 
 State StateMachine::IsSneaking(Player* player, Monster* monster)
 {
+	int fleeProbability = Monster::s_sneak_to_chase_or_flee[1];
+	int chaseProbability = Monster::s_sneak_to_chase_or_flee[0];
+
+	int weight = rand() % 100 + 1;
+
 	if (monster->GetPlayerInSight() && player->GetEnemyInSight())
 	{
-		monster->SetPathFound(false);
-		return FLEE;
+		if (weight <= WEIGHTING_MAX && weight > WEIGHTING_MAX - fleeProbability)
+		{
+			monster->SetPathFound(false);
 
-		//or chase
+			if (Monster::s_sneak_to_chase_or_flee[1] >= WEIGHTING_MIN)
+			{
+				Monster::s_sneak_to_chase_or_flee[1]--;
+			}
+
+			if (Monster::s_sneak_to_chase_or_flee[0] <= WEIGHTING_MAX)
+			{
+				Monster::s_sneak_to_chase_or_flee[0]++;
+			}
+
+			return FLEE;
+		}
+		else if (weight >= WEIGHTING_MIN + (chaseProbability - 1) && weight > WEIGHTING_MIN)
+		{
+			if (Monster::s_sneak_to_chase_or_flee[1] >= WEIGHTING_MIN)
+			{
+				Monster::s_sneak_to_chase_or_flee[1]--;
+			}
+
+			if (Monster::s_sneak_to_chase_or_flee[0] <= WEIGHTING_MAX)
+			{
+				Monster::s_sneak_to_chase_or_flee[0]++;
+			}
+
+			return CHASE;
+		}
+	}
+	else if (!monster->GetPlayerInSight())
+	{
+		//search or random
 	}
 
 	return SNEAK;
@@ -210,6 +397,7 @@ State StateMachine::IsFleeing(Player* player, Monster* monster, float deltaTime)
 		{
 			m_fleeTimer = 1.0f;
 			monster->SetPathFound(false);
+			monster->SetSoundHeard(false);
 			return RANDOM_WANDER;
 		}
 		m_fleeTimer -= deltaTime;
