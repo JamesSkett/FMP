@@ -55,7 +55,7 @@ private:
 
 
 public:
-	Text2D(char* filename, ID3D11Device* device, ID3D11DeviceContext* context); // pass in filename of font, device and context
+	Text2D(const char* filename, ID3D11Device* device, ID3D11DeviceContext* context); // pass in filename of font, device and context
 	~Text2D(void);
 
 	// add a string with position and size to the list

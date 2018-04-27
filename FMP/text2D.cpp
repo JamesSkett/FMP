@@ -3,7 +3,7 @@
 // constructor does not handle fails gracefully for simplicity, simply exits
 // track errors by looking at debug output or using debugger
 // scope for more advanced code to improve error handling
-Text2D::Text2D(char* filename, ID3D11Device* device, ID3D11DeviceContext* context)
+Text2D::Text2D(const char* filename, ID3D11Device* device, ID3D11DeviceContext* context)
 {
 	pD3DDevice = device;
 	pImmediateContext = context;
