@@ -39,6 +39,8 @@ public:
 
 	void SetViewCone(Asset* viewCone);
 
+	void Reset();
+
 	struct POS_COL_VERTEX
 	{
 		XMFLOAT3 Pos;
@@ -67,6 +69,8 @@ protected:
 	float m_xPos, m_yPos, m_zPos, m_scale;
 	float m_rotation;
 	float m_width, m_height;
+
+	XMFLOAT2 m_startPos;
 
 	float m_dirX = 0.0f;
 	float m_dirY = 0.0f;

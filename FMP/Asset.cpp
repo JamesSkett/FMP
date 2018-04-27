@@ -1,6 +1,24 @@
 #include "Asset.h"
 
 
+Asset::Asset(const char * filename, float x, float y, float z, float scale, float rotation)
+{
+	m_xPos = x;
+	m_yPos = y;
+	m_zPos = z;
+	m_scale = scale;
+
+	m_rotation = XMConvertToRadians(rotation);
+
+	m_colour = Renderer::colour.Black;
+
+	//Create the object vertices
+	if (FAILED(CreateVertices(filename)))
+	{
+		DXTRACE_MSG("Failed to Initialise Graphics");
+	}
+}
+
 Asset::Asset(const char* filename, float x, float y, float z, float scale, float width, float height, float rotation)
 {
 	m_xPos = x;

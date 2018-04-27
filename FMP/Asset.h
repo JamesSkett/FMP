@@ -14,6 +14,7 @@ using namespace DirectX;
 class Asset
 {
 public:
+	Asset(const char* filename, float x, float y, float z, float scale, float rotation);
 	Asset(const char* filename, float x, float y, float z, float scale, float width, float height, float rotation);
 	~Asset();
 

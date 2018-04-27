@@ -10,6 +10,8 @@ Entity::Entity(XMFLOAT4 colour, float x, float y, float z, float scale, float wi
 	m_zPos = z;
 	m_scale = scale;
 
+	m_startPos = { x, y };
+
 	m_width = width;
 	m_height = height;
 
@@ -288,6 +290,12 @@ bool Entity::CollisionCheck(vector <Tile*> tilemap)
 void Entity::SetViewCone(Asset * viewCone)
 {
 	m_viewCone = viewCone;
+}
+
+void Entity::Reset()
+{
+	m_xPos = m_startPos.x;
+	m_yPos = m_startPos.y;
 }
 
 bool Entity::CollisionCheck(Entity* colObject)
