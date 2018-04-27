@@ -6,13 +6,14 @@
 #include "Math.h"
 
 
-int Monster::s_random_to_chase_or_sneak[2]   = { 85, 15 };
-int Monster::s_random_to_chase_or_flee[2]    = { 85, 15 };
+int Monster::s_random_to_chase_or_sneak[2]   = { 15, 85 };
+int Monster::s_random_to_chase_or_flee[2]    = { 15, 85 };
 int Monster::s_chase_to_search_or_random[2]  = { 20, 80 };
 int Monster::s_chase_to_flee_or_chase[2]     = { 80, 20 };
-int Monster::s_search_to_sneak_or_chase[2]   = { 25, 75 };
-int Monster::s_search_to_chase_or_flee[2]    = { 75, 25 };
-int Monster::s_sneak_to_chase_or_flee[2]     = { 85, 15 };
+int Monster::s_search_to_sneak_or_chase[2]   = { 75, 25 };
+int Monster::s_search_to_chase_or_flee[2]    = { 25, 75 };
+int Monster::s_sneak_to_chase_or_flee[2]     = { 15, 85 };
+int Monster::s_sneak_to_search_or_random[2]     = { 15, 85 };
 
 Monster::Monster(XMFLOAT4 colour, float x, float y, float z, float scale, float width, float height) :
 	Entity(colour, x, y, z, scale, width, height)
@@ -87,10 +88,7 @@ bool Monster::MoveTo(float x, float y, float deltaTime)
 {
 	XMFLOAT2 oldPos = { m_xPos, m_yPos };
 	
-	m_rotation = -atan2f((x - m_xPos), (y - m_yPos));
-
-	m_dirX = x - m_xPos;
-	m_dirY = y - m_yPos;
+	
 
 	float distance = Math::Distance(XMFLOAT2(m_xPos, m_yPos), XMFLOAT2(x, y));
 
@@ -110,6 +108,11 @@ bool Monster::MoveTo(float x, float y, float deltaTime)
 	{
 		m_yPos = oldPos.y;
 	}
+
+	m_rotation = -atan2f((x - m_xPos), (y - m_yPos));
+
+	m_dirX = x - m_xPos;
+	m_dirY = y - m_yPos;
 
 	
 	return false;
@@ -301,8 +304,21 @@ void Monster::Sneak(Player* player, float deltaTime)
 	m_viewCone->SetColour(Renderer::colour.Blue);
 	float distance = Math::Distance(XMFLOAT2(m_xPos, m_yPos), XMFLOAT2(player->GetXPos(), player->GetYPos()));
 
-	
-	if (m_pathfinder->GetIsPathFound())
+	if (distance < 3.5f && distance > 3 && m_playerInSight)
+	{
+		m_speed = 10;
+		MoveTo(player->GetXPos(), player->GetYPos(), deltaTime);
+	}
+	else if (distance < 2 && m_playerInSight)
+	{
+		for (unsigned int i = 0; i < m_waypoints.size(); i++)
+		{
+			delete m_waypoints[i];
+			m_waypoints[i] = nullptr;
+		}
+		m_waypoints.clear();
+	}
+	else if (m_pathfinder->GetIsPathFound())
 	{
 		if (m_waypointNum >= m_waypoints.size())
 		{
@@ -328,26 +344,6 @@ void Monster::Sneak(Player* player, float deltaTime)
 			m_waypointNum = 0;
 			m_waypoints = m_pathfinder->FindPath(XMFLOAT2(m_xPos, m_yPos), player->GetDoorPos());
 
-		}
-		else if (distance < 3.5f && distance > 3 && m_playerInSight)
-		{
-			m_speed = 10;
-			for (unsigned int i = 0; i < m_waypoints.size(); i++)
-			{
-				delete m_waypoints[i];
-				m_waypoints[i] = nullptr;
-			}
-			m_waypoints.clear();
-			MoveTo(player->GetXPos(), player->GetYPos(), deltaTime);
-		}
-		else if (distance < 2 && m_playerInSight)
-		{
-			for (unsigned int i = 0; i < m_waypoints.size(); i++)
-			{
-				delete m_waypoints[i];
-				m_waypoints[i] = nullptr;
-			}
-			m_waypoints.clear();
 		}
 		else if (!m_playerInSight || (m_playerInSight && distance > 2))
 		{
@@ -444,10 +440,12 @@ bool Monster::LookAround(float deltaTime)
 {
 	if (m_timer <= 0)
 	{
+		m_timer = 0.2f;
 		return true;
 	}
+	m_timer -= deltaTime;
 
-	m_rotation += 10 * deltaTime;
+	m_rotation += 30 * deltaTime;
 
 	return false;
 }

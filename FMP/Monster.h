@@ -60,6 +60,7 @@ public:
 
 	void SetPathFound(bool value);
 
+	//state transition probabilites
 	static int s_random_to_chase_or_sneak[2];
 	static int s_random_to_chase_or_flee[2];
 	static int s_chase_to_search_or_random[2];
@@ -67,11 +68,11 @@ public:
 	static int s_search_to_sneak_or_chase[2];
 	static int s_search_to_chase_or_flee[2];
 	static int s_sneak_to_chase_or_flee[2];
-	
+	static int s_sneak_to_search_or_random[2];
 
 private:
 	float m_speed = 6.0f;
-	float m_timer = 0.05;
+	float m_timer = 0.2f;
 
 	Pathfinding* m_pathfinder;
 
