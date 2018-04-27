@@ -82,14 +82,49 @@ private:
 	const float m_cFarClip = 100.0f;
 	const float m_cOrthographicSize = 100.0f;
 
+	//Level Script file path
+	const char* LEVEL_DATA_FILE_PATH = "Scripts/Level_Data.txt";
+
+	//View cone start properties
+	const char* VIEW_CONE_FILE_PATH = "Assets/viewCone2.png";
+	const float c_viewConeStartX = 0.0f;
+	const float c_viewConeStartY = 0.0f;
+	const float c_viewConeZPos = 3.0f;
+	const float c_viewConeScale = 2.5f;
+	const float c_viewConeRotation = 0.0f;
+
+	//sound wave start properties
+	const char* SOUND_WAVE_FILE_PATH = "Assets/soundWave.png";
+	const float c_soundWaveZPos = 3.0f;
+	const float c_soundWaveScale = 0.0f;
+	const float c_soundWaveRotation = 0.0f;
+
+	//Text font file path
+	const char* FONT_FILE_PATH = "Assets/myFont.png";
+
+	//fps text properties
+	const float c_fpsTextXPos = -0.99f;
+	const float c_fpsTextYPos = -0.95f;
+	const float c_fpsTextScale =  0.03f;
+
+	//line of sight text properties
+	const float c_LOSTextPosX  = -0.99f;
+	const float c_LOSTextPosY  =  0.99f;
+	const float c_LOSTextScale =  0.033f;
+
+	//current state text properties
+	const float c_currentStateTextXPos = 0.0f;
+	const float c_currentStateTextYPos = 0.99f;
+	const float c_currentStateTextScale = 0.033f;
+
 	//For the sound waves
-	const float m_soundWalkScale = 1.0f;
-	const float m_soundWalkSpeed = 40.0f;
-	const float m_soundSprintScale = 2.0f;
-	const float m_soundSprintSpeed = 75.0f;
-	const float m_soundZeroScale = 0.0f;
-	const float m_soundDoorScale = 3.0f;
-	const float m_soundDoorSpeed = 80.0f;
+	const float c_soundWalkScale = 0.8f;
+	const float c_soundWalkSpeed = 40.0f;
+	const float c_soundSprintScale = 2.0f;
+	const float c_soundSprintSpeed = 75.0f;
+	const float c_soundZeroScale = 0.0f;
+	const float c_soundDoorScale = 3.0f;
+	const float c_soundDoorSpeed = 80.0f;
 
 	//Used as a toggle for the mouse and keyboard
 	bool m_isMousePressed = false;
@@ -103,6 +138,5 @@ private:
 	float mouseX;
 	float mouseY;
 
-	const char* SOUND_WAVE_FILE_PATH = "Assets/soundWave.png";
-	const char* VIEW_CONE_FILE_PATH = "Assets/viewCone2.png";
+	
 };

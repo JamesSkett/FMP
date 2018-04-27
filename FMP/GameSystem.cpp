@@ -203,7 +203,20 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 			m_soundWaveSprint->SetPos(m_pPlayer->GetXPos(), m_pPlayer->GetYPos());
 
 
-
+			//if the monster is chasing the player
+			if (m_stateMachine->GetCurrentState() == "Chase")
+			{
+				//if the monster catches the player reset the positions and the state
+				//state probabilities DONT reset
+				if (m_pMonster->CollisionCheck(m_pPlayer))
+				{
+					m_pPlayer->Reset();
+					m_pMonster->Reset();
+					State state = RANDOM_WANDER;
+					m_stateMachine->SetCurrentState(state);
+				}
+			}
+			
 			for (unsigned int i = 0; i < m_vProjectiles.size(); i++)
 			{
 				if (m_vProjectiles[i]->GetIsFired())
@@ -244,29 +257,36 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 //set up the main game level
 void GameSystem::SetupLevel()
 {
-	m_plevel->LoadLevelData("scripts/Level_Data.txt");
+	//load the level data
+	m_plevel->LoadLevelData(LEVEL_DATA_FILE_PATH);
+	//use the data to create the tiles
 	m_plevel->SetUpLevelLayout(m_tileMap, m_pPlayer, m_pMonster);
+	//pool the projectiles
 	m_plevel->LoadProjectiles(m_vProjectiles);
+	//pass the tile map to the pathfinder class in Monster
 	m_pMonster->SetPathfinder(m_tileMap);
 
-	m_viewConeEnemy = new Asset(VIEW_CONE_FILE_PATH, 0, 0, 3, 2.0f, 0, 0, 0);
-	m_viewConePlayer = new Asset(VIEW_CONE_FILE_PATH, 0, 0, 3, 2.0f, 0, 0, 0);
-	m_soundWaveWalk = new Asset(SOUND_WAVE_FILE_PATH, m_pPlayer->GetXPos(), m_pPlayer->GetYPos(), 3, 0.0f, 0, 0, 0);
-	m_soundWaveSprint = new Asset(SOUND_WAVE_FILE_PATH, m_pPlayer->GetXPos(), m_pPlayer->GetYPos(), 3, 0.0f, 0, 0, 0);
-	m_soundWaveDoorOpen = new Asset(SOUND_WAVE_FILE_PATH, m_pPlayer->GetXPos(), m_pPlayer->GetYPos(), 3, 0.0f, 0, 0, 0);
-	
+	//Create the assets fo the viewcone and sound
+	m_viewConeEnemy			= new Asset(VIEW_CONE_FILE_PATH, c_viewConeStartX, c_viewConeStartY, c_viewConeZPos, c_viewConeScale, c_viewConeRotation);
+	m_viewConePlayer		= new Asset(VIEW_CONE_FILE_PATH, c_viewConeStartX, c_viewConeStartY, c_viewConeZPos, c_viewConeScale, c_viewConeRotation);
+	m_soundWaveWalk			= new Asset(SOUND_WAVE_FILE_PATH, m_pPlayer->GetXPos(), m_pPlayer->GetYPos(), c_soundWaveZPos, c_soundWaveScale, c_soundWaveRotation);
+	m_soundWaveSprint		= new Asset(SOUND_WAVE_FILE_PATH, m_pPlayer->GetXPos(), m_pPlayer->GetYPos(), c_soundWaveZPos, c_soundWaveScale, c_soundWaveRotation);
+	m_soundWaveDoorOpen		= new Asset(SOUND_WAVE_FILE_PATH, m_pPlayer->GetXPos(), m_pPlayer->GetYPos(), c_soundWaveZPos, c_soundWaveScale, c_soundWaveRotation);
+	//create the texts
+	m_text_fpsCount         = new Text2D(FONT_FILE_PATH, Renderer::pD3DDevice, Renderer::pImmediateContext);
+	m_text_monsterLOS		= new Text2D(FONT_FILE_PATH, Renderer::pD3DDevice, Renderer::pImmediateContext);
+	m_text_currentState		= new Text2D(FONT_FILE_PATH, Renderer::pD3DDevice, Renderer::pImmediateContext);
+	//create the state machine
+	m_stateMachine			= new StateMachine();
+
+	//set the colours of the sound waves
 	m_soundWaveWalk->SetColour(Renderer::colour.IndianRed);
 	m_soundWaveSprint->SetColour(Renderer::colour.IndianRed);
 	m_soundWaveDoorOpen->SetColour(Renderer::colour.IndianRed);
-	
+
+	//set the viewcones in the player and monster classe
 	m_pPlayer->SetViewCone(m_viewConePlayer);
 	m_pMonster->SetViewCone(m_viewConeEnemy);
-
-	m_text_fpsCount = new Text2D("Assets/myFont.png", Renderer::pD3DDevice, Renderer::pImmediateContext);
-	m_text_monsterLOS = new Text2D("Assets/myFont.png", Renderer::pD3DDevice, Renderer::pImmediateContext);
-	m_text_currentState = new Text2D("Assets/myFont.png", Renderer::pD3DDevice, Renderer::pImmediateContext);
-
-	m_stateMachine = new StateMachine();
 }
 
 bool sprinting = false;
@@ -343,8 +363,8 @@ void GameSystem::GetKeyboardInput()
 	}
 	else
 	{
-		m_soundWaveWalk->SetScale(0.0f);
-		m_soundWaveSprint->SetScale(0.0f);
+		m_soundWaveWalk->SetScale(c_soundZeroScale);
+		m_soundWaveSprint->SetScale(c_soundZeroScale);
 	}
 
 	if (renderer->IsKeyPressed(DIK_1))
@@ -358,9 +378,9 @@ void GameSystem::GetKeyboardInput()
 	if (renderer->IsKeyPressed(DIK_2))
 	{
 		Renderer::s_FogOfWar = 1;
-		/*m_soundWaveWalk->SetCanDraw(false);
+		m_soundWaveWalk->SetCanDraw(false);
 		m_soundWaveSprint->SetCanDraw(false);
-		m_soundWaveDoorOpen->SetCanDraw(false);*/
+		m_soundWaveDoorOpen->SetCanDraw(false);
 	}
 
 
@@ -442,7 +462,7 @@ void GameSystem::UpdateText()
 	m_fps = m_time.GetFPS();
 	string fps = "FPS:";
 	fps = fps + to_string(m_fps);
-	m_text_fpsCount->AddText(fps, -0.99f, -0.95f, 0.03f);
+	m_text_fpsCount->AddText(fps, c_fpsTextXPos, c_fpsTextYPos, c_fpsTextScale);
 
 	string inSight;
 	if (m_pMonster->GetPlayerInSight())
@@ -454,11 +474,11 @@ void GameSystem::UpdateText()
 		inSight = "Player in Sight: False";
 	}
 
-	m_text_monsterLOS->AddText(inSight, -0.99f, 0.99f, 0.033f);
+	m_text_monsterLOS->AddText(inSight, c_LOSTextPosX, c_LOSTextPosY, c_LOSTextScale);
 
 	string currentState = "Current State: ";
 	currentState = currentState + m_stateMachine->GetCurrentState();
-	m_text_currentState->AddText(currentState, 0.0f, 0.99f, 0.033f);
+	m_text_currentState->AddText(currentState, c_currentStateTextXPos, c_currentStateTextYPos, c_currentStateTextScale);
 
 	if (Renderer::s_FogOfWar == 1)
 	{
@@ -482,22 +502,22 @@ void GameSystem::UpdateText()
 
 void GameSystem::SoundWaveWalk()
 {
-	m_soundWaveSprint->SetScale(0.0f);
+	m_soundWaveSprint->SetScale(c_soundZeroScale);
 
-	if (m_soundWaveWalk->GetScale() < m_soundWalkScale && !m_lerpDown)
+	if (m_soundWaveWalk->GetScale() < c_soundWalkScale && !m_lerpDown)
 	{
-		m_soundWaveWalk->SetScale(m_soundWaveWalk->GetScale() + m_soundWalkSpeed * m_deltaTime);
+		m_soundWaveWalk->SetScale(m_soundWaveWalk->GetScale() + c_soundWalkSpeed * m_deltaTime);
 
-		if (m_soundWaveWalk->GetScale() > m_soundWalkScale)
+		if (m_soundWaveWalk->GetScale() > c_soundWalkScale)
 		{
 			m_lerpDown = true;
-			m_pMonster->CheckHearing(m_soundWaveWalk->GetPos(), 1.0f);
+			m_pMonster->CheckHearing(m_soundWaveWalk->GetPos(), c_soundWalkScale);
 		}
 	}
 	else if (m_lerpDown)
 	{
-		m_soundWaveWalk->SetScale(m_soundWaveWalk->GetScale() - m_soundWalkSpeed * m_deltaTime);
-		if (m_soundWaveWalk->GetScale() < 0.001f)
+		m_soundWaveWalk->SetScale(m_soundWaveWalk->GetScale() - c_soundWalkSpeed * m_deltaTime);
+		if (m_soundWaveWalk->GetScale() < c_soundZeroScale)
 		{
 			m_lerpDown = false;
 		}
@@ -506,22 +526,22 @@ void GameSystem::SoundWaveWalk()
 
 void GameSystem::SoundWaveSprint()
 {
-	m_soundWaveWalk->SetScale(0.0f);
+	m_soundWaveWalk->SetScale(c_soundZeroScale);
 
-	if (m_soundWaveSprint->GetScale() < m_soundSprintScale && !m_lerpDown)
+	if (m_soundWaveSprint->GetScale() < c_soundSprintScale && !m_lerpDown)
 	{
-		m_soundWaveSprint->SetScale(m_soundWaveSprint->GetScale() + m_soundSprintSpeed * m_deltaTime);
+		m_soundWaveSprint->SetScale(m_soundWaveSprint->GetScale() + c_soundSprintSpeed * m_deltaTime);
 
-		if (m_soundWaveSprint->GetScale() > m_soundSprintScale)
+		if (m_soundWaveSprint->GetScale() > c_soundSprintScale)
 		{
 			m_lerpDown = true;
-			m_pMonster->CheckHearing(m_soundWaveWalk->GetPos(), 2.0f);
+			m_pMonster->CheckHearing(m_soundWaveWalk->GetPos(), c_soundSprintScale);
 		}
 	}
 	else if (m_lerpDown)
 	{
-		m_soundWaveSprint->SetScale(m_soundWaveSprint->GetScale() - m_soundSprintSpeed * m_deltaTime);
-		if (m_soundWaveSprint->GetScale() < 0.0f)
+		m_soundWaveSprint->SetScale(m_soundWaveSprint->GetScale() - c_soundSprintSpeed * m_deltaTime);
+		if (m_soundWaveSprint->GetScale() < c_soundZeroScale)
 		{
 			m_lerpDown = false;
 		}
@@ -532,24 +552,24 @@ void GameSystem::SoundWaveDoorOpen()
 {
 	if (m_doorSound)
 	{
-		if (m_soundWaveDoorOpen->GetScale() < m_soundDoorScale && !m_lerpDownDoor)
+		if (m_soundWaveDoorOpen->GetScale() < c_soundDoorScale && !m_lerpDownDoor)
 		{
-			m_soundWaveDoorOpen->SetScale(m_soundWaveDoorOpen->GetScale() + m_soundDoorSpeed * m_deltaTime);
+			m_soundWaveDoorOpen->SetScale(m_soundWaveDoorOpen->GetScale() + c_soundDoorSpeed * m_deltaTime);
 
-			if (m_soundWaveDoorOpen->GetScale() > m_soundDoorScale)
+			if (m_soundWaveDoorOpen->GetScale() > c_soundDoorScale)
 			{
 				m_lerpDownDoor = true;
-				m_pMonster->CheckHearing(m_soundWaveWalk->GetPos(), 3.0f);
+				m_pMonster->CheckHearing(m_soundWaveWalk->GetPos(), c_soundDoorScale);
 			}
 		}
 		else if (m_lerpDownDoor)
 		{
-			m_soundWaveDoorOpen->SetScale(m_soundWaveDoorOpen->GetScale() - m_soundDoorSpeed * m_deltaTime);
-			if (m_soundWaveDoorOpen->GetScale() < 0.0f)
+			m_soundWaveDoorOpen->SetScale(m_soundWaveDoorOpen->GetScale() - c_soundDoorSpeed * m_deltaTime);
+			if (m_soundWaveDoorOpen->GetScale() < c_soundZeroScale)
 			{
 				m_lerpDownDoor = false;
 				m_doorSound = false;
-				m_soundWaveDoorOpen->SetScale(0.0f);
+				m_soundWaveDoorOpen->SetScale(c_soundZeroScale);
 			}
 		}
 	}
