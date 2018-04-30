@@ -37,7 +37,7 @@ private:
 	State IsRandomWander	(Player* player, Monster* monster);
 	State IsChasing			(Player* player, Monster* monster, float deltaTime);
 	State IsSearching		(Player* player, Monster* monster, float deltaTime);
-	State IsSneaking		(Player* player, Monster* monster);
+	State IsSneaking		(Player* player, Monster* monster, float deltaTime);
 	State IsFleeing			(Player* player, Monster* monster, float deltaTime);
 	State IsAttacking       (Player* player, Monster* monster);
 
@@ -46,9 +46,10 @@ private:
 
 	float m_searchTimer  = 1.0f;
 	float m_sneakTimer   = 1.0f;
+	float m_attackTimer  = 1.0f;
 	float m_fleeTimer    = 1.0f;
 
-	const int weightChange = 1;
+	const int weightChange = 10;
 	const int WEIGHTING_MIN = 1;
 	const int WEIGHTING_MAX = 100;
 

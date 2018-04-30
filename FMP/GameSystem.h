@@ -72,10 +72,9 @@ private:
 	Text2D* m_text_fpsCount;
 	Text2D* m_text_monsterLOS;
 	Text2D* m_text_currentState;
-	
+
 	//vector objects
 	vector <Tile*> m_tileMap;
-	vector <Projectile*> m_vProjectiles;
 
 	//frames per second
 	int m_fps = 0;

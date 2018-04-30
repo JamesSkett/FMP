@@ -91,14 +91,6 @@ GameSystem::~GameSystem()
 
 	m_tileMap.clear();
 
-	for (unsigned int i = 0; i < m_vProjectiles.size(); i++)
-	{
-		delete m_vProjectiles[i];
-		m_vProjectiles[i] = nullptr;
-	}
-
-	m_vProjectiles.clear();
-
 	if (m_stateMachine)
 	{
 		delete m_stateMachine;
@@ -212,29 +204,7 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 				{
 					m_pPlayer->Reset();
 					m_pMonster->Reset();
-					State state = RANDOM_WANDER;
-					m_stateMachine->SetCurrentState(state);
-				}
-			}
-			
-			for (unsigned int i = 0; i < m_vProjectiles.size(); i++)
-			{
-				if (m_vProjectiles[i]->GetIsFired())
-				{
-					m_vProjectiles[i]->Update(m_deltaTime);
-
-					if (m_vProjectiles[i]->CollisionCheck(m_tileMap))
-					{
-						m_vProjectiles[i]->SetXPos(10.0f);
-						m_vProjectiles[i]->SetYPos(10.0f);
-						m_vProjectiles[i]->SetIsFired(false);
-					}
-					else if (m_vProjectiles[i]->CollisionCheck(m_pMonster))
-					{
-						m_vProjectiles[i]->SetXPos(10.0f);
-						m_vProjectiles[i]->SetYPos(10.0f);
-						m_vProjectiles[i]->SetIsFired(false);
-					}
+					m_stateMachine->SetCurrentState(RANDOM_WANDER);
 				}
 			}
 
@@ -261,8 +231,6 @@ void GameSystem::SetupLevel()
 	m_plevel->LoadLevelData(LEVEL_DATA_FILE_PATH);
 	//use the data to create the tiles
 	m_plevel->SetUpLevelLayout(m_tileMap, m_pPlayer, m_pMonster);
-	//pool the projectiles
-	m_plevel->LoadProjectiles(m_vProjectiles);
 	//pass the tile map to the pathfinder class in Monster
 	m_pMonster->SetPathfinder(m_tileMap);
 
@@ -276,6 +244,7 @@ void GameSystem::SetupLevel()
 	m_text_fpsCount         = new Text2D(FONT_FILE_PATH, Renderer::pD3DDevice, Renderer::pImmediateContext);
 	m_text_monsterLOS		= new Text2D(FONT_FILE_PATH, Renderer::pD3DDevice, Renderer::pImmediateContext);
 	m_text_currentState		= new Text2D(FONT_FILE_PATH, Renderer::pD3DDevice, Renderer::pImmediateContext);
+
 	//create the state machine
 	m_stateMachine			= new StateMachine();
 
@@ -383,38 +352,6 @@ void GameSystem::GetKeyboardInput()
 		m_soundWaveDoorOpen->SetCanDraw(false);
 	}
 
-
-	if (renderer->mouseCurrState.rgbButtons[0])
-	{
-		if (!m_isMousePressed)
-		{
-			m_vProjectiles[m_bulletNum]->SetIsFired(true);
-
-			m_vProjectiles[m_bulletNum]->SetIsFired(true);
-
-			m_vProjectiles[m_bulletNum]->SetXPos(m_pPlayer->GetXPos());
-			m_vProjectiles[m_bulletNum]->SetYPos(m_pPlayer->GetYPos());
-
-			m_vProjectiles[m_bulletNum]->SetDirection(m_pPlayer->GetDirectionX(), m_pPlayer->GetDirectionY());
-
-			m_vProjectiles[m_bulletNum]->SetRotation(m_pPlayer->GetRotation());
-
-			m_bulletNum++;
-
-			if (m_bulletNum == 50)
-			{
-				m_bulletNum = 0;
-			}
-
-			m_isMousePressed = true;
-		}
-	}
-
-	if (!renderer->mouseCurrState.rgbButtons[0])
-	{
-		m_isMousePressed = false;
-	}
-
 }
 
 void GameSystem::GetMousePos()
@@ -435,14 +372,6 @@ void GameSystem::DrawLevel(XMMATRIX view, XMMATRIX projection)
 	for (unsigned int i = 0; i < m_tileMap.size(); i++)
 	{
 		m_tileMap[i]->Draw(view, projection);
-	}
-
-	for (unsigned int i = 0; i < m_vProjectiles.size(); i++)
-	{
-		if (m_vProjectiles[i]->GetIsFired())
-		{
-			m_vProjectiles[i]->Draw(view, projection);
-		}
 	}
 
 	Renderer::pImmediateContext->OMSetBlendState(Renderer::pAlphaBlendEnable, 0, 0xffffffff);
@@ -494,9 +423,9 @@ void GameSystem::UpdateText()
 	Renderer::pImmediateContext->OMSetBlendState(Renderer::pAlphaBlendEnable, 0, 0xffffffff);
 
 	m_text_fpsCount->RenderText();
-
 	m_text_monsterLOS->RenderText();
 	m_text_currentState->RenderText();
+
 	Renderer::pImmediateContext->OMSetBlendState(Renderer::pAlphaBlendDisable, 0, 0xffffffff);
 }
 

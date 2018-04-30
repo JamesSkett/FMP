@@ -194,11 +194,6 @@ HRESULT Renderer::InitialiseD3D()
 //release all the object when done
 void Renderer::ShutdownD3D()
 {
-	if (m_FPSCount)
-	{
-		delete m_FPSCount;
-		m_FPSCount = nullptr;
-	}
 
 	if (m_keyboard_device)
 	{

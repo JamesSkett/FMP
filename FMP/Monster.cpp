@@ -154,44 +154,46 @@ bool Monster::LineOfSightCheck(XMFLOAT2 targetPos)
 		return false;
 	}
 
+	//get the direction from monster to player
 	float x = targetPos.x - m_xPos;
 	float y = targetPos.y - m_yPos;
+	//calculate the distance between the two
 	float length = Math::Distance(XMFLOAT2(m_xPos, m_yPos), targetPos);
-
 	if (!length)
 	{
 		m_playerInSight = true;
 		m_lastPlayerPos = targetPos;
 		return true;
 	}
+	//if the player is too far away we cant see them
 	if (length > 4)
 	{
 		m_playerInSight = false;
 		return false;
 	}
-
+	//get the unit direction
 	float unitX = x / length;
 	float unitY = y / length;
-
+	//reset the x and y values
 	x = m_xPos;
 	y = m_yPos;
-
+	//while the length is greater than 0.1
 	while(length > 0.1f)
 	{
+		//is the current point's tile a wall
 		if (CheckTile(XMFLOAT2(x, y)))
 		{
+			//if yes then player cant be seen
 			m_playerInSight = false;
 			return false;
 		}
-
+		//if not then move the point towards the player 
 		x += unitX * 0.2f;
 		y += unitY * 0.2f;
-
-		length = sqrt((targetPos.x - x) * (targetPos.x - x) + (targetPos.y - y) * (targetPos.y - y));
-
+		//calculate the distnce
+		length = Math::Distance(XMFLOAT2(x, y), targetPos);
 	}
-
-
+	//if the above doesnt hit a wall player is in sight
 	m_playerInSight = true;
 	m_lastPlayerPos = targetPos;
 
