@@ -303,16 +303,21 @@ void Monster::Search(XMFLOAT2 playerPos, float deltaTime)
 
 void Monster::Sneak(Player* player, float deltaTime)
 {
+	//set the colour of the view cone to show state change
 	m_viewCone->SetColour(Renderer::colour.Blue);
+	//calculate the distance between the player and monster
 	float distance = Math::Distance(XMFLOAT2(m_xPos, m_yPos), XMFLOAT2(player->GetXPos(), player->GetYPos()));
 
+	//if the distance is between 3 and 3.5 move towards the player
 	if (distance < 3.5f && distance > 3 && m_playerInSight)
 	{
 		m_speed = 10;
 		MoveTo(player->GetXPos(), player->GetYPos(), deltaTime);
 	}
+	//if the distance is less than 2
 	else if (distance < 2 && m_playerInSight)
 	{
+		//stop moving and clear the waypoints
 		for (unsigned int i = 0; i < m_waypoints.size(); i++)
 		{
 			delete m_waypoints[i];
@@ -320,13 +325,16 @@ void Monster::Sneak(Player* player, float deltaTime)
 		}
 		m_waypoints.clear();
 	}
+	//if a path has already been found
 	else if (m_pathfinder->GetIsPathFound())
 	{
+
 		if (m_waypointNum >= m_waypoints.size())
 		{
 			m_pathfinder->SetIsPathFound(false);
 			m_waypointNum = 0;
 		}
+		//follow the path
 		else if (MoveTo(m_waypoints[m_waypointNum]->x, m_waypoints[m_waypointNum]->y, deltaTime))
 		{
 			m_waypointNum++;
@@ -347,7 +355,7 @@ void Monster::Sneak(Player* player, float deltaTime)
 			m_waypoints = m_pathfinder->FindPath(XMFLOAT2(m_xPos, m_yPos), player->GetDoorPos());
 
 		}
-		else if (!m_playerInSight || (m_playerInSight && distance > 2))
+		else if (!m_playerInSight || (m_playerInSight && distance > 3.5f))
 		{
 			if (m_pathfinder->GetIsPathFound())
 			{

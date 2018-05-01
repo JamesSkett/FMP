@@ -44,10 +44,10 @@ private:
 	State m_currentState = RANDOM_WANDER;
 	string m_currentStateText;
 
-	float m_searchTimer  = 1.0f;
+	float m_searchTimer  = 2.0f;
 	float m_sneakTimer   = 1.0f;
 	float m_attackTimer  = 1.0f;
-	float m_fleeTimer    = 1.0f;
+	float m_fleeTimer    = 0.8f;
 
 	const int weightChange = 10;
 	const int WEIGHTING_MIN = 1;
