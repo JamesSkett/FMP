@@ -13,35 +13,33 @@ StateMachine::~StateMachine()
 
 void StateMachine::RunStateMachine(Player* player, Monster* monster, float deltaTime)
 {
+	//check what the current state is
 	switch (m_currentState)
 	{
-	case RANDOM_WANDER:
-		m_currentStateText = "Random Wander";
-		monster->RandomWander(deltaTime);
-		m_currentState = IsRandomWander(player, monster);
+	case RANDOM_WANDER: //if random wander
+		m_currentStateText = "Random Wander";             //set the current state text
+		monster->RandomWander(deltaTime);                 //call the random wander behaviour
+		m_currentState = IsRandomWander(player, monster); //check the conditions of this state
 		break;
-	case CHASE:
-		m_currentStateText = "Chase";
-		monster->Chase(deltaTime);
-		m_currentState = IsChasing(player, monster, deltaTime);
+	case CHASE: //if chasing
+		m_currentStateText = "Chase";							//set the current state text
+		monster->Chase(deltaTime);								//call the chase behaviour
+		m_currentState = IsChasing(player, monster, deltaTime); //check the conditions of this state
 		break;
-	case SEARCH:
-		m_currentStateText = "Search";
-		monster->Search(XMFLOAT2(player->GetXPos(), player->GetYPos()), deltaTime);
-		m_currentState = IsSearching(player, monster, deltaTime);
+	case SEARCH: //if searching
+		m_currentStateText = "Search";												//set the current state text
+		monster->Search(XMFLOAT2(player->GetXPos(), player->GetYPos()), deltaTime);	//call the search behaviour
+		m_currentState = IsSearching(player, monster, deltaTime);					//check the conditions of this state
 		break;
 	case SNEAK:
-		m_currentStateText = "Sneak";
-		monster->Sneak(player, deltaTime);
-		m_currentState = IsSneaking(player, monster, deltaTime);
+		m_currentStateText = "Sneak";							 //set the current state text
+		monster->Sneak(player, deltaTime);						 //call the sneak behaviour
+		m_currentState = IsSneaking(player, monster, deltaTime); //check the conditions of this state
 		break;
 	case FLEE:
-		m_currentStateText = "Flee";
-		monster->Flee(player, deltaTime);
-		m_currentState = IsFleeing(player, monster, deltaTime);
-		break;
-	case ATTACK:
-
+		m_currentStateText = "Flee";							//set the current state text
+		monster->Flee(player, deltaTime);						//call the flee behaviour
+		m_currentState = IsFleeing(player, monster, deltaTime);	//check the conditions of this state
 		break;
 	}
 }
@@ -523,9 +521,4 @@ State StateMachine::IsFleeing(Player* player, Monster* monster, float deltaTime)
 	else m_fleeTimer = 1.0f;
 
 	return FLEE;
-}
-
-State StateMachine::IsAttacking(Player * player, Monster * monster)
-{
-	return ATTACK;
 }

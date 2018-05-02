@@ -84,5 +84,7 @@ private:
 	bool m_enemyInSight = false;
 
 	float m_timer = 0.02f;
+
+	const float c_viewDistance = 3.0f;
 };
 

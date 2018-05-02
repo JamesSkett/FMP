@@ -224,7 +224,7 @@ bool Player::LineOfSightCheck(XMFLOAT2 targetPos, vector <Tile*> tilemap)
 		m_enemyInSight = true;
 		return true;
 	}
-	if (length > 2)
+	if (length > c_viewDistance)
 	{
 		m_enemyInSight = false;
 		return false;
@@ -247,8 +247,7 @@ bool Player::LineOfSightCheck(XMFLOAT2 targetPos, vector <Tile*> tilemap)
 		x += unitX * 0.2f;
 		y += unitY * 0.2f;
 
-		length = sqrt((targetPos.x - x) * (targetPos.x - x) + (targetPos.y - y) * (targetPos.y - y));
-
+		length = Math::Distance(XMFLOAT2(x, y), targetPos);
 	}
 
 	m_enemyInSight = true;

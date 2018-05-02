@@ -9,6 +9,8 @@
 #include "Monster.h"
 #include "Player.h"
 
+
+//Outlines what the different states are
 enum State
 {
 	RANDOM_WANDER	= 0,
@@ -16,7 +18,6 @@ enum State
 	SEARCH			= 2,
 	SNEAK			= 3,
 	FLEE			= 4,
-	ATTACK			= 5
 };
 
 class StateMachine
@@ -25,21 +26,24 @@ public:
 	StateMachine();
 	~StateMachine();
 
-	void RunStateMachine	(Player* player, Monster* monster, float deltaTime);
+	//Runs the state machine
+	void RunStateMachine(Player* player, Monster* monster, float deltaTime);
+	//Sets the current state of the monster
 	void SetCurrentState(State state);
 
+	//Gets the current state of the monster as a string
 	string GetCurrentState();
 
 	static bool s_chasing;
 	
 
 private:
+	//condition check functions
 	State IsRandomWander	(Player* player, Monster* monster);
 	State IsChasing			(Player* player, Monster* monster, float deltaTime);
 	State IsSearching		(Player* player, Monster* monster, float deltaTime);
 	State IsSneaking		(Player* player, Monster* monster, float deltaTime);
 	State IsFleeing			(Player* player, Monster* monster, float deltaTime);
-	State IsAttacking       (Player* player, Monster* monster);
 
 	State m_currentState = RANDOM_WANDER;
 	string m_currentStateText;
