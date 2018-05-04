@@ -14,6 +14,7 @@
 
 using namespace std;
 
+//Node class to store the properties of each node
 class Node
 {
 public:
@@ -25,6 +26,7 @@ public:
 
 	float xPos, yPos;
 
+	//each node has a parent so the path can be retraced
 	Node* parent;
 
 	Node::Node(int i, bool canWalk, float x, float y)
@@ -61,19 +63,28 @@ public:
 	Pathfinding(vector <Tile*> tilemap);
 	~Pathfinding();
 
+	//calculates a path to given location
 	vector <XMFLOAT2*> FindPath(XMFLOAT2 startPos, XMFLOAT2 targetPos);
+	//retraces the path from end node to start node using the parents
 	vector <XMFLOAT2*> RetracePath(Node* startNode, Node* endNode);
 
+	//Adds a node to the open list
 	void AddToOpenList(Node* node);
+	//Adds a node to the closed list
 	void AddToClosedList(Node* node);
 
+	//Gets the nodes adjacent to the current node
 	vector <Node*> GetNeighbours(Node* currentNode);
 
+	//calculates the h value for 2 nodes
 	int CalculateHValue(Node* n1, Node* n2);
 
+	//Finds the node for the position passed in
 	Node* GetNodeFromList(XMFLOAT2 pos);
 
+	//get the value of m_pathFound
 	bool GetIsPathFound();
+	//set the value of m_pathFound
 	void SetIsPathFound(bool pathFound);
 
 private:

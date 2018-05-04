@@ -23,12 +23,17 @@ public:
 
 	void Draw(XMMATRIX view, XMMATRIX projection);
 
+	//get the position, width and height of the tile for collisions
 	void GetParameters(float &x, float &y, float &width, float &height);
+	//Get the index value of the current tile 1 = floor 2 = wall 3 = door
 	int GetIndex();
 
+	//get the x position
 	float GetXPos();
+	//get the y position
 	float GetYPos();
 
+	//check to see if the tile is walkable or not
 	bool GetIsWalkable();
 
 	struct POS_COL_VERTEX

@@ -38,14 +38,19 @@ public:
 	//Set whether the asset can be drawn or not
 	void SetCanDraw(bool canDraw);
 
-
+	//Update the rotation value
 	void UpdateRotation(float speed);
+	//upadate the scalar value
 	void UpdateScale(float speed);
 
+	//Get the posisiton and width and height values
 	void GetParameters(float &x, float &y, float &w, float &h);
+	//Get the value of m_canDraw
 	bool GetCanDraw();
+	//get the value of m_scale
 	float GetScale();
 
+	//Get the x and y values of the asset
 	XMFLOAT2 GetPos();
 
 	struct POS_TEX_VERTEX

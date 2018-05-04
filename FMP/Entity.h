@@ -43,9 +43,9 @@ public:
 	bool CollisionCheck(vector<Tile*> tilemap);
 	//check collisions with the monster //Returns true/false
 	bool CollisionCheck(Entity * colObject);
-
+	//Set eh entities view cone
 	void SetViewCone(Asset* viewCone);
-
+	//reset the entities to their start pos
 	void Reset();
 
 	struct POS_COL_VERTEX

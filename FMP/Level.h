@@ -25,9 +25,10 @@ public:
 	Level();
 	~Level();
 
+	//load the level data from a text file
 	void LoadLevelData(const char* filePath);
+	//create and position the tiles 
 	void SetUpLevelLayout(vector <Tile*> &tilemap, Player* &player, Monster* &monster);
-	void LoadProjectiles(vector <Projectile*> &projectiles);
 
 private:
 	vector <string> m_vlevelData;
