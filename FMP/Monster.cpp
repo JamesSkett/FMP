@@ -48,37 +48,37 @@ void Monster::Update(Player* player, float deltaTime)
 
 }
 
-float Monster::GetXPos()
+float Monster::GetXPos() const
 {
 	return m_xPos;
 }
 
-float Monster::GetYPos()
+float Monster::GetYPos() const
 {
 	return m_yPos;
 }
 
-bool Monster::GetPlayerInSight()
+bool Monster::GetPlayerInSight() const
 {
 	return m_playerInSight;
 }
 
-bool Monster::GetIsSearching()
+bool Monster::GetIsSearching() const
 {
 	return m_isSearching;
 }
 
-float Monster::GetRotation()
+float Monster::GetRotation() const
 {
 	return m_rotation;
 }
 
-bool Monster::GetSoundHeard()
+bool Monster::GetSoundHeard() const
 {
 	return m_soundHeard;
 }
 
-XMFLOAT2 Monster::GetLastPlayerPos()
+XMFLOAT2 Monster::GetLastPlayerPos() const
 {
 	return m_lastPlayerPos;
 }

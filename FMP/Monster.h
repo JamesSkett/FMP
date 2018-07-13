@@ -25,19 +25,19 @@ public:
 	void Update(Player* player, float deltaTime);
 
 	//Gets the current x position value
-	float GetXPos();
+	float GetXPos() const;
 	//Gets the current y position value
-	float GetYPos();
+	float GetYPos() const;
 	//Get the value of m_playerInSight
-	bool GetPlayerInSight();
+	bool GetPlayerInSight() const;
 	//Get the value of m_isSearching
-	bool GetIsSearching();
+	bool GetIsSearching() const;
 	//Gets the current rotation of the monster
-	float GetRotation();
+	float GetRotation() const;
 	//Gets the value of m_soundHeard
-	bool GetSoundHeard();
+	bool GetSoundHeard() const;
 	//Gets the last location the player was seen.
-	XMFLOAT2 GetLastPlayerPos();
+	XMFLOAT2 GetLastPlayerPos() const;
 
 	//Moves to a specified point
 	bool MoveTo(float x, float y, float deltaTime);
