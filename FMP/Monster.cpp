@@ -4,7 +4,12 @@
 #include <math.h>
 
 #include "Math.h"
-
+#include "Entity.h"
+#include "Tile.h"
+#include "Pathfinding.h"
+#include "Renderer.h"
+#include "Asset.h"
+#include "Player.h"
 
 int Monster::s_random_to_chase_or_sneak[2]   = { 15, 85 };
 int Monster::s_random_to_chase_or_flee[2]    = { 15, 85 };

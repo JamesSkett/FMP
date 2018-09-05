@@ -1,12 +1,26 @@
 #include "GameSystem.h"
 #include "Pathfinding.h"
+#include "Renderer.h"
+#include "text2D.h"
+#include "Level.h"
+#include "Player.h"
+#include "Time.h"
+#include "Monster.h"
+#include "Projectile.h"
+#include "Asset.h"
+#include "Tile.h"
+#include "StateMachine.h"
+#include "CXBOXController.h"
+#include "Camera.h"
 #include <thread>
+
 
 //set up the renderer and main menu
 GameSystem::GameSystem()
 {
 	renderer = new Renderer;
 	m_plevel = new Level;
+	player1 = new CXBOXController(1);
 	m_pPlayer = nullptr;
 	m_pMonster = nullptr;
 	m_text_fpsCount = nullptr;
@@ -175,8 +189,10 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 			float w = m_screenWidth / m_cOrthographicSize;
 			float h = m_screenHeight / m_cOrthographicSize;
 
-			projection = XMMatrixOrthographicLH(w, h, m_cNearClip, m_cFarClip);
-			view = XMMatrixIdentity();
+			//projection = XMMatrixOrthographicLH(w, h, m_cNearClip, m_cFarClip);
+
+			projection = XMMatrixPerspectiveFovLH(XMConvertToRadians(70.0f), m_screenWidth / m_screenHeight, 0.1f, 500.0f);
+			view = Renderer::camera->GetViewMatrix();
 
 			m_pPlayer->Update(XMFLOAT2(m_pMonster->GetXPos(), m_pMonster->GetYPos()), m_tileMap, m_deltaTime);
 			m_pMonster->Update(m_pPlayer, m_deltaTime);
@@ -350,6 +366,16 @@ void GameSystem::GetKeyboardInput()
 		m_soundWaveWalk->SetCanDraw(false);
 		m_soundWaveSprint->SetCanDraw(false);
 		m_soundWaveDoorOpen->SetCanDraw(false);
+	}
+
+	if (renderer->IsKeyPressed(DIK_COMMA))
+	{
+		Renderer::camera->Forward(0.5f);
+	}
+
+	if (renderer->IsKeyPressed(DIK_PERIOD))
+	{
+		Renderer::camera->Forward(-0.5f);
 	}
 
 }

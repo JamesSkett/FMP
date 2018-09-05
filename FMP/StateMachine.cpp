@@ -1,5 +1,7 @@
 #include "StateMachine.h"
 #include "Math.h"
+#include "Monster.h"
+#include "Player.h"
 
 bool StateMachine::s_chasing = false;
 
@@ -49,7 +51,7 @@ void StateMachine::SetCurrentState(State state)
 	m_currentState = state;
 }
 
-string StateMachine::GetCurrentState()
+string StateMachine::GetCurrentState() const
 {
 	return m_currentStateText;
 }

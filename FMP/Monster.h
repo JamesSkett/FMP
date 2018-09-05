@@ -7,13 +7,18 @@
 */
 
 #pragma once
-#include "Entity.h"
-#include "Tile.h"
-#include "Pathfinding.h"
+
 
 #include <vector>
 
 using namespace std;
+
+#include "Entity.h"
+
+class Tile;
+class Pathfinding;
+class Player;
+class Asset;
 
 class Monster : public Entity
 {

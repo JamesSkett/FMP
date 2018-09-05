@@ -10,11 +10,12 @@
 #pragma once
 
 #include "Entity.h"
-#include "Tile.h"
-#include "Projectile.h"
+
 #include <vector>
 
 using namespace std;
+
+class Tile;
 
 class Player : public Entity
 {

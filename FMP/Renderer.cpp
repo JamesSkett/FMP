@@ -1,6 +1,13 @@
 #include "Renderer.h"
 #include <iostream>
 
+#include "Camera.h"
+#include "CXBOXController.h"
+#include "text2D.h"
+#include "Time.h"
+#include "Entity.h"
+#include "Level.h"
+
 HWND		m_hWnd = NULL;
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -11,6 +18,8 @@ ID3D11RenderTargetView*  Renderer::pBackBufferRTView;
 ID3D11BlendState*        Renderer::pAlphaBlendEnable;
 ID3D11BlendState*        Renderer::pAlphaBlendDisable;
 Colour                   Renderer::colour;
+
+Camera* Renderer::camera;
 
 Time Renderer::time;
 
@@ -230,6 +239,7 @@ void Renderer::RenderFrame()
 //sets up the camera skybox and frame counter
 HRESULT Renderer::InitialiseGraphics(void)
 {
+	camera = new Camera(0.f, 0.f, 0.5f, 0.f);
 
 	return S_OK;
 

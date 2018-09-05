@@ -1,6 +1,6 @@
 #include "Tile.h"
 #include "Renderer.h"
-
+#include "Player.h"
 
 Tile::Tile(XMFLOAT4 colour, float x, float y, float z, float scale, float width, float height, int index) 
 {

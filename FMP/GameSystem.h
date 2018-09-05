@@ -15,16 +15,20 @@
 using namespace DirectX;
 
 #include <vector>
+using namespace std;
 
-#include "Renderer.h"
-#include "text2D.h"
-#include "Level.h"
-#include "Player.h"
 #include "Time.h"
-#include "Monster.h"
-#include "Projectile.h"
-#include "Asset.h"
-#include "StateMachine.h"
+
+class CXBOXController;
+class Renderer;
+class Text2D;
+class Level;
+class Player;
+class Monster;
+class Projectile;
+class Asset;
+class StateMachine;
+class Tile;
 
 class GameSystem
 {
@@ -43,7 +47,7 @@ public:
 	void GetMousePos();
 
 	//player 1 controller
-	CXBOXController* player1 = new CXBOXController(1);
+	CXBOXController* player1;
 
 	//Draws the whole level
 	void DrawLevel(XMMATRIX view, XMMATRIX projection);
@@ -56,9 +60,12 @@ public:
 	//Animate the sound waves when walking through doors
 	void SoundWaveDoorOpen();
 
+
 private:
 	//Level objects
 	Renderer* renderer;
+
+
 	Level* m_plevel;
 	Time m_time;
 	Player* m_pPlayer;

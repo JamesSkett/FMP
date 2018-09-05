@@ -1,7 +1,8 @@
-#include "Entity.h"
+//#include "Entity.h"
 #include "Renderer.h"
 #include "Asset.h"
 #include "Math.h"
+#include "Player.h"
 
 Entity::Entity(XMFLOAT4 colour, float x, float y, float z, float scale, float width, float height)
 {

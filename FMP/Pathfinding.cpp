@@ -1,6 +1,8 @@
 #include "Pathfinding.h"
 #include <math.h>
 #include <algorithm>
+#include "Tile.h"
+#include "Player.h"
 
 Pathfinding::Pathfinding(vector <Tile*> tilemap)
 {

@@ -1,4 +1,5 @@
 #include "Asset.h"
+#include "Renderer.h"
 
 
 Asset::Asset(const char * filename, float x, float y, float z, float scale, float rotation)

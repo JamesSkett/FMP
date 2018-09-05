@@ -3,6 +3,11 @@
 #include "Wall.h"
 #include "Renderer.h"
 
+#include "Tile.h"
+#include "Player.h"
+#include "Monster.h"
+#include "Projectile.h"
+
 #include <fstream>
 
 Level::Level()

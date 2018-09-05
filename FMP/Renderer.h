@@ -17,13 +17,14 @@
 #include <DirectXMath.h>
 using namespace DirectX;
 
-#include "CXBOXController.h"
-#include "text2D.h"
-#include "Time.h"
-#include "Entity.h"
-#include "Level.h"
 #include "Colours.h"
 
+class Camera;
+class CXBOXController;
+class text2D;
+class Time;
+class Entity;
+class Level;
 
 
 __declspec(align(16)) class Renderer
@@ -62,6 +63,7 @@ public:
 	DIMOUSESTATE mouseCurrState;
 
 	//These can be used in any class
+	static Camera* camera;
 	static Time time;
 	static ID3D11Device*           pD3DDevice;
 	static ID3D11DeviceContext*    pImmediateContext;

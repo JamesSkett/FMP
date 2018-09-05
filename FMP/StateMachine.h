@@ -6,9 +6,13 @@
 */
 
 #pragma once
-#include "Monster.h"
-#include "Player.h"
 
+#include <string>
+
+using namespace std;
+
+class Player;
+class Monster;
 
 //Outlines what the different states are
 enum State
@@ -32,7 +36,7 @@ public:
 	void SetCurrentState(State state);
 
 	//Gets the current state of the monster as a string
-	string GetCurrentState();
+	string GetCurrentState() const;
 
 	static bool s_chasing;
 	

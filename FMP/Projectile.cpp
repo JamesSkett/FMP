@@ -1,6 +1,6 @@
 #include "Projectile.h"
 #include "Renderer.h"
-
+#include "Tile.h"
 
 Projectile::Projectile(XMFLOAT4 colour, float x, float y, float z, float scale, float width, float height):
 	Entity(colour, x, y, x, scale, width, height)

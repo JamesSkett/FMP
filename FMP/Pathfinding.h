@@ -7,12 +7,19 @@
 */
 
 #pragma once
-#include "Tile.h"
-#include "Player.h"
+
+#include <d3d11.h>
+#include <d3dx11.h>
+#include <dxerr.h>
+
+#include <DirectXMath.h>
+using namespace DirectX;
 
 #include <vector>
 
 using namespace std;
+
+class Tile;
 
 //Node class to store the properties of each node
 class Node

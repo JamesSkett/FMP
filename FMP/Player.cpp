@@ -2,6 +2,8 @@
 #include "Tile.h"
 #include "GameSystem.h"
 #include "Math.h"
+#include "Renderer.h"
+#include "Asset.h"
 #include <math.h>
 
 float Player::s_rotation;

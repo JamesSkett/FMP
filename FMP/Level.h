@@ -10,11 +10,11 @@
 #include <vector>
 #include <DirectXMath.h>
 
-#include "Tile.h"
-#include "Player.h"
-#include "Monster.h"
-#include "Projectile.h"
 
+
+class Tile;
+class Player;
+class Monster;
 
 using namespace std;
 using namespace DirectX;

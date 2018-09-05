@@ -16,7 +16,6 @@
 #include <DirectXMath.h>
 using namespace DirectX;
 
-#include "Renderer.h"
 
 class Asset
 {
