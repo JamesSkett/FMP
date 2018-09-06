@@ -8,7 +8,6 @@
 using namespace DirectX;
 
 class ObjFileModel;
-class Math;
 
 //Shader Constant buffer
 struct MODEL_CONSTANT_BUFFER
@@ -54,7 +53,6 @@ public:
 	Mesh(ID3D11Device* D3D11Device, ID3D11DeviceContext* ImmediateContext);
 	~Mesh();
 
-	Math math;
 
 	//loads the mesh object
 	int LoadObjModel(char* fileName);

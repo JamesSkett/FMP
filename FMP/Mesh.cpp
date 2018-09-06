@@ -1,7 +1,6 @@
 #include "Mesh.h"
 //My class includes
 #include "objfilemodel.h"
-#include "Math.h"
 
 
 Mesh::Mesh(ID3D11Device* D3D11Device, ID3D11DeviceContext* ImmediateContext)

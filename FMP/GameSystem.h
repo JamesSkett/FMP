@@ -29,6 +29,8 @@ class Projectile;
 class Asset;
 class StateMachine;
 class Tile;
+class Mesh;
+class Scene_Node;
 
 class GameSystem
 {
@@ -82,6 +84,10 @@ private:
 	Text2D* m_text_fpsCount;
 	Text2D* m_text_monsterLOS;
 	Text2D* m_text_currentState;
+
+	Mesh* m_pMesh1;
+	Scene_Node* m_pRootNode;
+	Scene_Node* m_pNode1;
 
 	//vector objects
 	vector <Tile*> m_tileMap;

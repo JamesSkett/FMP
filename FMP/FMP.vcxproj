@@ -157,6 +157,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="Scene_Node.cpp" />
     <ClCompile Include="StateMachine.cpp" />
     <ClCompile Include="text2D.cpp" />
     <ClCompile Include="Tile.cpp" />
@@ -180,6 +181,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="Scene_Node.h" />
     <ClInclude Include="StateMachine.h" />
     <ClInclude Include="text2D.h" />
     <ClInclude Include="Tile.h" />
@@ -188,6 +190,7 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="AssetShader.hlsl" />
+    <FxCompile Include="model_shaders.hlsl" />
     <FxCompile Include="shaders.hlsl" />
     <FxCompile Include="text2D_shaders.hlsl" />
   </ItemGroup>

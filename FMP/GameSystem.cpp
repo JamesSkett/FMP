@@ -12,8 +12,8 @@
 #include "StateMachine.h"
 #include "CXBOXController.h"
 #include "Camera.h"
-#include <thread>
-
+#include "Mesh.h"
+#include "Scene_Node.h"
 
 //set up the renderer and main menu
 GameSystem::GameSystem()
@@ -143,7 +143,17 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 	}
 
 	//set up the main game when menu is done
-	SetupLevel();
+	//SetupLevel();
+
+	m_pMesh1 = new Mesh(Renderer::pD3DDevice, Renderer::pImmediateContext);
+	m_pMesh1->LoadObjModel("Assets/cube.obj");
+
+	m_pRootNode = new Scene_Node();
+	m_pNode1 = new Scene_Node();
+
+	m_pRootNode->AddChildNode(m_pNode1);
+
+	m_pNode1->SetModel(m_pMesh1);
 
 	float currentTime = 0;
 	float previousTime = 0;
@@ -175,49 +185,52 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 			float rgba_clear_colour[4] = { 0.1f, 0.1f, 0.1f, 1.0f };
 			Renderer::pImmediateContext->ClearRenderTargetView(Renderer::pBackBufferRTView, rgba_clear_colour);
 
-			XMMATRIX view, projection;
+			XMMATRIX identity, view, projection;
 
 			float w = m_screenWidth / m_cOrthographicSize;
 			float h = m_screenHeight / m_cOrthographicSize;
 
 			//projection = XMMatrixOrthographicLH(w, h, m_cNearClip, m_cFarClip);
 
+			identity = XMMatrixIdentity();
 			projection = XMMatrixPerspectiveFovLH(XMConvertToRadians(70.0f), m_screenWidth / m_screenHeight, 0.1f, 500.0f);
 			view = Renderer::camera->GetViewMatrix();
 
-			m_pPlayer->Update(XMFLOAT2(m_pMonster->GetXPos(), m_pMonster->GetYPos()), m_tileMap, m_deltaTime);
-			m_pMonster->Update(m_pPlayer, m_deltaTime);
+			m_pRootNode->Execute(&identity, &view, &projection);
 
-			if (m_pPlayer->GetWalkedThroughDoor())
-			{
-				m_doorSound = true;
-				m_soundWaveDoorOpen->SetPos(m_pPlayer->GetDoorPos().x, m_pPlayer->GetDoorPos().y);
-			}
+			//m_pPlayer->Update(XMFLOAT2(m_pMonster->GetXPos(), m_pMonster->GetYPos()), m_tileMap, m_deltaTime);
+			//m_pMonster->Update(m_pPlayer, m_deltaTime);
 
-			SoundWaveDoorOpen();
+			//if (m_pPlayer->GetWalkedThroughDoor())
+			//{
+			//	m_doorSound = true;
+			//	m_soundWaveDoorOpen->SetPos(m_pPlayer->GetDoorPos().x, m_pPlayer->GetDoorPos().y);
+			//}
 
-			m_stateMachine->RunStateMachine(m_pPlayer, m_pMonster, m_deltaTime);
+			//SoundWaveDoorOpen();
 
-			m_soundWaveWalk->SetPos(m_pPlayer->GetXPos(), m_pPlayer->GetYPos());
-			m_soundWaveSprint->SetPos(m_pPlayer->GetXPos(), m_pPlayer->GetYPos());
+			//m_stateMachine->RunStateMachine(m_pPlayer, m_pMonster, m_deltaTime);
+
+			//m_soundWaveWalk->SetPos(m_pPlayer->GetXPos(), m_pPlayer->GetYPos());
+			//m_soundWaveSprint->SetPos(m_pPlayer->GetXPos(), m_pPlayer->GetYPos());
 
 
-			//if the monster is chasing the player
-			if (m_stateMachine->GetCurrentState() == "Chase")
-			{
-				//if the monster catches the player reset the positions and the state
-				//state probabilities DONT reset
-				if (m_pMonster->CollisionCheck(m_pPlayer))
-				{
-					m_pPlayer->Reset();
-					m_pMonster->Reset();
-					m_stateMachine->SetCurrentState(RANDOM_WANDER);
-				}
-			}
+			////if the monster is chasing the player
+			//if (m_stateMachine->GetCurrentState() == "Chase")
+			//{
+			//	//if the monster catches the player reset the positions and the state
+			//	//state probabilities DONT reset
+			//	if (m_pMonster->CollisionCheck(m_pPlayer))
+			//	{
+			//		m_pPlayer->Reset();
+			//		m_pMonster->Reset();
+			//		m_stateMachine->SetCurrentState(RANDOM_WANDER);
+			//	}
+			//}
 
-			DrawLevel(view, projection);
+			//DrawLevel(view, projection);
 
-			UpdateText();
+			//UpdateText();
 
 
 			renderer->RenderFrame();
@@ -271,14 +284,14 @@ void GameSystem::GetKeyboardInput()
 {
 	if (renderer->IsKeyPressed(DIK_LSHIFT))
 	{
-		m_pPlayer->SprintOn();
-		sprinting = true;
+		//m_pPlayer->SprintOn();
+		//sprinting = true;
 	}
 
 	if (!renderer->IsKeyPressed(DIK_LSHIFT))
 	{
-		m_pPlayer->SprintOff();
-		sprinting = false;
+		//m_pPlayer->SprintOff();
+		//sprinting = false;
 	}
 
 	if (renderer->IsKeyPressed(DIK_W))
@@ -339,8 +352,8 @@ void GameSystem::GetKeyboardInput()
 	}
 	else
 	{
-		m_soundWaveWalk->SetScale(c_soundZeroScale);
-		m_soundWaveSprint->SetScale(c_soundZeroScale);
+		//m_soundWaveWalk->SetScale(c_soundZeroScale);
+		//m_soundWaveSprint->SetScale(c_soundZeroScale);
 	}
 
 	if (renderer->IsKeyPressed(DIK_1))
