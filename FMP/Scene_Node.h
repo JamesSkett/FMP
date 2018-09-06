@@ -81,7 +81,7 @@ public:
 protected:
 	Mesh* m_pModel;
 	ObjFileModel* m_pObject;
-	vector <Scene_Node*> m_children;
+	std::vector <Scene_Node*> m_children;
 
 	float m_x, m_y, m_z;
 	float m_xangle, m_yangle, m_zangle;
