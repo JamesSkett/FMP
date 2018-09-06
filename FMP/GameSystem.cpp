@@ -142,17 +142,8 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 		return 0;
 	}
 
-	//run the main menu
-	//m_mainMenu->StartMenu(Renderer::m_pD3DDevice, Renderer::m_pImmediateContext, renderer);
-
 	//set up the main game when menu is done
 	SetupLevel();
-
-	/*Pathfinding* pathfinder = new Pathfinding(m_tileMap);
-
-
-	vector <XMFLOAT2> waypoints;
-	int waypontNum = 0;*/
 
 	float currentTime = 0;
 	float previousTime = 0;

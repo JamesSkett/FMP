@@ -150,7 +150,9 @@
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Math.cpp" />
+    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Monster.cpp" />
+    <ClCompile Include="objfilemodel.cpp" />
     <ClCompile Include="Pathfinding.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Projectile.cpp" />
@@ -171,7 +173,9 @@
     <ClInclude Include="GameSystem.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="Math.h" />
+    <ClInclude Include="Mesh.h" />
     <ClInclude Include="Monster.h" />
+    <ClInclude Include="objfilemodel.h" />
     <ClInclude Include="Pathfinding.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Projectile.h" />

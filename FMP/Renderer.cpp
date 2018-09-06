@@ -236,7 +236,7 @@ void Renderer::RenderFrame()
 }
 
 
-//sets up the camera skybox and frame counter
+//sets up the camera
 HRESULT Renderer::InitialiseGraphics(void)
 {
 	camera = new Camera(0.f, 0.f, 0.5f, 0.f);

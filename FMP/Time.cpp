@@ -29,21 +29,6 @@ double Time::GetTime()
 	return double(currentTime.QuadPart - CounterStart) / countsPerSecond;
 }
 
-float Time::GetDeltaTime()
-{
-	LARGE_INTEGER currentTime;
-	__int64 tickCount;
-	QueryPerformanceCounter(&currentTime);
-
-	tickCount = currentTime.QuadPart - frameTimeOld;
-	frameTimeOld = currentTime.QuadPart;
-
-	if (tickCount < 0.0f)
-		tickCount = 0;
-
-	return float(tickCount) / (float)countsPerSecond;
-}
-
 int Time::GetFPS()
 {
 	frameCount++;

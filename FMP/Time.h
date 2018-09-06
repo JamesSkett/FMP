@@ -19,7 +19,6 @@ public:
 
 	void StartTimer();
 	double GetTime();
-	float GetDeltaTime();
 	int GetFPS();
 
 	
@@ -27,7 +26,6 @@ public:
 private:
 	float currentTime = 0;
 	float previousTime = 0;
-	float deltaTime = 0;
 
 	double countsPerSecond = 0.0;
 	__int64 CounterStart = 0;
