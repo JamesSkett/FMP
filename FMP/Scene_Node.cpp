@@ -22,47 +22,47 @@ Scene_Node::~Scene_Node()
 }
 
 //Getters
-float Scene_Node::GetXPos()
+float Scene_Node::GetXPos() const
 {
 	return m_x;
 }
-float Scene_Node::GetYPos()
+float Scene_Node::GetYPos() const
 {
 	return m_y;
 }
-float Scene_Node::GetZPos()
+float Scene_Node::GetZPos() const
 {
 	return m_z;
 }
-float Scene_Node::GetXAngle()
+float Scene_Node::GetXAngle() const
 {
 	return m_xangle;
 }
-float Scene_Node::GetYAngle()
+float Scene_Node::GetYAngle() const
 {
 	return m_yangle;
 }
-float Scene_Node::GetZAngle()
+float Scene_Node::GetZAngle() const
 {
 	return m_zangle;
 }
 
-float Scene_Node::GetScale()
+float Scene_Node::GetScale() const
 {
 	return m_scale;
 }
 
-float Scene_Node::GetXDir()
+float Scene_Node::GetXDir() const
 {
 	return m_dx;
 }
 
-float Scene_Node::GetYDir()
+float Scene_Node::GetYDir() const
 {
 	return m_dy;
 }
 
-float Scene_Node::GetZDir()
+float Scene_Node::GetZDir() const
 {
 	return m_dz;
 }

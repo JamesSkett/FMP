@@ -86,8 +86,9 @@ private:
 	Text2D* m_text_currentState;
 
 	Mesh* m_pMesh1;
+	Mesh* m_pMesh2;
 	Scene_Node* m_pRootNode;
-	Scene_Node* m_pNode1;
+	//Scene_Node* m_pNode1;
 
 	//vector objects
 	vector <Tile*> m_tileMap;

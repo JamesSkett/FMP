@@ -15,10 +15,12 @@
 #include <DirectXMath.h>
 using namespace DirectX;
 
-class Tile
+#include "Scene_Node.h"
+
+class Tile : public Scene_Node
 {
 public:
-	Tile(XMFLOAT4 colour, float x, float y, float z, float scale, float width, float height, int index);
+	Tile(float x, float y, float z, float scale, float width, float height, int index);
 	~Tile();
 
 	void Draw(XMMATRIX view, XMMATRIX projection);
@@ -27,11 +29,6 @@ public:
 	void GetParameters(float &x, float &y, float &width, float &height);
 	//Get the index value of the current tile 1 = floor 2 = wall 3 = door
 	int GetIndex();
-
-	//get the x position
-	float GetXPos();
-	//get the y position
-	float GetYPos();
 
 	//check to see if the tile is walkable or not
 	bool GetIsWalkable();
@@ -61,18 +58,12 @@ protected:
 	ID3D11InputLayout*		m_pInputLayout;
 	ID3D11Buffer*			m_pConstantBuffer0;
 
-	float m_xPos, m_yPos, m_zPos, m_scale;
-	float m_xAngle, m_yAngle, m_zAngle;
-
 	float m_w, m_h;
 
 	bool m_walkable;
 
 	int m_index;
 
-	int m_gValue;
-	int m_hValue;
-	int m_fValue;
 };
 
 

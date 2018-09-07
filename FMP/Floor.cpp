@@ -2,8 +2,8 @@
 
 
 
-Floor::Floor(XMFLOAT4 colour, float x, float y, float z, float scale, float width, float height, int index) :
-	Tile(colour, x, y, z, scale, width, height, index)
+Floor::Floor(char* texturefile, float x, float y, float z, float scale, float width, float height, int index) :
+	Tile(x, y, z, scale, width, height, index)
 {
 	m_walkable = true;
 }

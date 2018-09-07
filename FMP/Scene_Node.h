@@ -31,16 +31,16 @@ public:
 	~Scene_Node();
 
 	//Getters
-	float GetXPos();
-	float GetYPos();
-	float GetZPos();
-	float GetXAngle();
-	float GetYAngle();
-	float GetZAngle();
-	float GetScale();
-	float GetXDir();
-	float GetYDir();
-	float GetZDir();
+	float GetXPos() const;
+	float GetYPos() const;
+	float GetZPos() const;
+	float GetXAngle() const;
+	float GetYAngle() const;
+	float GetZAngle() const;
+	float GetScale() const;
+	float GetXDir() const;
+	float GetYDir() const;
+	float GetZDir() const;
 
 	//Setters
 	void SetXPos(float x);

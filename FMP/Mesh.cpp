@@ -43,8 +43,10 @@ int Mesh::LoadObjModel(char* fileName)
 
 	m_pObject = new ObjFileModel(fileName, m_pD3D11Device, m_pImmediateContext);
 
-	if (m_pObject->filename == "FILE NOT LOADED") return S_FALSE;
-
+	if (m_pObject->filename == "FILE NOT LOADED")
+	{
+		return S_FALSE;
+	}
 	
 
 	HRESULT hr = S_OK;

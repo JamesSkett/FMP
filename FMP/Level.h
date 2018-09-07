@@ -16,7 +16,6 @@ class Tile;
 class Player;
 class Monster;
 
-using namespace std;
 using namespace DirectX;
 
 class Level
@@ -28,10 +27,10 @@ public:
 	//load the level data from a text file
 	void LoadLevelData(const char* filePath);
 	//create and position the tiles 
-	void SetUpLevelLayout(vector <Tile*> &tilemap, Player* &player, Monster* &monster);
+	void SetUpLevelLayout(std::vector <Tile*> &tilemap, Player* &player, Monster* &monster);
 
 private:
-	vector <string> m_vlevelData;
+	std::vector <std::string> m_vlevelData;
 	
 
 	float m_tileOffset = 2.25f;

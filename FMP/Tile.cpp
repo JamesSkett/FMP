@@ -2,20 +2,21 @@
 #include "Renderer.h"
 #include "Player.h"
 
-Tile::Tile(XMFLOAT4 colour, float x, float y, float z, float scale, float width, float height, int index) 
+Tile::Tile(float x, float y, float z, float scale, float width, float height, int index) 
 {
-	m_xPos = x;
-	m_yPos = y;
-	m_zPos = z;
+	m_x = x;
+	m_y = y;
+	m_z = z;
 	m_scale = scale;
 	m_w = width;
 	m_h = height;
 	m_index = index;
 
-	if (FAILED(CreateVertices(colour)))
+
+	/*if (FAILED(CreateVertices(colour)))
 	{
 		DXTRACE_MSG("Failed to Initialise Graphics");
-	}
+	}*/
 }
 
 
@@ -34,11 +35,11 @@ void Tile::Draw(XMMATRIX view, XMMATRIX projection)
 
 	world = XMMatrixScaling(m_scale, m_scale, m_scale);
 
-	world *= XMMatrixRotationX(XMConvertToRadians(m_xAngle));
-	world *= XMMatrixRotationX(XMConvertToRadians(m_xAngle));
-	world *= XMMatrixRotationX(XMConvertToRadians(m_xAngle));
+	world *= XMMatrixRotationX(XMConvertToRadians(m_xangle));
+	world *= XMMatrixRotationX(XMConvertToRadians(m_xangle));
+	world *= XMMatrixRotationX(XMConvertToRadians(m_xangle));
 
-	world *= XMMatrixTranslation(m_xPos, m_yPos, m_zPos);
+	world *= XMMatrixTranslation(m_x, m_y, m_z);
 
 
 
@@ -84,8 +85,8 @@ void Tile::Draw(XMMATRIX view, XMMATRIX projection)
 
 void Tile::GetParameters(float &x, float &y, float &width, float &height)
 {
-	x = m_xPos;
-	y = m_yPos;
+	x = m_x;
+	y = m_y;
 	width = m_w;
 	height = m_h;
 }
@@ -93,16 +94,6 @@ void Tile::GetParameters(float &x, float &y, float &width, float &height)
 int Tile::GetIndex()
 {
 	return m_index;
-}
-
-float Tile::GetXPos()
-{
-	return m_xPos;
-}
-
-float Tile::GetYPos()
-{
-	return m_yPos;
 }
 
 bool Tile::GetIsWalkable()

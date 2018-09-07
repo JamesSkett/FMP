@@ -6,7 +6,6 @@
 #include "Tile.h"
 #include "Player.h"
 #include "Monster.h"
-#include "Projectile.h"
 
 #include <fstream>
 
@@ -25,7 +24,7 @@ Level::~Level()
 void Level::LoadLevelData(const char* filePath)
 {
 	//Loads the level
-	ifstream file;
+	std::ifstream file;
 
 	//Open the file and quit if it fails to open
 	file.open(filePath);
@@ -36,7 +35,7 @@ void Level::LoadLevelData(const char* filePath)
 		exit(1);
 	}
 
-	string line;
+	std::string line;
 
 	//Loop through the entire file, getting each row and
 	//putting it in the line string.
@@ -50,7 +49,7 @@ void Level::LoadLevelData(const char* filePath)
 
 }
 
-void Level::SetUpLevelLayout(vector <Tile*> &tilemap, Player* &player, Monster* &monster)
+void Level::SetUpLevelLayout(std::vector <Tile*> &tilemap, Player* &player, Monster* &monster)
 {
 	char tile;
 	//loops through the _levelData vector and processes each tile
@@ -68,21 +67,21 @@ void Level::SetUpLevelLayout(vector <Tile*> &tilemap, Player* &player, Monster* 
 			switch (tile)
 			{
 			case '#': //create a wall tile
-				tilemap.push_back(new Wall(Renderer::colour.DarkSlateGray, yPos / m_tileOffset, -xPos / m_tileOffset, 5, 0.25f, 0.34f, 0.34f, 2));
+				tilemap.push_back(new Wall("Assets/red_texture.bmp", yPos / m_tileOffset, 0.f, -xPos / m_tileOffset, 0.23f, 0.34f, 0.34f, 2));
 				break;
 			case '.': //create a floor tile
-				tilemap.push_back(new Floor(Renderer::colour.LightGray, yPos / m_tileOffset, -xPos / m_tileOffset, 5, 0.25f, 0.29f, 0.29f, 1));
+				tilemap.push_back(new Floor("Assets/grey_texture.bmp", yPos / m_tileOffset, -0.4f, -xPos / m_tileOffset, 0.23f, 0.29f, 0.29f, 1));
 				break;
 			case 'd': //create a floor tile
-				tilemap.push_back(new Floor(Renderer::colour.Firebrick, yPos / m_tileOffset, -xPos / m_tileOffset, 5, 0.25f, 0.29f, 0.29f, 3));
+				tilemap.push_back(new Floor("Assets/grey_texture.bmp", yPos / m_tileOffset, -0.4f, -xPos / m_tileOffset, 0.23f, 0.29f, 0.29f, 3));
 				break;
 			case '@':
-				tilemap.push_back(new Floor(Renderer::colour.LightGray, yPos / m_tileOffset, -xPos / m_tileOffset, 6, 0.25f, 0.29f, 0.29f, 1));
-				player = new Player(Renderer::colour.Fuchsia, yPos / m_tileOffset, -xPos / m_tileOffset, 1, 0.125f, 0.245f, 0.245f);
+				tilemap.push_back(new Floor("Assets/grey_texture.bmp", yPos / m_tileOffset, -0.4f, -xPos / m_tileOffset, 0.23f, 0.29f, 0.29f, 1));
+				player = new Player(Renderer::colour.Fuchsia, yPos / m_tileOffset, -xPos / m_tileOffset, 10.f, 0.125f, 0.245f, 0.245f);
 				break;
 			case 'M':
-				tilemap.push_back(new Floor(Renderer::colour.LightGray, yPos / m_tileOffset, -xPos / m_tileOffset, 6, 0.25f, 0.29f, 0.29f, 1));
-				monster = new Monster(Renderer::colour.Black, yPos / m_tileOffset, -xPos / m_tileOffset, 1, 0.125f, 0.245f, 0.245f);
+				tilemap.push_back(new Floor("Assets/grey_texture.bmp", yPos / m_tileOffset, -0.4f, -xPos / m_tileOffset, 0.23f, 0.29f, 0.29f, 1));
+				monster = new Monster(Renderer::colour.Black, yPos / m_tileOffset, -xPos / m_tileOffset, 10.f, 0.125f, 0.245f, 0.245f);
 				break;
 			default: //If it gets here, tile hasnt been registered the, so print out a warning
 				char s[128];

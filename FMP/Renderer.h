@@ -70,6 +70,7 @@ public:
 	static ID3D11RenderTargetView* pBackBufferRTView;
 	static ID3D11BlendState*       pAlphaBlendEnable;
 	static ID3D11BlendState*       pAlphaBlendDisable;
+	static ID3D11DepthStencilView* m_pzBuffer;
 	static Colour colour;
 	static int s_FogOfWar;
 
@@ -103,7 +104,6 @@ private:
 	ID3D11InputLayout*		m_pInputLayout;
 	ID3D11Buffer*			m_pConstantBuffer0;
 
-	ID3D11DepthStencilView* m_pzBuffer;
 	ID3D11ShaderResourceView* m_pTexture0;
 	ID3D11SamplerState* m_pSampler0;
 
