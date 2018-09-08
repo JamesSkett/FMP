@@ -17,16 +17,15 @@
 using namespace DirectX;
 
 #include <vector>
+#include "Scene_Node.h"
 
-using namespace std;
-
-#include "Tile.h"
+class Tile;
 class Asset;
 
-class Entity
+class Entity : public Scene_Node
 {
 public:
-	Entity(XMFLOAT4 colour, float x, float y, float z, float scale, float width, float height);
+	Entity(float x, float y, float z, float scale, float width, float height);
 	~Entity();
 
 	void Draw(XMMATRIX view, XMMATRIX projection);
@@ -40,9 +39,9 @@ public:
 	//Get the value of m_doorPos which is set in CollisionCheck()
 	XMFLOAT2 GetDoorPos();
 	//Check collitions with the walls //Returns true/false
-	bool CollisionCheck(vector<Tile*> tilemap);
+	bool CollisionCheck(std::vector<Tile*> tilemap);
 	//check collisions with the monster //Returns true/false
-	bool CollisionCheck(Entity * colObject);
+	bool CollisionCheck(Entity* colObject);
 	//Set eh entities view cone
 	void SetViewCone(Asset* viewCone);
 	//reset the entities to their start pos
@@ -73,14 +72,9 @@ protected:
 	ID3D11InputLayout*		m_pInputLayout;
 	ID3D11Buffer*			m_pConstantBuffer0;
 
-	float m_xPos, m_yPos, m_zPos, m_scale;
-	float m_rotation;
 	float m_width, m_height;
 
 	XMFLOAT2 m_startPos;
-
-	float m_dirX = 0.0f;
-	float m_dirY = 0.0f;
 
 	float m_screenSpaceX;
 	float m_screenSpaceY;

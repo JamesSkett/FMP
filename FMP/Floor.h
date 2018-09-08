@@ -12,7 +12,7 @@ class Floor :
 	public Tile
 {
 public:
-	Floor(char* texturefile, float x, float y, float z, float scale, float width, float height, int index);
+	Floor(float x, float y, float z, float scale, float width, float height, float depth, int index);
 	~Floor();
 
 	

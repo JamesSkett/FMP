@@ -20,7 +20,7 @@ using namespace DirectX;
 class Tile : public Scene_Node
 {
 public:
-	Tile(float x, float y, float z, float scale, float width, float height, int index);
+	Tile(float x, float y, float z, float scale, float width, float height, float depth, int index);
 	~Tile();
 
 	void Draw(XMMATRIX view, XMMATRIX projection);

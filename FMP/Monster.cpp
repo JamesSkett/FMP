@@ -20,8 +20,8 @@ int Monster::s_search_to_chase_or_flee[2]    = { 25, 75 };
 int Monster::s_sneak_to_chase_or_flee[2]     = { 15, 85 };
 int Monster::s_sneak_to_search_or_random[2]  = { 15, 85 };
 
-Monster::Monster(XMFLOAT4 colour, float x, float y, float z, float scale, float width, float height) :
-	Entity(colour, x, y, z, scale, width, height)
+Monster::Monster(float x, float y, float z, float scale, float width, float height) :
+	Entity(x, y, z, scale, width, height)
 {
 
 }
@@ -46,21 +46,11 @@ void Monster::Update(Player* player, float deltaTime)
 	}
 	else m_viewCone->SetCanDraw(false);
 	
-	m_viewCone->SetPos(m_xPos, m_yPos);
-	m_viewCone->SetRotation(m_rotation);
+	m_viewCone->SetPos(m_x, m_y);
+	//m_viewCone->SetRotation(m_rotation);
 
 	LineOfSightCheck(XMFLOAT2(player->GetXPos(), player->GetYPos()));
 
-}
-
-float Monster::GetXPos() const
-{
-	return m_xPos;
-}
-
-float Monster::GetYPos() const
-{
-	return m_yPos;
 }
 
 bool Monster::GetPlayerInSight() const
@@ -71,11 +61,6 @@ bool Monster::GetPlayerInSight() const
 bool Monster::GetIsSearching() const
 {
 	return m_isSearching;
-}
-
-float Monster::GetRotation() const
-{
-	return m_rotation;
 }
 
 bool Monster::GetSoundHeard() const
@@ -91,33 +76,33 @@ XMFLOAT2 Monster::GetLastPlayerPos() const
 
 bool Monster::MoveTo(float x, float y, float deltaTime)
 {
-	XMFLOAT2 oldPos = { m_xPos, m_yPos };
+	XMFLOAT2 oldPos = { m_x, m_y };
 	
 	
 
-	float distance = Math::Distance(XMFLOAT2(m_xPos, m_yPos), XMFLOAT2(x, y));
+	float distance = Math::Distance(XMFLOAT2(m_x, m_y), XMFLOAT2(x, y));
 
 	if (distance < 0.1) return true;
 
-	m_dirX /= distance;
-	m_dirY /= distance;
+	m_dx /= distance;
+	m_dy /= distance;
 
-	m_xPos += (m_dirX * m_speed) * deltaTime;
+	m_x += (m_dx * m_speed) * deltaTime;
 	if (CollisionCheck(m_tileMap))
 	{
-		m_xPos = oldPos.x;
+		m_x = oldPos.x;
 	}
 
-	m_yPos += (m_dirY * m_speed) * deltaTime;
+	m_y += (m_dy * m_speed) * deltaTime;
 	if (CollisionCheck(m_tileMap))
 	{
-		m_yPos = oldPos.y;
+		m_y = oldPos.y;
 	}
 
-	m_rotation = -atan2f((x - m_xPos), (y - m_yPos));
+	//m_rotation = -atan2f((x - m_x), (y - m_y));
 
-	m_dirX = x - m_xPos;
-	m_dirY = y - m_yPos;
+	m_dx = x - m_x;
+	m_dy = y - m_y;
 
 	
 	return false;
@@ -143,11 +128,11 @@ bool Monster::LineOfSightCheck(XMFLOAT2 targetPos)
 {
 
 	//get the direction the monster is looking
-	float dirX = cosf(m_rotation + (XM_PI/2.f));
-	float dirY = sinf(m_rotation + (XM_PI/2.f));
+	float dirX = cosf(m_xangle + (XM_PI/2.f));
+	float dirY = sinf(m_yangle + (XM_PI/2.f));
 
 	//get the direction the player is from the monster
-	XMVECTOR dir = XMVector2Normalize(XMVectorSet(targetPos.x - m_xPos, targetPos.y - m_yPos, 0, 0));
+	XMVECTOR dir = XMVector2Normalize(XMVectorSet(targetPos.x - m_x, targetPos.y - m_y, 0, 0));
 
 	//calculate the angle the angle based on the facing direction
 	float angle = (float)acos(Math::Dot(XMFLOAT2(dirX, dirY), XMFLOAT2(XMVectorGetX(dir), XMVectorGetY(dir))));
@@ -160,10 +145,10 @@ bool Monster::LineOfSightCheck(XMFLOAT2 targetPos)
 	}
 
 	//get the direction from monster to player
-	float x = targetPos.x - m_xPos;
-	float y = targetPos.y - m_yPos;
+	float x = targetPos.x - m_x;
+	float y = targetPos.y - m_y;
 	//calculate the distance between the two
-	float length = Math::Distance(XMFLOAT2(m_xPos, m_yPos), targetPos);
+	float length = Math::Distance(XMFLOAT2(m_x, m_y), targetPos);
 	if (!length)
 	{
 		m_playerInSight = true;
@@ -180,8 +165,8 @@ bool Monster::LineOfSightCheck(XMFLOAT2 targetPos)
 	float unitX = x / length;
 	float unitY = y / length;
 	//reset the x and y values
-	x = m_xPos;
-	y = m_yPos;
+	x = m_x;
+	y = m_y;
 	//while the length is greater than 0.1
 	while(length > 0.1f)
 	{
@@ -207,7 +192,7 @@ bool Monster::LineOfSightCheck(XMFLOAT2 targetPos)
 
 void Monster::CheckHearing(XMFLOAT2 sourcePos, float radius)
 {
-	float distance = Math::Distance(XMFLOAT2(m_xPos, m_yPos), sourcePos);
+	float distance = Math::Distance(XMFLOAT2(m_x, m_y), sourcePos);
 
 	if (distance < radius)
 	{
@@ -249,7 +234,7 @@ void Monster::RandomWander(float deltaTime)
 
 			m_waypoints.clear();
 			m_waypointNum = 0;
-			m_waypoints = m_pathfinder->FindPath(XMFLOAT2(m_xPos, m_yPos), XMFLOAT2(m_tileMap[randTileNum]->GetXPos(), m_tileMap[randTileNum]->GetYPos()));
+			m_waypoints = m_pathfinder->FindPath(XMFLOAT2(m_x, m_y), XMFLOAT2(m_tileMap[randTileNum]->GetXPos(), m_tileMap[randTileNum]->GetYPos()));
 		}
 	}
 	
@@ -300,7 +285,7 @@ void Monster::Search(XMFLOAT2 playerPos, float deltaTime)
 		}
 		m_waypoints.clear();
 		m_waypointNum = 0;
-		m_waypoints = m_pathfinder->FindPath(XMFLOAT2(m_xPos, m_yPos), playerPos);
+		m_waypoints = m_pathfinder->FindPath(XMFLOAT2(m_x, m_y), playerPos);
 		
 	}
 
@@ -311,7 +296,7 @@ void Monster::Sneak(Player* player, float deltaTime)
 	//set the colour of the view cone to show state change
 	m_viewCone->SetColour(Renderer::colour.Blue);
 	//calculate the distance between the player and monster
-	float distance = Math::Distance(XMFLOAT2(m_xPos, m_yPos), XMFLOAT2(player->GetXPos(), player->GetYPos()));
+	float distance = Math::Distance(XMFLOAT2(m_x, m_y), XMFLOAT2(player->GetXPos(), player->GetYPos()));
 
 	//if the distance is between 3 and 3.5 move towards the player
 	if (distance < 3.5f && distance > 3 && m_playerInSight)
@@ -357,7 +342,7 @@ void Monster::Sneak(Player* player, float deltaTime)
 			}
 			m_waypoints.clear();
 			m_waypointNum = 0;
-			m_waypoints = m_pathfinder->FindPath(XMFLOAT2(m_xPos, m_yPos), player->GetDoorPos());
+			m_waypoints = m_pathfinder->FindPath(XMFLOAT2(m_x, m_y), player->GetDoorPos());
 
 		}
 		else if (!m_playerInSight || (m_playerInSight && distance > 3.5f))
@@ -384,7 +369,7 @@ void Monster::Sneak(Player* player, float deltaTime)
 				}
 				m_waypoints.clear();
 				m_waypointNum = 0;
-				m_waypoints = m_pathfinder->FindPath(XMFLOAT2(m_xPos, m_yPos), XMFLOAT2(player->GetXPos(), player->GetYPos()));
+				m_waypoints = m_pathfinder->FindPath(XMFLOAT2(m_x, m_y), XMFLOAT2(player->GetXPos(), player->GetYPos()));
 			}
 		}
 	}
@@ -425,8 +410,8 @@ void Monster::Flee(Player* player, float deltaTime)
 			currentDistance = Math::Distance(XMFLOAT2(startPosX, startPosY), XMFLOAT2(tilePosX, tilePosY));
 
 			//get the direction the player is looking
-			float dirX = cosf(player->GetRotation() + (XM_PI / 2.f));
-			float dirY = sinf(player->GetRotation() + (XM_PI / 2.f));
+			float dirX = cosf(player->GetXAngle() + (XM_PI / 2.f));
+			float dirY = sinf(player->GetYAngle() + (XM_PI / 2.f));
 
 			//get the direction the tile is from the player
 			XMVECTOR dir = XMVector2Normalize(XMVectorSet(tilePosX - startPosX, tilePosY - startPosY, 0, 0));
@@ -443,7 +428,7 @@ void Monster::Flee(Player* player, float deltaTime)
 				}
 				m_waypoints.clear();
 				m_waypointNum = 0;
-				m_waypoints = m_pathfinder->FindPath(XMFLOAT2(m_xPos, m_yPos), XMFLOAT2(m_tileMap[randTileNum]->GetXPos(), m_tileMap[randTileNum]->GetYPos()));
+				m_waypoints = m_pathfinder->FindPath(XMFLOAT2(m_x, m_y), XMFLOAT2(m_tileMap[randTileNum]->GetXPos(), m_tileMap[randTileNum]->GetYPos()));
 			}
 		}
 	}
@@ -460,7 +445,7 @@ bool Monster::LookAround(float deltaTime)
 	}
 	m_timer -= deltaTime;
 
-	m_rotation += 30 * deltaTime;
+	//m_rotation += 30 * deltaTime;
 
 	return false;
 }
@@ -494,13 +479,13 @@ bool Monster::CheckTile(XMFLOAT2 pos)
 XMFLOAT2 Monster::GetClosestDoorPos()
 {
 	float currentDistance;
-	float minDistance = Math::Distance(XMFLOAT2(m_xPos, m_yPos), XMFLOAT2(m_tileMap[0]->GetXPos(), m_tileMap[0]->GetYPos()));
+	float minDistance = Math::Distance(XMFLOAT2(m_x, m_y), XMFLOAT2(m_tileMap[0]->GetXPos(), m_tileMap[0]->GetYPos()));
 	Tile* currentTile = m_tileMap[0];
 	for (unsigned int i = 0; i < m_tileMap.size(); i++)
 	{
 		if (m_tileMap[i]->GetIndex() == 3)
 		{
-			currentDistance = Math::Distance(XMFLOAT2(m_xPos, m_yPos), XMFLOAT2(m_tileMap[i]->GetXPos(), m_tileMap[i]->GetYPos()));
+			currentDistance = Math::Distance(XMFLOAT2(m_x, m_y), XMFLOAT2(m_tileMap[i]->GetXPos(), m_tileMap[i]->GetYPos()));
 
 			if (currentDistance < minDistance)
 			{

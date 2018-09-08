@@ -67,21 +67,21 @@ void Level::SetUpLevelLayout(std::vector <Tile*> &tilemap, Player* &player, Mons
 			switch (tile)
 			{
 			case '#': //create a wall tile
-				tilemap.push_back(new Wall("Assets/red_texture.bmp", yPos / m_tileOffset, 0.f, -xPos / m_tileOffset, 0.23f, 0.34f, 0.34f, 2));
+				tilemap.push_back(new Wall(yPos / m_tileOffset, 0.f, -xPos / m_tileOffset, 0.23f, 0.34f, 0.34f, 0.34f, 2));
 				break;
 			case '.': //create a floor tile
-				tilemap.push_back(new Floor("Assets/grey_texture.bmp", yPos / m_tileOffset, -0.4f, -xPos / m_tileOffset, 0.23f, 0.29f, 0.29f, 1));
+				tilemap.push_back(new Floor(yPos / m_tileOffset, -0.22f, -xPos / m_tileOffset, 0.23f, 0.29f, 0.29f, 0.29f, 1));
 				break;
 			case 'd': //create a floor tile
-				tilemap.push_back(new Floor("Assets/grey_texture.bmp", yPos / m_tileOffset, -0.4f, -xPos / m_tileOffset, 0.23f, 0.29f, 0.29f, 3));
+				tilemap.push_back(new Floor(yPos / m_tileOffset, -0.22f, -xPos / m_tileOffset, 0.23f, 0.29f, 0.29f, 0.29f, 3));
 				break;
 			case '@':
-				tilemap.push_back(new Floor("Assets/grey_texture.bmp", yPos / m_tileOffset, -0.4f, -xPos / m_tileOffset, 0.23f, 0.29f, 0.29f, 1));
-				player = new Player(Renderer::colour.Fuchsia, yPos / m_tileOffset, -xPos / m_tileOffset, 10.f, 0.125f, 0.245f, 0.245f);
+				tilemap.push_back(new Floor(yPos / m_tileOffset, -0.22f, -xPos / m_tileOffset, 0.23f, 0.29f, 0.29f, 0.29f, 1));
+				player = new Player(yPos / m_tileOffset, -0.1f, -xPos / m_tileOffset, 0.125f, 0.245f, 0.245f);
 				break;
 			case 'M':
-				tilemap.push_back(new Floor("Assets/grey_texture.bmp", yPos / m_tileOffset, -0.4f, -xPos / m_tileOffset, 0.23f, 0.29f, 0.29f, 1));
-				monster = new Monster(Renderer::colour.Black, yPos / m_tileOffset, -xPos / m_tileOffset, 10.f, 0.125f, 0.245f, 0.245f);
+				tilemap.push_back(new Floor(yPos / m_tileOffset, -0.22f, -xPos / m_tileOffset, 0.23f, 0.29f, 0.29f, 0.29f, 1));
+				monster = new Monster(yPos / m_tileOffset, -xPos / m_tileOffset, 10.f, 0.125f, 0.245f, 0.245f);
 				break;
 			default: //If it gets here, tile hasnt been registered the, so print out a warning
 				char s[128];

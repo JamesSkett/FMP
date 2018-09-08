@@ -2,7 +2,7 @@
 #include "Renderer.h"
 #include "Player.h"
 
-Tile::Tile(float x, float y, float z, float scale, float width, float height, int index) 
+Tile::Tile(float x, float y, float z, float scale, float width, float height, float depth, int index) 
 {
 	m_x = x;
 	m_y = y;

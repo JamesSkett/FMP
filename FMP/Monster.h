@@ -23,22 +23,16 @@ class Asset;
 class Monster : public Entity
 {
 public:
-	Monster(XMFLOAT4 colour, float x, float y, float z, float scale, float width, float height);
+	Monster(float x, float y, float z, float scale, float width, float height);
 	~Monster();
 
 	//Updates the monster 
 	void Update(Player* player, float deltaTime);
 
-	//Gets the current x position value
-	float GetXPos() const;
-	//Gets the current y position value
-	float GetYPos() const;
 	//Get the value of m_playerInSight
 	bool GetPlayerInSight() const;
 	//Get the value of m_isSearching
 	bool GetIsSearching() const;
-	//Gets the current rotation of the monster
-	float GetRotation() const;
 	//Gets the value of m_soundHeard
 	bool GetSoundHeard() const;
 	//Gets the last location the player was seen.

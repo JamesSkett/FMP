@@ -2,8 +2,8 @@
 #include "Renderer.h"
 #include "Tile.h"
 
-Projectile::Projectile(XMFLOAT4 colour, float x, float y, float z, float scale, float width, float height):
-	Entity(colour, x, y, x, scale, width, height)
+Projectile::Projectile(float x, float y, float z, float scale, float width, float height):
+	Entity(x, y, x, scale, width, height)
 {
 
 }
@@ -19,8 +19,8 @@ void Projectile::Update(float deltaTime)
 {
 	if (m_isFired)
 	{
-		m_xPos += (-m_dirX * m_velocity) * deltaTime;
-		m_yPos += (m_dirY * m_velocity) * deltaTime;
+		m_x += (-m_dx * m_velocity) * deltaTime;
+		m_y += (m_dy * m_velocity) * deltaTime;
 		
 	}
 
@@ -33,9 +33,9 @@ void Projectile::Draw(XMMATRIX view, XMMATRIX projection)
 
 	world = XMMatrixScaling(m_scale, m_scale, m_scale);
 
-	world *= XMMatrixRotationZ(m_rotation);
+	//world *= XMMatrixRotationZ(m_rotation);
 
-	world *= XMMatrixTranslation(m_xPos, m_yPos, m_zPos);
+	world *= XMMatrixTranslation(m_x, m_y, m_z);
 
 
 
@@ -74,32 +74,6 @@ void Projectile::Draw(XMMATRIX view, XMMATRIX projection)
 bool Projectile::GetIsFired()
 {
 	return m_isFired;
-}
-
-void Projectile::SetXPos(float x)
-{
-	m_xPos = x;
-}
-
-void Projectile::SetYPos(float y)
-{
-	m_yPos = y;
-}
-
-void Projectile::SetIsFired(bool isFired)
-{
-	m_isFired = isFired;
-}
-
-void Projectile::SetDirection(float dx, float dy)
-{
-	m_dirX = dx;
-	m_dirY = dy;
-}
-
-void Projectile::SetRotation(float angle)
-{
-	m_rotation = angle;
 }
 
 

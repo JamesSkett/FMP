@@ -153,12 +153,16 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 	m_text_fpsCount = new Text2D(FONT_FILE_PATH, Renderer::pD3DDevice, Renderer::pImmediateContext);
 
 	m_pMesh1 = new Mesh(Renderer::pD3DDevice, Renderer::pImmediateContext);
-	m_pMesh1->LoadObjModel("Assets/cube.obj");
+	m_pMesh1->LoadObjModel("Assets/floor.obj");
 	m_pMesh1->AddTexture("Assets/grey_texture.bmp");
 
 	m_pMesh2 = new Mesh(Renderer::pD3DDevice, Renderer::pImmediateContext);
 	m_pMesh2->LoadObjModel("Assets/cube.obj");
 	m_pMesh2->AddTexture("Assets/red_texture.png");
+
+	m_pPlayerMesh = new Mesh(Renderer::pD3DDevice, Renderer::pImmediateContext);
+	m_pPlayerMesh->LoadObjModel("Assets/cube.obj");
+	m_pPlayerMesh->AddTexture("Assets/grey_texture.bmp");
 
 	m_pRootNode = new Scene_Node();
 
@@ -175,6 +179,9 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 
 		m_pRootNode->AddChildNode(m_tileMap[i]);
 	}
+
+	m_pPlayer->SetModel(m_pPlayerMesh);
+	m_pRootNode->AddChildNode(m_pPlayer);
 
 	float currentTime = 0;
 	float previousTime = 0;
@@ -319,7 +326,7 @@ void GameSystem::GetKeyboardInput()
 
 	if (renderer->IsKeyPressed(DIK_W))
 	{
-		m_pPlayer->UpdateYPos(m_tileMap, true, m_deltaTime);
+		//m_pPlayer->UpdateYPos(m_tileMap, true, m_deltaTime);
 
 		if (!sprinting)
 		{
@@ -334,7 +341,7 @@ void GameSystem::GetKeyboardInput()
 
 	else if (renderer->IsKeyPressed(DIK_S))
 	{
-		m_pPlayer->UpdateYPos(m_tileMap, false, m_deltaTime);
+		//m_pPlayer->UpdateYPos(m_tileMap, false, m_deltaTime);
 
 		if (!sprinting)
 		{
@@ -348,7 +355,7 @@ void GameSystem::GetKeyboardInput()
 
 	else if (renderer->IsKeyPressed(DIK_D))
 	{
-		m_pPlayer->UpdateXPos(m_tileMap, true, m_deltaTime);
+		//m_pPlayer->UpdateXPos(m_tileMap, true, m_deltaTime);
 
 		if (!sprinting)
 		{
@@ -362,7 +369,7 @@ void GameSystem::GetKeyboardInput()
 
 	else if (renderer->IsKeyPressed(DIK_A))
 	{
-		m_pPlayer->UpdateXPos(m_tileMap, false, m_deltaTime);
+		//m_pPlayer->UpdateXPos(m_tileMap, false, m_deltaTime);
 
 		if (!sprinting)
 		{
@@ -395,12 +402,12 @@ void GameSystem::GetKeyboardInput()
 		m_soundWaveDoorOpen->SetCanDraw(false);
 	}
 
-	if (renderer->IsKeyPressed(DIK_COMMA))
+	if (renderer->IsKeyPressed(DIK_UPARROW))
 	{
 		Renderer::camera->Forward(0.5f);
 	}
 
-	if (renderer->IsKeyPressed(DIK_PERIOD))
+	if (renderer->IsKeyPressed(DIK_DOWNARROW))
 	{
 		Renderer::camera->Forward(-0.5f);
 	}
@@ -415,12 +422,12 @@ void GameSystem::GetKeyboardInput()
 		Renderer::camera->Strafe(-0.5f);
 	}
 
-	if (renderer->IsKeyPressed(DIK_UPARROW))
+	if (renderer->IsKeyPressed(DIK_COMMA))
 	{
 		Renderer::camera->Up(-0.5f);
 	}
 
-	if (renderer->IsKeyPressed(DIK_DOWNARROW))
+	if (renderer->IsKeyPressed(DIK_PERIOD))
 	{
 		Renderer::camera->Up(0.5f);
 	}

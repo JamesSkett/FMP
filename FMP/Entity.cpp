@@ -3,12 +3,13 @@
 #include "Asset.h"
 #include "Math.h"
 #include "Player.h"
+#include "Tile.h"
 
-Entity::Entity(XMFLOAT4 colour, float x, float y, float z, float scale, float width, float height)
+Entity::Entity(float x, float y, float z, float scale, float width, float height)
 {
-	m_xPos = x;
-	m_yPos = y;
-	m_zPos = z;
+	m_x = x;
+	m_y = y;
+	m_z = z;
 	m_scale = scale;
 
 	m_startPos = { x, y };
@@ -16,10 +17,10 @@ Entity::Entity(XMFLOAT4 colour, float x, float y, float z, float scale, float wi
 	m_width = width;
 	m_height = height;
 
-	if (FAILED(CreateVertices(colour)))
+	/*if (FAILED(CreateVertices(colour)))
 	{
 		DXTRACE_MSG("Failed to Initialise Graphics");
-	}
+	}*/
 }
 
 
@@ -48,9 +49,9 @@ void Entity::Draw(XMMATRIX view, XMMATRIX projection)
 
 	world = XMMatrixScaling(m_scale, m_scale, m_scale);
 
-	world *= XMMatrixRotationZ(m_rotation);
+	world *= XMMatrixRotationZ(m_zangle);
 
-	world *= XMMatrixTranslation(m_xPos, m_yPos, m_zPos);
+	world *= XMMatrixTranslation(m_x, m_y, m_z);
 	
 
 
@@ -105,8 +106,8 @@ void Entity::SetWalkedThroughDoor(bool value)
 
 void Entity::GetColBoxParameters(float &x, float &y, float &w, float &h)
 {
-	x = m_xPos;
-	y = m_yPos;
+	x = m_x;
+	y = m_y;
 	w = m_width;
 	h = m_height;
 }
@@ -237,14 +238,14 @@ HRESULT Entity::CreateVertices(XMFLOAT4 colour)
 	return S_OK;
 }
 
-bool Entity::CollisionCheck(vector <Tile*> tilemap)
+bool Entity::CollisionCheck(std::vector <Tile*> tilemap)
 {
 	for (unsigned int i = 0; i < tilemap.size(); i++)
 	{
 		if (tilemap[i]->GetIndex() == 2)
 		{
-			float box1x = m_xPos - (m_width / 2);
-			float box1y = m_yPos - (m_height / 2);
+			float box1x = m_x - (m_width / 2);
+			float box1y = m_y - (m_height / 2);
 			float box1w = m_width;
 			float box1h = m_height;
 
@@ -264,8 +265,8 @@ bool Entity::CollisionCheck(vector <Tile*> tilemap)
 		}
 		else if (tilemap[i]->GetIndex() == 3)
 		{
-			float box1x = m_xPos - (m_width / 2);
-			float box1y = m_yPos - (m_height / 2);
+			float box1x = m_x - (m_width / 2);
+			float box1y = m_y - (m_height / 2);
 			float box1w = m_width;
 			float box1h = m_height;
 
@@ -288,21 +289,21 @@ bool Entity::CollisionCheck(vector <Tile*> tilemap)
 	return false;
 }
 
-void Entity::SetViewCone(Asset * viewCone)
+void Entity::SetViewCone(Asset* viewCone)
 {
 	m_viewCone = viewCone;
 }
 
 void Entity::Reset()
 {
-	m_xPos = m_startPos.x;
-	m_yPos = m_startPos.y;
+	m_x = m_startPos.x;
+	m_y = m_startPos.y;
 }
 
 bool Entity::CollisionCheck(Entity* colObject)
 {
-	float box1x = m_xPos - (m_width / 2);
-	float box1y = m_yPos - (m_height / 2);
+	float box1x = m_x - (m_width / 2);
+	float box1y = m_y - (m_height / 2);
 	float box1w = m_width;
 	float box1h = m_height;
 

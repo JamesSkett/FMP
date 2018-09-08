@@ -286,7 +286,7 @@ void Renderer::RenderFrame()
 //sets up the camera
 HRESULT Renderer::InitialiseGraphics(void)
 {
-	camera = new Camera(-2.f, 2.f, 0.5f, 0.f);
+	camera = new Camera(-2.f, 2.f, -5.5f, 0.f);
 
 	return S_OK;
 

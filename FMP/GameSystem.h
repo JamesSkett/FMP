@@ -87,6 +87,7 @@ private:
 
 	Mesh* m_pMesh1;
 	Mesh* m_pMesh2;
+	Mesh* m_pPlayerMesh;
 	Scene_Node* m_pRootNode;
 	//Scene_Node* m_pNode1;
 
