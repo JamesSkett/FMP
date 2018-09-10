@@ -131,6 +131,7 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 	//use the data to create the tiles
 	m_plevel->SetUpLevelLayout(m_tileMap, m_pPlayer, m_pMonster);
 
+
 	m_text_fpsCount = new Text2D(FONT_FILE_PATH, Renderer::pD3DDevice, Renderer::pImmediateContext);
 
 	m_pMesh1 = new Mesh(Renderer::pD3DDevice, Renderer::pImmediateContext);
@@ -167,6 +168,7 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 	Renderer::camera->SetX(m_pPlayer->GetXPos());
 	Renderer::camera->SetY(m_pPlayer->GetYPos() + 0.1f);
 	Renderer::camera->SetZ(m_pPlayer->GetZPos());
+	Renderer::camera->SetPlayer(m_pPlayer);
 
 	float currentTime = 0;
 	float previousTime = 0;
@@ -210,7 +212,7 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 
 			identity = XMMatrixIdentity();
 			projection = XMMatrixPerspectiveFovLH(XMConvertToRadians(40.0f), m_screenWidth / m_screenHeight, 0.1f, 500.0f);
-			view = Renderer::camera->GetViewMatrix();
+			view = Renderer::camera->GetViewMatrix(m_tileMap);
 
 			m_pPlayer->SetXPos(Renderer::camera->GetX());
 			m_pPlayer->SetYPos(Renderer::camera->GetY());
@@ -291,96 +293,22 @@ bool sprinting = false;
 //Get the keyboard input
 void GameSystem::GetKeyboardInput()
 {
-	if (renderer->IsKeyPressed(DIK_LSHIFT))
-	{
-		//m_pPlayer->SprintOn();
-		//sprinting = true;
-	}
-
-	if (!renderer->IsKeyPressed(DIK_LSHIFT))
-	{
-		//m_pPlayer->SprintOff();
-		//sprinting = false;
-	}
-
 	if (renderer->IsKeyPressed(DIK_W))
-	{
-		//m_pPlayer->UpdateYPos(m_tileMap, true, m_deltaTime);
-
-		/*if (!sprinting)
-		{
-			SoundWaveWalk();
-		}
-		else
-		{
-			SoundWaveSprint();
-		}*/
-
-	}
-
-	else if (renderer->IsKeyPressed(DIK_S))
-	{
-		//m_pPlayer->UpdateYPos(m_tileMap, false, m_deltaTime);
-
-		/*if (!sprinting)
-		{
-			SoundWaveWalk();
-		}
-		else
-		{
-			SoundWaveSprint();
-		}*/
-	}
-
-	else if (renderer->IsKeyPressed(DIK_D))
-	{
-		//m_pPlayer->UpdateXPos(m_tileMap, true, m_deltaTime);
-
-		/*if (!sprinting)
-		{
-			SoundWaveWalk();
-		}
-		else
-		{
-			SoundWaveSprint();
-		}*/
-	}
-
-	else if (renderer->IsKeyPressed(DIK_A))
-	{
-		//m_pPlayer->UpdateXPos(m_tileMap, false, m_deltaTime);
-
-		/*if (!sprinting)
-		{
-			SoundWaveWalk();
-		}
-		else
-		{
-			SoundWaveSprint();
-		}*/
-	}
-	else
-	{
-		//m_soundWaveWalk->SetScale(c_soundZeroScale);
-		//m_soundWaveSprint->SetScale(c_soundZeroScale);
-	}
-
-	if (renderer->IsKeyPressed(DIK_UPARROW))
 	{
 		Renderer::camera->Forward(10.5f, m_deltaTime);
 	}
 
-	if (renderer->IsKeyPressed(DIK_DOWNARROW))
+	if (renderer->IsKeyPressed(DIK_S))
 	{
 		Renderer::camera->Forward(-10.5f, m_deltaTime);
 	}
 
-	if (renderer->IsKeyPressed(DIK_LEFTARROW))
+	if (renderer->IsKeyPressed(DIK_A))
 	{
 		Renderer::camera->Strafe(-10.5f, m_deltaTime);
 	}
 
-	if (renderer->IsKeyPressed(DIK_RIGHTARROW))
+	if (renderer->IsKeyPressed(DIK_D))
 	{
 		Renderer::camera->Strafe(10.5f, m_deltaTime);
 	}
@@ -458,10 +386,6 @@ void GameSystem::DrawLevel(XMMATRIX view, XMMATRIX projection)
 	{
 		m_tileMap[i]->Draw(view, projection);
 	}
-
-
-	m_pPlayer->Draw(view, projection);
-	m_pMonster->Draw(view, projection);
 }
 
 void GameSystem::UpdateText()

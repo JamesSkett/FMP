@@ -8,8 +8,8 @@
 float Player::s_rotation;
 XMFLOAT2 Player::s_playerPos;
 
-Player::Player(float x, float y, float z, float scale, float width, float height)
-	: Entity(x, y, z, scale, width, height)
+Player::Player(float x, float y, float z, float scale, float width, float height, float depth)
+	: Entity(x, y, z, scale, width, height, depth)
 {
 
 }

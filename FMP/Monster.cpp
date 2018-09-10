@@ -19,8 +19,8 @@ int Monster::s_search_to_chase_or_flee[2]    = { 25, 75 };
 int Monster::s_sneak_to_chase_or_flee[2]     = { 15, 85 };
 int Monster::s_sneak_to_search_or_random[2]  = { 15, 85 };
 
-Monster::Monster(float x, float y, float z, float scale, float width, float height) :
-	Entity(x, y, z, scale, width, height)
+Monster::Monster(float x, float y, float z, float scale, float width, float height, float depth) :
+	Entity(x, y, z, scale, width, height, depth)
 {
 
 }

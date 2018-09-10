@@ -14,13 +14,12 @@ using namespace std;
 class Projectile : public Entity
 {
 public:
-	Projectile(float x, float y, float z, float scale, float width, float height);
+	Projectile(float x, float y, float z, float scale, float width, float height, float depth);
 	~Projectile();
 
 	//Moves the projectile if fired
 	void Update(float deltaTime);
 
-	void Draw(XMMATRIX view, XMMATRIX projection);
 
 	//Get the value of m_isFired
 	bool GetIsFired();

@@ -13,6 +13,7 @@ using namespace std;
 
 class Mesh;
 class ObjFileModel;
+class Tile;
 
 __declspec(align(16)) class Scene_Node
 {
@@ -41,6 +42,9 @@ public:
 	float GetXDir() const;
 	float GetYDir() const;
 	float GetZDir() const;
+	float GetWidth() const;
+	float GetHeight() const;
+	float GetDepth() const;
 
 	//Setters
 	void SetXPos(float x);
@@ -67,11 +71,7 @@ public:
 
 	void Execute(XMMATRIX* world, XMMATRIX* view, XMMATRIX* projection);
 
-	XMVECTOR GetWorldCentrePos();
-	void UpdateCollisionTree(XMMATRIX* world, float scale);
-
-	bool CheckCollision(Scene_Node* compareTree);
-	bool CheckCollision(Scene_Node * compareTree, Scene_Node * objectTreeRoot);
+	//bool CheckCollision(std::vector<Tile*> tileMap);
 
 	void setCanCollide(bool canCollide);
 	void setCanDraw(bool canDraw);
@@ -87,6 +87,8 @@ protected:
 	float m_xangle, m_yangle, m_zangle;
 	float m_scale;
 	float m_dx, m_dy, m_dz;
+
+	float m_width, m_height, m_depth;
 
 	float m_world_centre_x;
 	float m_world_centre_y;

@@ -7,6 +7,11 @@
 #include <DirectXMath.h>
 using namespace DirectX;
 
+#include <vector>
+
+class Player;
+class Tile;
+
 __declspec(align(16)) class Camera
 {
 public:
@@ -43,6 +48,7 @@ public:
 	void SetIsBackward(bool isBackward);
 	void SetIsRight(bool isRight);
 	void SetIsLeft(bool isLeft);
+	void SetPlayer(Player* player);
 
 	//get the x,y,z positions of the camera
 	float GetX();
@@ -56,9 +62,11 @@ public:
 
 	void LookAt(float targetX, float targetZ);
 
-	XMMATRIX GetViewMatrix();
+	XMMATRIX GetViewMatrix(std::vector<Tile*> tileMap);
 
 private:
+	Player* m_pPlayer;
+
 	float m_x, m_y, m_z;
 	float m_dx, m_dy, m_dz;
 	float m_camera_rotation;

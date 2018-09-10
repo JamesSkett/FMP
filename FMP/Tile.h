@@ -58,8 +58,6 @@ protected:
 	ID3D11InputLayout*		m_pInputLayout;
 	ID3D11Buffer*			m_pConstantBuffer0;
 
-	float m_w, m_h;
-
 	bool m_walkable;
 
 	int m_index;

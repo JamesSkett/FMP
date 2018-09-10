@@ -4,7 +4,7 @@
 #include "Player.h"
 #include "Tile.h"
 
-Entity::Entity(float x, float y, float z, float scale, float width, float height)
+Entity::Entity(float x, float y, float z, float scale, float width, float height, float depth)
 {
 	m_x = x;
 	m_y = y;
@@ -15,11 +15,7 @@ Entity::Entity(float x, float y, float z, float scale, float width, float height
 
 	m_width = width;
 	m_height = height;
-
-	/*if (FAILED(CreateVertices(colour)))
-	{
-		DXTRACE_MSG("Failed to Initialise Graphics");
-	}*/
+	m_depth = depth;
 }
 
 
@@ -30,66 +26,6 @@ Entity::~Entity()
 	if (m_pInputLayout)  m_pInputLayout->Release();
 	if (m_pVertexShader) m_pVertexShader->Release();
 	if (m_pPixelShader)  m_pPixelShader->Release();
-}
-
-void Entity::Draw(XMMATRIX view, XMMATRIX projection)
-{
-	
-	Renderer::pImmediateContext->OMSetBlendState(Renderer::pAlphaBlendEnable, 0, 0xffffffff);
-	Renderer::pImmediateContext->OMSetBlendState(Renderer::pAlphaBlendDisable, 0, 0xffffffff);
-
-	XMMATRIX world, WVP;
-
-	world = XMMatrixScaling(m_scale, m_scale, m_scale);
-
-	world *= XMMatrixRotationZ(m_zangle);
-
-	world *= XMMatrixTranslation(m_x, m_y, m_z);
-	
-
-
-	WVP = world * view * projection;
-
-	XMVECTOR posVec = WVP.r[3];
-
-	m_screenSpaceX = XMVectorGetX(posVec);
-	m_screenSpaceY = XMVectorGetY(posVec);
-
-	ENTITY_CONSTANT_BUFFER entity_cb_values;
-
-	entity_cb_values.WorldViewProjection = WVP;
-
-	float x = (Player::s_playerPos.x + 1) / 2.0f;
-	float y = 1 - (Player::s_playerPos.y + 1) / 2.0f;
-	
-	x *= 1920.f;
-	y *= 1080.f;
-	
-	entity_cb_values.playerPos = XMFLOAT2(x, y);
-	entity_cb_values.playerRotation = Player::s_rotation;
-	entity_cb_values.range = 1.0f;
-	entity_cb_values.fog = Renderer::s_FogOfWar;
-
-	Renderer::pImmediateContext->UpdateSubresource(m_pConstantBuffer0, 0, 0, &entity_cb_values, 0, 0);
-
-	Renderer::pImmediateContext->VSSetConstantBuffers(0, 1, &m_pConstantBuffer0);
-	Renderer::pImmediateContext->PSSetConstantBuffers(0, 1, &m_pConstantBuffer0);
-	Renderer::pImmediateContext->VSSetShader(m_pVertexShader, 0, 0);
-	Renderer::pImmediateContext->PSSetShader(m_pPixelShader, 0, 0);
-	Renderer::pImmediateContext->IASetInputLayout(m_pInputLayout);
-
-	//Set the vertex buffer //03-01
-	UINT stride = sizeof(POS_COL_VERTEX);
-	UINT offset = 0;
-	Renderer::pImmediateContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &stride, &offset);
-
-
-
-	// Select which primitive type to use //03-01
-	Renderer::pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	// Draw the vertex buffer to the back buffer
-	Renderer::pImmediateContext->Draw(6, 0);
 }
 
 void Entity::SetWalkedThroughDoor(bool value)
@@ -123,10 +59,10 @@ HRESULT Entity::CreateVertices(XMFLOAT4 colour)
 	POS_COL_VERTEX vertices[] =
 	{
 
-		{ XMFLOAT3( 0.0f,  0.9f, 1.0f), colour },
-		{ XMFLOAT3( 0.9f, -0.9f, 1.0f), colour },
+		{ XMFLOAT3(0.0f,  0.9f, 1.0f), colour },
+		{ XMFLOAT3(0.9f, -0.9f, 1.0f), colour },
 		{ XMFLOAT3(-0.9f, -0.9f, 1.0f), colour },
-								 
+
 
 	};
 
@@ -231,53 +167,83 @@ HRESULT Entity::CreateVertices(XMFLOAT4 colour)
 	return S_OK;
 }
 
-bool Entity::CollisionCheck(std::vector <Tile*> tilemap)
+//bool Entity::CollisionCheck(std::vector <Tile*> tilemap)
+//{
+//	for (unsigned int i = 0; i < tilemap.size(); i++)
+//	{
+//		if (tilemap[i]->GetIndex() == 2)
+//		{
+//			float box1x = m_x - (m_width / 2);
+//			float box1y = m_y - (m_height / 2);
+//			float box1w = m_width;
+//			float box1h = m_height;
+//
+//			float box2x, box2y;
+//			float box2w, box2h;
+//
+//			tilemap[i]->GetParameters(box2x, box2y, box2w, box2h);
+//
+//			box2x = box2x - (box2w / 2);
+//			box2y = box2y - (box2h / 2);
+//
+//			if ((box1x < box2x + box2w) && (box1x + box1w > box2x) && (box1y < box2y + box2h) && (box1h + box1y > box2y))
+//			{
+//
+//				return true;
+//			}
+//		}
+//		else if (tilemap[i]->GetIndex() == 3)
+//		{
+//			float box1x = m_x - (m_width / 2);
+//			float box1y = m_y - (m_height / 2);
+//			float box1w = m_width;
+//			float box1h = m_height;
+//
+//			float box2x, box2y;
+//			float box2w, box2h;
+//
+//			tilemap[i]->GetParameters(box2x, box2y, box2w, box2h);
+//
+//			box2x = box2x - (box2w / 2);
+//			box2y = box2y - (box2h / 2);
+//
+//			if ((box1x < box2x + box2w) && (box1x + box1w > box2x) && (box1y < box2y + box2h) && (box1h + box1y > box2y))
+//			{
+//				SetWalkedThroughDoor(true);
+//				m_doorPos = XMFLOAT2(tilemap[i]->GetXPos(), tilemap[i]->GetYPos());
+//			}
+//		}
+//	}
+//
+//	return false;
+//}
+
+bool Entity::CollisionCheck(std::vector<Tile*> tileMap)
 {
-	for (unsigned int i = 0; i < tilemap.size(); i++)
+	//check to see if root of tree being compared is same as root node of     
+	//object tree being checked
+	// i.e. stop object node and children being checked against each other
+	//if (objectTreeRoot == compareTree) return false;
+
+	for (unsigned int i = 0; i < tileMap.size(); i++)
 	{
-		if (tilemap[i]->GetIndex() == 2)
+
+		XMFLOAT3 box1Pos = XMFLOAT3(m_x - (m_width / 2), m_y - (m_height / 2), m_z - (m_depth / 2));
+		XMFLOAT3 box1Param = XMFLOAT3(this->GetWidth(), this->GetHeight(), this->GetDepth());
+		XMFLOAT3 box2Pos = XMFLOAT3(tileMap[i]->GetXPos(), tileMap[i]->GetYPos(), tileMap[i]->GetZPos());
+		XMFLOAT3 box2Param = XMFLOAT3(tileMap[i]->GetWidth(), tileMap[i]->GetHeight(), tileMap[i]->GetDepth());
+
+		box2Pos.x = box2Pos.x - (box2Param.x / 2);
+		box2Pos.y = box2Pos.y - (box2Param.y / 2);
+		box2Pos.z = box2Pos.z - (box2Param.z / 2);
+
+		if ((box1Pos.x < box2Pos.x + box2Param.x) && (box1Pos.x + box1Param.x > box2Pos.x) && (box1Pos.y < box2Pos.y + box2Param.y) && (box1Param.y + box1Pos.y > box2Pos.y) && (box1Pos.z < box2Pos.z + box2Param.z) && (box1Param.z + box1Pos.z > box2Pos.z))
 		{
-			float box1x = m_x - (m_width / 2);
-			float box1y = m_y - (m_height / 2);
-			float box1w = m_width;
-			float box1h = m_height;
-
-			float box2x, box2y;
-			float box2w, box2h;
-
-			tilemap[i]->GetParameters(box2x, box2y, box2w, box2h);
-
-			box2x = box2x - (box2w / 2);
-			box2y = box2y - (box2h / 2);
-
-			if ((box1x < box2x + box2w) && (box1x + box1w > box2x) && (box1y < box2y + box2h) && (box1h + box1y > box2y))
-			{
-
-				return true;
-			}
+			return true;
 		}
-		else if (tilemap[i]->GetIndex() == 3)
-		{
-			float box1x = m_x - (m_width / 2);
-			float box1y = m_y - (m_height / 2);
-			float box1w = m_width;
-			float box1h = m_height;
 
-			float box2x, box2y;
-			float box2w, box2h;
-
-			tilemap[i]->GetParameters(box2x, box2y, box2w, box2h);
-
-			box2x = box2x - (box2w / 2);
-			box2y = box2y - (box2h / 2);
-
-			if ((box1x < box2x + box2w) && (box1x + box1w > box2x) && (box1y < box2y + box2h) && (box1h + box1y > box2y))
-			{
-				SetWalkedThroughDoor(true);
-				m_doorPos = XMFLOAT2(tilemap[i]->GetXPos(), tilemap[i]->GetYPos());
-			}
-		}
 	}
+
 
 	return false;
 }

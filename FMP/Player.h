@@ -20,7 +20,7 @@ class Tile;
 class Player : public Entity
 {
 public:
-	Player(float x, float y, float z, float scale, float width, float height);
+	Player(float x, float y, float z, float scale, float width, float height, float depth);
 	~Player();
 
 	void Update(XMFLOAT2 enemyPos, vector <Tile*> tilemap, float deltaTime);

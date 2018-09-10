@@ -8,8 +8,9 @@ Tile::Tile(float x, float y, float z, float scale, float width, float height, fl
 	m_y = y;
 	m_z = z;
 	m_scale = scale;
-	m_w = width;
-	m_h = height;
+	m_width = width;
+	m_height = height;
+	m_depth = depth;
 	m_index = index;
 
 
@@ -87,8 +88,8 @@ void Tile::GetParameters(float &x, float &y, float &width, float &height)
 {
 	x = m_x;
 	y = m_y;
-	width = m_w;
-	height = m_h;
+	//width = m_w;
+	//height = m_h;
 }
 
 int Tile::GetIndex()
@@ -219,3 +220,4 @@ HRESULT Tile::CreateVertices(XMFLOAT4 colour)
 
 	return S_OK;
 }
+

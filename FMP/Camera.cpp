@@ -1,4 +1,6 @@
 #include "Camera.h"
+#include "Player.h"
+#include "Tile.h"
 #include <windows.h>
 #include <stdio.h>
 
@@ -48,13 +50,11 @@ void Camera::Rotate(float number_of_degrees, float deltaTime)
 
 void Camera::Forward(float distance, float deltaTime)
 {
-	float oldX = m_x;
-	float oldZ = m_z;
+	float oldPos = m_moveBackForward;
 
-	//m_x += (m_dx * distance) * deltaTime;
-	//m_z += (m_dz * distance) * deltaTime;
 
 	m_moveBackForward += distance * deltaTime;
+
 }
 
 void Camera::Up(float distance)
@@ -67,7 +67,10 @@ void Camera::Strafe(float distance, float deltaTime)
 	//move the camera left and right based on the direction
 	//m_position += (m_right * distance) * deltaTime;
 
+	float oldPos = m_moveLeftRight;
+
 	m_moveLeftRight += distance * deltaTime;
+
 
 	//update the cameras coordinates
 	m_x = XMVectorGetX(m_position);
@@ -140,6 +143,11 @@ void Camera::SetIsRight(bool isRight)
 void Camera::SetIsLeft(bool isLeft)
 {
 	m_isLeft = isLeft;
+}
+
+void Camera::SetPlayer(Player * player)
+{
+	m_pPlayer = player;
 }
 
 float Camera::GetX()
@@ -224,7 +232,7 @@ void Camera::LookAt(float targetX, float targetZ)
 }
 
 
-XMMATRIX Camera::GetViewMatrix()
+XMMATRIX Camera::GetViewMatrix(std::vector<Tile*> tileMap)
 {
 	m_camRotationMatrix = XMMatrixRotationRollPitchYaw(m_camPitch, m_camYaw, 0);
 	m_lookat = XMVector3TransformCoord(m_defaultForward, m_camRotationMatrix);
@@ -237,8 +245,15 @@ XMMATRIX Camera::GetViewMatrix()
 	m_up = XMVector3TransformCoord(m_up, rotateYTempMatrix);
 	m_forward = XMVector3TransformCoord(m_defaultForward, rotateYTempMatrix);
 
+	XMVECTOR oldPos = m_position;
+
 	m_position += m_moveLeftRight * m_right;
 	m_position += m_moveBackForward * m_forward;
+
+	if (m_pPlayer->CollisionCheck(tileMap))
+	{
+		m_position = oldPos;
+	}
 
 	m_moveLeftRight = 0.0f;
 	m_moveBackForward = 0.0f;

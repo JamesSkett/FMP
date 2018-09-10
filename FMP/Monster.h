@@ -23,7 +23,7 @@ class Asset;
 class Monster : public Entity
 {
 public:
-	Monster(float x, float y, float z, float scale, float width, float height);
+	Monster(float x, float y, float z, float scale, float width, float height, float depth);
 	~Monster();
 
 	//Updates the monster 

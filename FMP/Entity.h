@@ -25,10 +25,8 @@ class Asset;
 class Entity : public Scene_Node
 {
 public:
-	Entity(float x, float y, float z, float scale, float width, float height);
+	Entity(float x, float y, float z, float scale, float width, float height, float depth);
 	~Entity();
-
-	void Draw(XMMATRIX view, XMMATRIX projection);
 
 	//Set the value of m_walkedThroughDoor
 	void SetWalkedThroughDoor(bool value);
@@ -72,7 +70,6 @@ protected:
 	ID3D11InputLayout*		m_pInputLayout;
 	ID3D11Buffer*			m_pConstantBuffer0;
 
-	float m_width, m_height;
 
 	XMFLOAT2 m_startPos;
 
