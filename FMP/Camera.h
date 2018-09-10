@@ -24,11 +24,14 @@ public:
 	~Camera();
 
 	//Functions to manipulate the camera
-	void Rotate(float number_of_degrees, float objectX, float objectY, float objectZ);
-	void Forward(float distance);
+	void Rotate(float number_of_degrees, float deltaTime);
+	void Forward(float distance, float deltaTime);
 	void Up(float distance);
-	void Strafe(float distance);
+	void Strafe(float distance, float deltaTime);
 	void Pitch(float number_of_degrees);
+
+	void UpdateYaw(float angle);
+	void UpdatePitch(float angle);
 
 	//setters
 	void SetX(float x);

@@ -8,7 +8,6 @@
 #include "Tile.h"
 #include "Pathfinding.h"
 #include "Renderer.h"
-#include "Asset.h"
 #include "Player.h"
 
 int Monster::s_random_to_chase_or_sneak[2]   = { 15, 85 };
@@ -40,14 +39,7 @@ Monster::~Monster()
 
 void Monster::Update(Player* player, float deltaTime)
 {
-	if (Renderer::s_FogOfWar == 0)
-	{
-		m_viewCone->SetCanDraw(true);
-	}
-	else m_viewCone->SetCanDraw(false);
 	
-	m_viewCone->SetPos(m_x, m_y);
-	//m_viewCone->SetRotation(m_rotation);
 
 	LineOfSightCheck(XMFLOAT2(player->GetXPos(), player->GetYPos()));
 
@@ -208,7 +200,6 @@ void Monster::RandomWander(float deltaTime)
 
 	m_speed = 6.0f;
 
-	m_viewCone->SetColour(Renderer::colour.Black);
 
 	if (m_pathfinder->GetIsPathFound())
 	{
@@ -244,7 +235,6 @@ void Monster::Chase(float deltaTime)
 {
 	if (m_playerInSight)
 	{
-		m_viewCone->SetColour(Renderer::colour.Green);
 		m_speed = 12.0f;
 		MoveTo(m_lastPlayerPos.x, m_lastPlayerPos.y, deltaTime);
 
@@ -261,7 +251,6 @@ void Monster::Search(XMFLOAT2 playerPos, float deltaTime)
 
 	m_speed = 15.0f;
 
-	m_viewCone->SetColour(Renderer::colour.Orange);
 
 	if (m_pathfinder->GetIsPathFound())
 	{
@@ -293,8 +282,7 @@ void Monster::Search(XMFLOAT2 playerPos, float deltaTime)
 
 void Monster::Sneak(Player* player, float deltaTime)
 {
-	//set the colour of the view cone to show state change
-	m_viewCone->SetColour(Renderer::colour.Blue);
+
 	//calculate the distance between the player and monster
 	float distance = Math::Distance(XMFLOAT2(m_x, m_y), XMFLOAT2(player->GetXPos(), player->GetYPos()));
 
@@ -378,7 +366,6 @@ void Monster::Sneak(Player* player, float deltaTime)
 
 void Monster::Flee(Player* player, float deltaTime)
 {
-	m_viewCone->SetColour(Renderer::colour.DimGray);
 	int randTileNum = rand() % 901;
 
 	m_speed = 30.0f;

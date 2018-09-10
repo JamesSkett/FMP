@@ -1,6 +1,5 @@
 //#include "Entity.h"
 #include "Renderer.h"
-#include "Asset.h"
 #include "Math.h"
 #include "Player.h"
 #include "Tile.h"
@@ -26,11 +25,6 @@ Entity::Entity(float x, float y, float z, float scale, float width, float height
 
 Entity::~Entity()
 {
-	if (m_viewCone)
-	{
-		delete m_viewCone;
-		m_viewCone = nullptr;
-	}
 	if (m_pConstantBuffer0) m_pConstantBuffer0->Release();
 	if (m_pVertexBuffer) m_pVertexBuffer->Release();
 	if (m_pInputLayout)  m_pInputLayout->Release();
@@ -42,7 +36,6 @@ void Entity::Draw(XMMATRIX view, XMMATRIX projection)
 {
 	
 	Renderer::pImmediateContext->OMSetBlendState(Renderer::pAlphaBlendEnable, 0, 0xffffffff);
-	m_viewCone->Draw(view, projection);
 	Renderer::pImmediateContext->OMSetBlendState(Renderer::pAlphaBlendDisable, 0, 0xffffffff);
 
 	XMMATRIX world, WVP;

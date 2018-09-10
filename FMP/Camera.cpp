@@ -25,15 +25,15 @@ Camera::~Camera()
 {
 }
 
-void Camera::Rotate(float number_of_degrees, float objectX, float objectY, float objectZ)
+void Camera::Rotate(float number_of_degrees, float deltaTime)
 {
-	/*m_camera_rotation += number_of_degrees;
+	m_camera_rotation += number_of_degrees * deltaTime;
 
 	m_dx = sinf(XMConvertToRadians(m_camera_rotation));
-	m_dy = sinf(XMConvertToRadians(m_camera_rotation));
-	m_dz = cosf(XMConvertToRadians(m_camera_rotation));*/
+	//m_dy = sinf(XMConvertToRadians(m_camera_rotation));
+	m_dz = cosf(XMConvertToRadians(m_camera_rotation));
 
-	float s = sinf(XMConvertToRadians(number_of_degrees));
+	/*float s = sinf(XMConvertToRadians(number_of_degrees));
 	float c = cosf(XMConvertToRadians(number_of_degrees));
 
 	m_x -= objectX;
@@ -43,16 +43,18 @@ void Camera::Rotate(float number_of_degrees, float objectX, float objectY, float
 	float znew = (m_y * s) + (m_x * c);
 
 	m_x = znew;
-	m_y = xnew;
+	m_y = xnew;*/
 }
 
-void Camera::Forward(float distance)
+void Camera::Forward(float distance, float deltaTime)
 {
 	float oldX = m_x;
 	float oldZ = m_z;
 
-	m_x += m_dx * distance;
-	m_z += m_dz * distance;
+	//m_x += (m_dx * distance) * deltaTime;
+	//m_z += (m_dz * distance) * deltaTime;
+
+	m_moveBackForward += distance * deltaTime;
 }
 
 void Camera::Up(float distance)
@@ -60,17 +62,17 @@ void Camera::Up(float distance)
 	m_y += distance;
 }
 
-void Camera::Strafe(float distance)
+void Camera::Strafe(float distance, float deltaTime)
 {
 	//move the camera left and right based on the direction
-	m_position += (m_right * distance);
+	//m_position += (m_right * distance) * deltaTime;
+
+	m_moveLeftRight += distance * deltaTime;
 
 	//update the cameras coordinates
 	m_x = XMVectorGetX(m_position);
 	m_y = XMVectorGetY(m_position);
 	m_z = XMVectorGetZ(m_position);
-
-
 }
 
 void Camera::Pitch(float number_of_degrees)
@@ -83,6 +85,16 @@ void Camera::Pitch(float number_of_degrees)
 	
 	m_up = XMVector3Cross(m_right, m_lookat);
 
+}
+
+void Camera::UpdateYaw(float angle)
+{
+	m_camYaw += angle;
+}
+
+void Camera::UpdatePitch(float angle)
+{
+	m_camPitch += angle;
 }
 
 void Camera::SetX(float x)
@@ -132,17 +144,17 @@ void Camera::SetIsLeft(bool isLeft)
 
 float Camera::GetX()
 {
-	return m_x;
+	return XMVectorGetX(m_position);
 }
 
 float Camera::GetY()
 {
-	return m_y;
+	return XMVectorGetY(m_position);
 }
 
 float Camera::GetZ()
 {
-	return m_z;
+	return XMVectorGetZ(m_position);
 }
 
 float Camera::GetDirectionX()
@@ -214,33 +226,33 @@ void Camera::LookAt(float targetX, float targetZ)
 
 XMMATRIX Camera::GetViewMatrix()
 {
-	/*m_camRotationMatrix = XMMatrixRotationRollPitchYaw(m_camPitch, m_camYaw, 0);
+	m_camRotationMatrix = XMMatrixRotationRollPitchYaw(m_camPitch, m_camYaw, 0);
 	m_lookat = XMVector3TransformCoord(m_defaultForward, m_camRotationMatrix);
-	m_lookat = XMVector3Normalize(m_lookat);*/
+	m_lookat = XMVector3Normalize(m_lookat);
 
-	//XMMATRIX rotateYTempMatrix;
-	//rotateYTempMatrix = XMMatrixRotationY(m_camYaw);
+	XMMATRIX rotateYTempMatrix;
+	rotateYTempMatrix = XMMatrixRotationY(m_camYaw);
 
-	//m_right = XMVector3TransformCoord(m_defaultRight, rotateYTempMatrix);
-	//m_up = XMVector3TransformCoord(m_up, rotateYTempMatrix);
-	//m_forward = XMVector3TransformCoord(m_defaultForward, rotateYTempMatrix);
+	m_right = XMVector3TransformCoord(m_defaultRight, rotateYTempMatrix);
+	m_up = XMVector3TransformCoord(m_up, rotateYTempMatrix);
+	m_forward = XMVector3TransformCoord(m_defaultForward, rotateYTempMatrix);
 
-	/*m_position += m_moveLeftRight * m_right;
+	m_position += m_moveLeftRight * m_right;
 	m_position += m_moveBackForward * m_forward;
 
 	m_moveLeftRight = 0.0f;
 	m_moveBackForward = 0.0f;
 
-	m_lookat = m_position + m_lookat;*/
+	m_lookat = m_position + m_lookat;
 
 
-	m_position = XMVectorSet(m_x, m_y, m_z, 0.0f);
-	m_lookat = XMVectorSet(m_x + m_dx, m_y + m_dy, m_z + m_dz, 0.0f);
-	m_up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-	
-	//Get the forward and right vector positions
-	m_forward = XMVector3Normalize(m_lookat - m_position);
-	m_right = XMVector3Cross(m_forward, m_up);
+	//m_position = XMVectorSet(m_x, m_y, m_z, 0.0f);
+	//m_lookat = XMVectorSet(m_x + m_dx, m_y + m_dy, m_z + m_dz, 0.0f);
+	//m_up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+	//
+	////Get the forward and right vector positions
+	//m_forward = XMVector3Normalize(m_lookat - m_position);
+	//m_right = XMVector3Cross(m_forward, m_up);
 
 	return XMMatrixLookAtLH(m_position, m_lookat, m_up);
 }

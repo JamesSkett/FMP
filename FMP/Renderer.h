@@ -61,6 +61,7 @@ public:
 	void ReadInputState();
 	bool IsKeyPressed(unsigned char DI_keycode);
 	DIMOUSESTATE mouseCurrState;
+	DIMOUSESTATE mouseLastState;
 
 	//These can be used in any class
 	static Camera* camera;

@@ -7,7 +7,6 @@
 #include "Time.h"
 #include "Monster.h"
 #include "Projectile.h"
-#include "Asset.h"
 #include "Tile.h"
 #include "StateMachine.h"
 #include "CXBOXController.h"
@@ -79,24 +78,6 @@ GameSystem::~GameSystem()
 		m_text_currentState = nullptr;
 	}
 
-	if (m_soundWaveWalk)
-	{
-		delete m_soundWaveWalk;
-		m_soundWaveWalk = nullptr;
-	}
-
-	if (m_soundWaveSprint)
-	{
-		delete m_soundWaveSprint;
-		m_soundWaveSprint = nullptr;
-	}
-
-	if (m_soundWaveDoorOpen)
-	{
-		delete m_soundWaveDoorOpen;
-		m_soundWaveDoorOpen = nullptr;
-	}
-
 	for (unsigned int i = 0; i < m_tileMap.size(); i++)
 	{
 		delete m_tileMap[i];
@@ -154,11 +135,11 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 
 	m_pMesh1 = new Mesh(Renderer::pD3DDevice, Renderer::pImmediateContext);
 	m_pMesh1->LoadObjModel("Assets/floor.obj");
-	m_pMesh1->AddTexture("Assets/grey_texture.bmp");
+	m_pMesh1->AddTexture("Assets/floor.jpg");
 
 	m_pMesh2 = new Mesh(Renderer::pD3DDevice, Renderer::pImmediateContext);
 	m_pMesh2->LoadObjModel("Assets/cube.obj");
-	m_pMesh2->AddTexture("Assets/red_texture.png");
+	m_pMesh2->AddTexture("Assets/wall.jpg");
 
 	m_pPlayerMesh = new Mesh(Renderer::pD3DDevice, Renderer::pImmediateContext);
 	m_pPlayerMesh->LoadObjModel("Assets/cube.obj");
@@ -166,7 +147,7 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 
 	m_pRootNode = new Scene_Node();
 
-	for (int i = 0; i < m_tileMap.size(); i++)
+	for (unsigned int i = 0; i < m_tileMap.size(); i++)
 	{
 		if (m_tileMap[i]->GetIndex() == 2)
 		{
@@ -182,6 +163,10 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 
 	m_pPlayer->SetModel(m_pPlayerMesh);
 	m_pRootNode->AddChildNode(m_pPlayer);
+
+	Renderer::camera->SetX(m_pPlayer->GetXPos());
+	Renderer::camera->SetY(m_pPlayer->GetYPos() + 0.1f);
+	Renderer::camera->SetZ(m_pPlayer->GetZPos());
 
 	float currentTime = 0;
 	float previousTime = 0;
@@ -207,6 +192,7 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 			//GetControllerInput();
 			renderer->ReadInputState();
 			GetKeyboardInput();
+			GetControllerInput();
 			GetMousePos();
 
 			// Clear the back buffer - sets a background colour
@@ -223,8 +209,12 @@ int GameSystem::playGame(MSG msg, HINSTANCE hInstance, HINSTANCE hPrevInstance, 
 			//projection = XMMatrixOrthographicLH(w, h, m_cNearClip, m_cFarClip);
 
 			identity = XMMatrixIdentity();
-			projection = XMMatrixPerspectiveFovLH(XMConvertToRadians(70.0f), m_screenWidth / m_screenHeight, 0.1f, 500.0f);
+			projection = XMMatrixPerspectiveFovLH(XMConvertToRadians(40.0f), m_screenWidth / m_screenHeight, 0.1f, 500.0f);
 			view = Renderer::camera->GetViewMatrix();
+
+			m_pPlayer->SetXPos(Renderer::camera->GetX());
+			m_pPlayer->SetYPos(Renderer::camera->GetY());
+			m_pPlayer->SetZPos(Renderer::camera->GetZ());
 
 			m_pRootNode->Execute(&identity, &view, &projection);
 
@@ -284,12 +274,6 @@ void GameSystem::SetupLevel()
 	//pass the tile map to the pathfinder class in Monster
 	m_pMonster->SetPathfinder(m_tileMap);
 
-	//Create the assets fo the viewcone and sound
-	m_viewConeEnemy			= new Asset(VIEW_CONE_FILE_PATH, c_viewConeStartX, c_viewConeStartY, c_viewConeZPos, c_viewConeScale, c_viewConeRotation);
-	m_viewConePlayer		= new Asset(VIEW_CONE_FILE_PATH, c_viewConeStartX, c_viewConeStartY, c_viewConeZPos, c_viewConeScale, c_viewConeRotation);
-	m_soundWaveWalk			= new Asset(SOUND_WAVE_FILE_PATH, m_pPlayer->GetXPos(), m_pPlayer->GetYPos(), c_soundWaveZPos, c_soundWaveScale, c_soundWaveRotation);
-	m_soundWaveSprint		= new Asset(SOUND_WAVE_FILE_PATH, m_pPlayer->GetXPos(), m_pPlayer->GetYPos(), c_soundWaveZPos, c_soundWaveScale, c_soundWaveRotation);
-	m_soundWaveDoorOpen		= new Asset(SOUND_WAVE_FILE_PATH, m_pPlayer->GetXPos(), m_pPlayer->GetYPos(), c_soundWaveZPos, c_soundWaveScale, c_soundWaveRotation);
 	//create the texts
 	m_text_fpsCount         = new Text2D(FONT_FILE_PATH, Renderer::pD3DDevice, Renderer::pImmediateContext);
 	m_text_monsterLOS		= new Text2D(FONT_FILE_PATH, Renderer::pD3DDevice, Renderer::pImmediateContext);
@@ -297,11 +281,6 @@ void GameSystem::SetupLevel()
 
 	//create the state machine
 	m_stateMachine			= new StateMachine();
-
-	//set the colours of the sound waves
-	m_soundWaveWalk->SetColour(Renderer::colour.IndianRed);
-	m_soundWaveSprint->SetColour(Renderer::colour.IndianRed);
-	m_soundWaveDoorOpen->SetColour(Renderer::colour.IndianRed);
 
 	//set the viewcones in the player and monster classe
 	m_pPlayer->SetViewCone(m_viewConePlayer);
@@ -328,14 +307,14 @@ void GameSystem::GetKeyboardInput()
 	{
 		//m_pPlayer->UpdateYPos(m_tileMap, true, m_deltaTime);
 
-		if (!sprinting)
+		/*if (!sprinting)
 		{
 			SoundWaveWalk();
 		}
 		else
 		{
 			SoundWaveSprint();
-		}
+		}*/
 
 	}
 
@@ -343,42 +322,42 @@ void GameSystem::GetKeyboardInput()
 	{
 		//m_pPlayer->UpdateYPos(m_tileMap, false, m_deltaTime);
 
-		if (!sprinting)
+		/*if (!sprinting)
 		{
 			SoundWaveWalk();
 		}
 		else
 		{
 			SoundWaveSprint();
-		}
+		}*/
 	}
 
 	else if (renderer->IsKeyPressed(DIK_D))
 	{
 		//m_pPlayer->UpdateXPos(m_tileMap, true, m_deltaTime);
 
-		if (!sprinting)
+		/*if (!sprinting)
 		{
 			SoundWaveWalk();
 		}
 		else
 		{
 			SoundWaveSprint();
-		}
+		}*/
 	}
 
 	else if (renderer->IsKeyPressed(DIK_A))
 	{
 		//m_pPlayer->UpdateXPos(m_tileMap, false, m_deltaTime);
 
-		if (!sprinting)
+		/*if (!sprinting)
 		{
 			SoundWaveWalk();
 		}
 		else
 		{
 			SoundWaveSprint();
-		}
+		}*/
 	}
 	else
 	{
@@ -386,40 +365,24 @@ void GameSystem::GetKeyboardInput()
 		//m_soundWaveSprint->SetScale(c_soundZeroScale);
 	}
 
-	if (renderer->IsKeyPressed(DIK_1))
-	{
-		Renderer::s_FogOfWar = 0;
-		m_soundWaveWalk->SetCanDraw(true);
-		m_soundWaveSprint->SetCanDraw(true);
-		m_soundWaveDoorOpen->SetCanDraw(true);
-	}
-
-	if (renderer->IsKeyPressed(DIK_2))
-	{
-		Renderer::s_FogOfWar = 1;
-		m_soundWaveWalk->SetCanDraw(false);
-		m_soundWaveSprint->SetCanDraw(false);
-		m_soundWaveDoorOpen->SetCanDraw(false);
-	}
-
 	if (renderer->IsKeyPressed(DIK_UPARROW))
 	{
-		Renderer::camera->Forward(0.5f);
+		Renderer::camera->Forward(10.5f, m_deltaTime);
 	}
 
 	if (renderer->IsKeyPressed(DIK_DOWNARROW))
 	{
-		Renderer::camera->Forward(-0.5f);
+		Renderer::camera->Forward(-10.5f, m_deltaTime);
 	}
 
 	if (renderer->IsKeyPressed(DIK_LEFTARROW))
 	{
-		Renderer::camera->Strafe(0.5f);
+		Renderer::camera->Strafe(-10.5f, m_deltaTime);
 	}
 
 	if (renderer->IsKeyPressed(DIK_RIGHTARROW))
 	{
-		Renderer::camera->Strafe(-0.5f);
+		Renderer::camera->Strafe(10.5f, m_deltaTime);
 	}
 
 	if (renderer->IsKeyPressed(DIK_COMMA))
@@ -430,6 +393,49 @@ void GameSystem::GetKeyboardInput()
 	if (renderer->IsKeyPressed(DIK_PERIOD))
 	{
 		Renderer::camera->Up(0.5f);
+	}
+
+
+	if ((renderer->mouseCurrState.lX != renderer->mouseLastState.lX) || (renderer->mouseCurrState.lY != renderer->mouseLastState.lY))
+	{
+		Renderer::camera->UpdateYaw(renderer->mouseLastState.lX * 0.001f);
+
+		Renderer::camera->UpdatePitch(renderer->mouseCurrState.lY * 0.001f);
+
+		renderer->mouseLastState = renderer->mouseCurrState;
+	}
+}
+
+void GameSystem::GetControllerInput()
+{
+	//gets the x and y values for the controller thumbsticks
+	float leftSticValY = player1->GetState().Gamepad.sThumbLY / 100.0f;
+	float leftSticValX = player1->GetState().Gamepad.sThumbLX / 100.0f;
+
+	float rightSticValY = player1->GetState().Gamepad.sThumbRY / 1000.0f;
+	float rightSticValX = player1->GetState().Gamepad.sThumbRX / 1000.0f;
+
+	if (player1->IsConnected())
+	{
+		if ((leftSticValY > 100) || (leftSticValY < -100))
+		{
+			Renderer::camera->Forward(leftSticValY / 10, m_deltaTime);
+		}
+
+		if ((leftSticValX > 100) || (leftSticValX < -100))
+		{
+			Renderer::camera->Strafe(leftSticValX / 10, m_deltaTime);
+		}
+
+		if ((rightSticValY > 10) || (rightSticValY < -10))
+		{
+			Renderer::camera->UpdatePitch(-rightSticValY * 0.001f);
+		}
+
+		if ((rightSticValX > 10) || (rightSticValX < -10))
+		{
+			Renderer::camera->UpdateYaw(rightSticValX * 0.001f);
+		}
 	}
 }
 
@@ -452,12 +458,6 @@ void GameSystem::DrawLevel(XMMATRIX view, XMMATRIX projection)
 	{
 		m_tileMap[i]->Draw(view, projection);
 	}
-
-	Renderer::pImmediateContext->OMSetBlendState(Renderer::pAlphaBlendEnable, 0, 0xffffffff);
-	m_soundWaveWalk->Draw(view, projection);
-	m_soundWaveSprint->Draw(view, projection);
-	m_soundWaveDoorOpen->Draw(view, projection);
-	Renderer::pImmediateContext->OMSetBlendState(Renderer::pAlphaBlendEnable, 0, 0xffffffff);
 
 
 	m_pPlayer->Draw(view, projection);
@@ -508,78 +508,4 @@ void GameSystem::UpdateText()
 	Renderer::pImmediateContext->OMSetBlendState(Renderer::pAlphaBlendDisable, 0, 0xffffffff);
 }
 
-void GameSystem::SoundWaveWalk()
-{
-	m_soundWaveSprint->SetScale(c_soundZeroScale);
-
-	if (m_soundWaveWalk->GetScale() < c_soundWalkScale && !m_lerpDown)
-	{
-		m_soundWaveWalk->SetScale(m_soundWaveWalk->GetScale() + c_soundWalkSpeed * m_deltaTime);
-
-		if (m_soundWaveWalk->GetScale() > c_soundWalkScale)
-		{
-			m_lerpDown = true;
-			m_pMonster->CheckHearing(m_soundWaveWalk->GetPos(), c_soundWalkScale);
-		}
-	}
-	else if (m_lerpDown)
-	{
-		m_soundWaveWalk->SetScale(m_soundWaveWalk->GetScale() - c_soundWalkSpeed * m_deltaTime);
-		if (m_soundWaveWalk->GetScale() < c_soundZeroScale)
-		{
-			m_lerpDown = false;
-		}
-	}
-}
-
-void GameSystem::SoundWaveSprint()
-{
-	m_soundWaveWalk->SetScale(c_soundZeroScale);
-
-	if (m_soundWaveSprint->GetScale() < c_soundSprintScale && !m_lerpDown)
-	{
-		m_soundWaveSprint->SetScale(m_soundWaveSprint->GetScale() + c_soundSprintSpeed * m_deltaTime);
-
-		if (m_soundWaveSprint->GetScale() > c_soundSprintScale)
-		{
-			m_lerpDown = true;
-			m_pMonster->CheckHearing(m_soundWaveWalk->GetPos(), c_soundSprintScale);
-		}
-	}
-	else if (m_lerpDown)
-	{
-		m_soundWaveSprint->SetScale(m_soundWaveSprint->GetScale() - c_soundSprintSpeed * m_deltaTime);
-		if (m_soundWaveSprint->GetScale() < c_soundZeroScale)
-		{
-			m_lerpDown = false;
-		}
-	}
-}
-
-void GameSystem::SoundWaveDoorOpen()
-{
-	if (m_doorSound)
-	{
-		if (m_soundWaveDoorOpen->GetScale() < c_soundDoorScale && !m_lerpDownDoor)
-		{
-			m_soundWaveDoorOpen->SetScale(m_soundWaveDoorOpen->GetScale() + c_soundDoorSpeed * m_deltaTime);
-
-			if (m_soundWaveDoorOpen->GetScale() > c_soundDoorScale)
-			{
-				m_lerpDownDoor = true;
-				m_pMonster->CheckHearing(m_soundWaveWalk->GetPos(), c_soundDoorScale);
-			}
-		}
-		else if (m_lerpDownDoor)
-		{
-			m_soundWaveDoorOpen->SetScale(m_soundWaveDoorOpen->GetScale() - c_soundDoorSpeed * m_deltaTime);
-			if (m_soundWaveDoorOpen->GetScale() < c_soundZeroScale)
-			{
-				m_lerpDownDoor = false;
-				m_doorSound = false;
-				m_soundWaveDoorOpen->SetScale(c_soundZeroScale);
-			}
-		}
-	}
-}
 

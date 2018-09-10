@@ -3,7 +3,6 @@
 #include "GameSystem.h"
 #include "Math.h"
 #include "Renderer.h"
-#include "Asset.h"
 #include <math.h>
 
 float Player::s_rotation;
@@ -23,23 +22,7 @@ Player::~Player()
 
 void Player::Update(XMFLOAT2 enemyPos, vector <Tile*> tilemap, float deltaTime)
 {
-	if (Renderer::s_FogOfWar == 0)
-	{
-		m_viewCone->SetCanDraw(true);
-	}
-	else m_viewCone->SetCanDraw(false);
-
-	m_viewCone->SetPos(m_x, m_y);
-	m_viewCone->SetRotation(m_zangle);
-
-	if (LineOfSightCheck(enemyPos, tilemap))
-	{
-		m_viewCone->SetColour(Renderer::colour.Green);
-	}
-	else
-	{
-		m_viewCone->SetColour(Renderer::colour.Black);
-	}
+	
 
 	if (m_walkedThroughDoor)
 	{

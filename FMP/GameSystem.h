@@ -46,6 +46,9 @@ public:
 
 	//Get the keyboard input
 	void GetKeyboardInput();
+	//Get The controller input
+	void GetControllerInput();
+
 	void GetMousePos();
 
 	//player 1 controller
@@ -55,12 +58,6 @@ public:
 	void DrawLevel(XMMATRIX view, XMMATRIX projection);
 	void UpdateText();
 
-	//Animate the sound waves when walking
-	void SoundWaveWalk();
-	//Animate the sound waves when Sprinting
-	void SoundWaveSprint();
-	//Animate the sound waves when walking through doors
-	void SoundWaveDoorOpen();
 
 
 private:
